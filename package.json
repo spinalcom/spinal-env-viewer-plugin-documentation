@@ -1,0 +1,26 @@
+{
+    "name": "spinal-env-viewer-plugin-cde",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
+      "spinal-env-viewer-panel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
+      "spinal-env-viewer-panel-manager-service_spinalforgeextention": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
+      "spinal-env-viewer-plugin-bimobjectservice":"git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
+      "spinal-env-viewer-plugin-circular-menu": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-circular-menu.git",
+      "spinalgraph": "git+https://github.com/spinalcom/spinal-model-graph.git#v01"
+    },
+    "browserify": {
+        "transform": [
+          "vueify",
+          "babelify"
+        ]
+      }
+}
