@@ -25,7 +25,7 @@ with this file. If not, see
 
 <template>
   <div>
-    <md-toolbar class="md-layout md-gutter myTicketManagertoolbar"
+    <md-toolbar class="md-layout md-gutter headerCDE"
                 layout="row"
                 layout-align="center center">
       <md-button @click="activeTab = 0"
@@ -33,46 +33,54 @@ with this file. If not, see
                  class="md-layout-item myTicketManagerButton">Files</md-button>
       <md-button @click="activeTab = 1"
                  :style="activeTabColor(1)"
-                 class="md-layout-item myTicketManagerButton">Links</md-button>
+                 class="md-layout-item myTicketManagerButton">URL</md-button>
       <md-button @click="activeTab = 2"
                  :style="activeTabColor(2)"
                  class="md-layout-item myTicketManagerButton">Attributes</md-button>
     </md-toolbar>
-    <span v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</span>
-    <span v-else>BIM Object not created</span>
-    <urlpanel v-if="activeTab == 0"
-              :selectedNode="selectedObject"
-              :dbid="dbid"></urlpanel>
-    <filepanel v-if="activeTab == 1"
-               :selectedNode="selectedObject"
+    <div class="centerSelectedNodeName"
+         v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
+    <div class="centerSelectedNodeName"
+         v-else>BIM Object not created</div>
+    <filepanel v-if="activeTab == 0"
+               :selectedNode="selectedNode"
                :dbid="dbid"></filepanel>
+    <urlpanel v-if="activeTab == 1"
+              :selectedNode="selectedNode"
+              @updateMyBIMObject="updateSelectedBIMObject"
+              :dbid="dbid"></urlpanel>
     <attributespanel v-if="activeTab == 2"
-                     :selectedNode="selectedObject"
+                     :selectedNode="selectedNode"
                      :dbid="dbid"></attributespanel>
   </div>
 </template>
 
 <script>
-import urlpanel from './component/cde/URLPanel.vue';
-import filepanel from './component/cde/URLPanel.vue';
-import attributespanel from './component/cde/URLPanel.vue';
+import urlpanel from "./component/cde/URLPanel.vue";
+import filepanel from "./component/cde/FilePanel.vue";
+import attributespanel from "./component/cde/AttributesPanel.vue";
 
 export default {
-  name: 'my_compo',
+  name: "my_compo",
   data() {
     return {
       activeTab: 0,
       selectedNode: undefined,
       dbid: undefined,
+      buttonList: []
     };
   },
-  components: {urlpanel, filepanel, attributespanel},
+  components: { urlpanel, filepanel, attributespanel },
   methods: {
     activeTabColor: function(value) {
-      if (this.activeTab == value) return {background: '#356BaB'};
-      else return {background: 'unset'};
+      if (this.activeTab == value) return { background: "#356BaB" };
+      else return { background: "unset" };
+    },
+    updateSelectedBIMObject(newBIMObject) {
+      this.selectedNode = newBIMObject;
     },
     opened(option, viewer) {
+      // console.log(option);
       if (option.selectedNode !== undefined) {
         this.selectedNode = option.selectedNode;
         this.dbid = option.dbid;
@@ -83,6 +91,8 @@ export default {
       // console.log('opened option', option);
       // console.log('opened viewer', viewer);
       // if (option.paramSent) this.openedlabel = option.paramSent;
+
+      // console.log(buttonObj)
     },
     removed(option, viewer) {
       // console.log('removed option', option);
@@ -90,21 +100,27 @@ export default {
     },
     closed(option, viewer) {
       // console.log('closed option', option);
+      console.log("closed");
       // console.log('closed viewer', viewer);
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style>
-.myTicketManagertoolbar {
+.headerCDE {
   box-sizing: border-box;
   min-height: 5%;
   border-top: 1px solid white;
   border-bottom: 1px solid white;
 }
 .myTicketManagerButton {
+  text-align: center;
   box-sizing: border-box;
   width: 30%;
+}
+.centerSelectedNodeName {
+  text-align: center;
+  margin-top: 8px;
 }
 </style>

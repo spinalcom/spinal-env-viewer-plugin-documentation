@@ -1,5 +1,5 @@
 <template>
-  <md-content style="background: transparent; box-sizing: border-box; height: calc(100% - 50px)">
+  <md-content class="md-scrollbar attributesBox">
     hello world
   </md-content>
 </template>
@@ -19,4 +19,9 @@ export default {
 </script>
 
 <style>
+.attributesBox {
+  background: transparent !important;
+   box-sizing: border-box;
+    height: calc(100% - 50px);
+}
 </style>

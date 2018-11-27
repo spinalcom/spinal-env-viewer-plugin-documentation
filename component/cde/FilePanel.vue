@@ -1,5 +1,5 @@
 <template>
-  <md-content style="background: transparent; box-sizing: border-box; height: calc(100% - 50px)">
+  <md-content class="md-scrollbar filesBox">
     hello world
   </md-content>
 </template>
@@ -19,4 +19,9 @@ export default {
 </script>
 
 <style>
+.filesBox {
+  background: transparent !important;
+   box-sizing: border-box;
+    height: calc(100% - 50px);
+}
 </style>

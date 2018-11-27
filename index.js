@@ -73,7 +73,7 @@ class CDECircularMenuButton extends SpinalContextApp {
   }
 
   isShown(option) {
-    console.log(option);
+    // console.log(option);
     //   if (
     //     option &&
     //     option.selectedNode &&
@@ -84,9 +84,9 @@ class CDECircularMenuButton extends SpinalContextApp {
   }
 
   action(option) {
-    option.paramSent = "hello from CDECircularMenuButton";
+    // option.paramSent = "hello from CDECircularMenuButton";
     spinalPanelManagerService.openPanel("panel-cde", option);
-    console.log("action clicked");
+    // console.log("action clicked");
   }
 }
 
@@ -103,7 +103,7 @@ class NoteCircularMenu extends SpinalContextApp {
   }
 
   isShown(option) {
-    console.log(option);
+    // console.log(option);
     //   if (
     //     option &&
     //     option.selectedNode &&
@@ -114,9 +114,9 @@ class NoteCircularMenu extends SpinalContextApp {
   }
 
   action(option) {
-    option.paramSent = "hello from NoteCircularMenu";
+    // option.paramSent = "hello from NoteCircularMenu";
     spinalPanelManagerService.openPanel("panel-notes", option);
-    console.log("action clicked");
+    // console.log("action clicked");
   }
 }
 
