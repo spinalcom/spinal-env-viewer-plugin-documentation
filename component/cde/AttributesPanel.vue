@@ -129,7 +129,8 @@ export default {
     }
   },
   beforeDestroy() {
-    this.selectedNode.unbind(this.myBind);
+    if (this.selectedNode != undefined && this.myBind != undefined)
+      this.selectedNode.unbind(this.myBind);
   }
 };
 </script>

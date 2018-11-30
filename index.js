@@ -24,12 +24,12 @@ import Vue from "vue"
 
 
 const cdeExtension = SpinalForgeExtention.createExtention({
-  name: "panel-cde",
+  name: "panel-documentation",
   vueMountComponent: Vue.extend(cdeComponent),
   // toolbar is optional
 
   panel: {
-    title: "Spinalcom CDE",
+    title: "Spinalcom Documentation",
     classname: "spinal-pannel",
     closeBehaviour: "remove" // if something else panel is deleted
   },
@@ -40,7 +40,7 @@ const cdeExtension = SpinalForgeExtention.createExtention({
   onUnLoad: () => {}
 });
 
-SpinalForgeExtention.registerExtention("panel-cde", cdeExtension);
+SpinalForgeExtention.registerExtention(name, cdeExtension);
 
 
 const noteExtension = SpinalForgeExtention.createExtention({
@@ -49,7 +49,7 @@ const noteExtension = SpinalForgeExtention.createExtention({
   // toolbar is optional
 
   panel: {
-    title: "Spinalcom CDE",
+    title: "Spinalcom Notes",
     classname: "spinal-pannel",
     closeBehaviour: "remove" // if something else panel is deleted
   },
@@ -60,7 +60,7 @@ const noteExtension = SpinalForgeExtention.createExtention({
   onUnLoad: () => {}
 });
 
-SpinalForgeExtention.registerExtention("panel-notes", noteExtension);
+SpinalForgeExtention.registerExtention(name, noteExtension);
 
 class CDECircularMenuButton extends SpinalContextApp {
   constructor() {
@@ -85,7 +85,7 @@ class CDECircularMenuButton extends SpinalContextApp {
 
   action(option) {
     // option.paramSent = "hello from CDECircularMenuButton";
-    spinalPanelManagerService.openPanel("panel-cde", option);
+    spinalPanelManagerService.openPanel("panel-documentation", option);
     // console.log("action clicked");
   }
 }
