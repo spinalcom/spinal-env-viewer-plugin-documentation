@@ -1,6 +1,6 @@
 <template>
   <md-content class="md-scrollbar filesBox">
-    hello world
+    not available
   </md-content>
 </template>
 
