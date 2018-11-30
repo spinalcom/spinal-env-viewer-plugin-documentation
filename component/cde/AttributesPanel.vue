@@ -129,6 +129,7 @@ export default {
     }
   },
   beforeDestroy() {
+  if (this.selectedNode != undefined && this.myBind != undefined)
     this.selectedNode.unbind(this.myBind);
   }
 };
