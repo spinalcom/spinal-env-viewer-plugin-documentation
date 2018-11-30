@@ -24,19 +24,19 @@ with this file. If not, see
 
 
 <template>
-  <div>
+  <div class=" containerCDE">
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout="row"
                 layout-align="center center">
       <md-button @click="activeTab = 0"
                  :style="activeTabColor(0)"
-                 class="md-layout-item myTicketManagerButton">Files</md-button>
+                 class="md-layout-item toolbarButton">Files</md-button>
       <md-button @click="activeTab = 1"
                  :style="activeTabColor(1)"
-                 class="md-layout-item myTicketManagerButton">URL</md-button>
+                 class="md-layout-item toolbarButton">URL</md-button>
       <md-button @click="activeTab = 2"
                  :style="activeTabColor(2)"
-                 class="md-layout-item myTicketManagerButton">Attributes</md-button>
+                 class="md-layout-item toolbarButton">Attributes</md-button>
     </md-toolbar>
     <div class="centerSelectedNodeName"
          v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
@@ -111,10 +111,12 @@ export default {
 .headerCDE {
   box-sizing: border-box;
   min-height: 5%;
+  margin-left: unset !important;
+  margin: unset;
   border-top: 1px solid white;
   border-bottom: 1px solid white;
 }
-.myTicketManagerButton {
+.toolbarButton {
   text-align: center;
   box-sizing: border-box;
   width: 30%;
@@ -122,5 +124,20 @@ export default {
 .centerSelectedNodeName {
   text-align: center;
   margin-top: 8px;
+}
+.containerCDE {
+  height: 100%;
+}
+
+.containerCDE .md-ripple {
+  padding: unset;
+}
+.containerCDE .md-content.md-theme-default {
+  background-color: unset;
+}
+
+.containerCDE button.md-button.md-layout-item.toolbarButton.md-theme-default {
+  margin-left: 7px;
+  margin-right: unset;
 }
 </style>
