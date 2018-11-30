@@ -60,7 +60,7 @@
 <script>
 import Toasted from "vue-toasted";
 import Vue from "vue";
-import ServiceCDE from "spinal-env-viewer-plugin-cde-service";
+import ServiceCDE from "spinal-env-viewer-plugin-documentation-service";
 Vue.use(Toasted);
 
 export default {
