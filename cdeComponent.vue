@@ -119,6 +119,7 @@ export default {
 .toolbarButton {
   text-align: center;
   box-sizing: border-box;
+  padding: unset;
   width: 30%;
 }
 .centerSelectedNodeName {
