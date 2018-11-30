@@ -16,6 +16,7 @@
     "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
     "spinal-env-viewer-plugin-circular-menu": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-circular-menu.git",
     "spinalgraph": "git+https://github.com/spinalcom/spinal-model-graph.git#v01",
+    "spinal-env-viewer-plugin-cde-service": "https://github.com/spinalcom/spinal-env-viewer-plugin-cde-service.git",
     "vue-toasted": "^1.1.25"
   },
   "browserify": {
