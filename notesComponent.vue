@@ -23,27 +23,12 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="my-test-panel-container">
-    <div class="md-layout">
-      <md-button class="md-layout-item"
-                 @click="outputNbr -=1">-1</md-button>
-      <md-button class="md-layout-item"
-                 @click="outputNbr +=1">+1</md-button>
-      <p class="md-layout-item my-test-panel-container-nbr-output">output :
-        {{outputNbr}}</p>
-    </div>
-    <hr />
-    <div class="md-layout md-alignment-center-center">
-      <md-field class="md-layout-item">
-        <label>send to dialog</label>
-        <md-input v-model="outputDialog"></md-input>
-      </md-field>
-      <md-button class="md-layout-item"
-                 @click="openDialog">Open Dialog</md-button>
-
-    </div>
-    <p>{{openedlabel}}</p>
-  </div>
+  <md-content class="md-scrollbar filesBox">
+    <md-button class="addURLButtonPanel"
+               @click="addURLDialogueStatus = true">
+      File System Import
+    </md-button>
+  </md-content>
 </template>
 
 <script>

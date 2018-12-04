@@ -26,6 +26,13 @@ with this file. If not, see
 <template>
   <div class=" containerCDE">
     <md-toolbar class="md-layout md-gutter headerCDE"
+                layout-align="center center">
+      <div class="centerSelectedNodeName"
+           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
+      <div class="centerSelectedNodeName"
+           v-else>BIM Object not created</div>
+    </md-toolbar>
+    <md-toolbar class="md-layout md-gutter headerCDE"
                 layout="row"
                 layout-align="center center">
       <md-button @click="activeTab = 0"
@@ -38,27 +45,27 @@ with this file. If not, see
                  :style="activeTabColor(2)"
                  class="md-layout-item toolbarButton">Attributes</md-button>
     </md-toolbar>
-    <div class="centerSelectedNodeName"
-         v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
-    <div class="centerSelectedNodeName"
-         v-else>BIM Object not created</div>
+
     <filepanel v-if="activeTab == 0"
+               :option="option"
                :selectedNode="selectedNode"
                :dbid="dbid"></filepanel>
     <urlpanel v-if="activeTab == 1"
+              :option="option"
               :selectedNode="selectedNode"
               @updateMyBIMObject="updateSelectedBIMObject"
               :dbid="dbid"></urlpanel>
     <attributespanel v-if="activeTab == 2"
                      :selectedNode="selectedNode"
+                     :option="option"
                      :dbid="dbid"></attributespanel>
   </div>
 </template>
 
 <script>
-import urlpanel from "./component/cde/URLPanel.vue";
-import filepanel from "./component/cde/FilePanel.vue";
-import attributespanel from "./component/cde/AttributesPanel.vue";
+import urlpanel from "./view/documentation/URLPanel.vue";
+import filepanel from "./view/documentation/FilePanel.vue";
+import attributespanel from "./view/documentation/AttributesPanel.vue";
 
 export default {
   name: "my_compo",
@@ -67,6 +74,7 @@ export default {
       activeTab: 0,
       selectedNode: undefined,
       dbid: undefined,
+      option: undefined,
       buttonList: []
     };
   },
@@ -79,8 +87,8 @@ export default {
     updateSelectedBIMObject(newBIMObject) {
       this.selectedNode = newBIMObject;
     },
-    opened(option, viewer) {
-      // console.log(option);
+    opened(option) {
+      this.option = option;
       if (option.selectedNode !== undefined) {
         this.selectedNode = option.selectedNode;
         this.dbid = option.dbid;
@@ -88,20 +96,15 @@ export default {
         this.selectedNode = undefined;
         this.dbid = option.dbid;
       }
-      // console.log('opened option', option);
-      // console.log('opened viewer', viewer);
-      // if (option.paramSent) this.openedlabel = option.paramSent;
-
-      // console.log(buttonObj)
     },
     removed(option, viewer) {
-      // console.log('removed option', option);
-      // console.log('removed viewer', viewer);
+      console.log("removed option", option);
+      console.log("removed viewer", viewer);
     },
     closed(option, viewer) {
-      // console.log('closed option', option);
+      console.log("closed option", option);
       console.log("closed");
-      // console.log('closed viewer', viewer);
+      console.log("closed viewer", viewer);
     }
   }
 };
@@ -140,5 +143,12 @@ export default {
 .containerCDE button.md-button.md-layout-item.toolbarButton.md-theme-default {
   margin-left: 7px;
   margin-right: unset;
+}
+
+.centerSelectedNodeName {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: unset;
+  margin-bottom: unset;
 }
 </style>

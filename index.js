@@ -1,123 +1,40 @@
-// const HeaderBarName = "GraphManagerGlobalBar";
-// const sidebarName = "GraphManagerSideBar";
-const circularMenuHookName = "circularMenu";
-
-
+const circularMenuHookName = 'circularMenu';
+const SideBarHookName = 'GraphManagerSideBar';
+const namePanel = 'panel-documentation'
 const {
   spinalContextMenuService,
-  SpinalContextApp
-} = require("spinal-env-viewer-context-menu-service");
-
+} = require('spinal-env-viewer-context-menu-service');
 const {
-  spinalPanelManagerService,
-  SpinalMountExtention
-} = require("spinal-env-viewer-panel-manager-service");
-const {
-  SpinalForgeExtention
-} = require("spinal-env-viewer-panel-manager-service_spinalforgeextention");
-import cdeComponent from "./cdeComponent.vue";
-import notesComponent from "./notesComponent.vue";
-import Vue from "vue"
+  SpinalForgeExtention,
+} = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 
-// import CreateContextBtn from './classes/createContext';
-// import AddAbstactElement from "./classes/addAbstract";
+import {
+  NotesButton
+} from './buttonClass/notesPanel.js'
+import {
+  DocumentationButton,
+  DocumentationExtension
+} from './buttonClass/documentationPanel.js'
 
 
-const cdeExtension = SpinalForgeExtention.createExtention({
-  name: "panel-documentation",
-  vueMountComponent: Vue.extend(cdeComponent),
-  // toolbar is optional
 
-  panel: {
-    title: "Spinalcom Documentation",
-    classname: "spinal-pannel",
-    closeBehaviour: "remove" // if something else panel is deleted
-  },
-  style: {
-    left: "405px"
-  },
-  onload: () => {},
-  onUnLoad: () => {}
-});
-
-SpinalForgeExtention.registerExtention(name, cdeExtension);
+SpinalForgeExtention.registerExtention(namePanel, DocumentationExtension);
 
 
-const noteExtension = SpinalForgeExtention.createExtention({
-  name: "panel-notes",
-  vueMountComponent: Vue.extend(notesComponent),
-  // toolbar is optional
+spinalContextMenuService.registerApp(
+  circularMenuHookName,
+  new DocumentationButton()
+);
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new DocumentationButton()
+);
 
-  panel: {
-    title: "Spinalcom Notes",
-    classname: "spinal-pannel",
-    closeBehaviour: "remove" // if something else panel is deleted
-  },
-  style: {
-    left: "405px"
-  },
-  onload: () => {},
-  onUnLoad: () => {}
-});
-
-SpinalForgeExtention.registerExtention(name, noteExtension);
-
-class CDECircularMenuButton extends SpinalContextApp {
-  constructor() {
-    super("Spinal CDE", "Spinal CDE description", {
-      icon: "folder",
-      icon_type: "in",
-      backgroundColor: "#356BAB",
-      fontColor: "#FFFFFF"
-    });
-  }
-
-  isShown(option) {
-    // console.log(option);
-    //   if (
-    //     option &&
-    //     option.selectedNode &&
-    //     option.selectedNode.getName().equals("Floor0")
-    //   )
-    //     return Promise.resolve(-1);
-    return Promise.resolve(true);
-  }
-
-  action(option) {
-    // option.paramSent = "hello from CDECircularMenuButton";
-    spinalPanelManagerService.openPanel("panel-documentation", option);
-    // console.log("action clicked");
-  }
-}
-
-spinalContextMenuService.registerApp(circularMenuHookName, new CDECircularMenuButton());
-
-class NoteCircularMenu extends SpinalContextApp {
-  constructor() {
-    super("Spinal CDE", "Spinal CDE description", {
-      icon: "border_color",
-      icon_type: "in",
-      backgroundColor: "#356BAB",
-      fontColor: "#FFFFFF"
-    });
-  }
-
-  isShown(option) {
-    // console.log(option);
-    //   if (
-    //     option &&
-    //     option.selectedNode &&
-    //     option.selectedNode.getName().equals("Floor0")
-    //   )
-    //     return Promise.resolve(-1);
-    return Promise.resolve(true);
-  }
-
-  action(option) {
-    // option.paramSent = "hello from NoteCircularMenu";
-    spinalPanelManagerService.openPanel("panel-notes", option);
-    // console.log("action clicked");
-  }
-}
-
-spinalContextMenuService.registerApp(circularMenuHookName, new NoteCircularMenu());
+spinalContextMenuService.registerApp(
+  circularMenuHookName,
+  new NotesButton()
+);
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new NotesButton()
+);

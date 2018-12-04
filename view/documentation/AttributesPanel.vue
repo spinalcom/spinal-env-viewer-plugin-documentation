@@ -50,7 +50,7 @@
         <md-button class="md-primary"
                    @click="activeDialogStatus = false">Close</md-button>
         <md-button class="md-primary"
-                   @click="addLink">Save</md-button>
+                   @click="addAttributes">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
   </md-content>
@@ -60,7 +60,8 @@
 <script>
 import Toasted from "vue-toasted";
 import Vue from "vue";
-import ServiceCDE from "spinal-env-viewer-plugin-documentation-service";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { utilities } from "../../controller/utilities.js";
 Vue.use(Toasted);
 
 export default {
@@ -75,62 +76,49 @@ export default {
     };
   },
   components: {},
-  props: ["selectedNode", "dbid"],
+  props: ["option"],
   methods: {
-    updateURLList() {
-      let _this = this;
-      // console.log(this.URLDisplayList);
-      this.URLDisplayList = [];
-      this.selectedNode.getChildren(["hasAttributes"]).then(myURLList => {
-        // console.log(myURLList);
-        for (let i = 0; i < myURLList.length; i++) {
-          const urlNode = myURLList[i];
-          // console.log(urlNode);
-          urlNode.element.ptr.load(url => {
-            _this.URLDisplayList.push(url);
-          });
-        }
-      });
+    async updateURLList() {
+      if (this.option.selectedNode != undefined)
+        this.URLDisplayList = await serviceDocumentation.getAttributes(
+          this.option.selectedNode
+        );
+      else this.URLDisplayList = [];
     },
-    async addLink() {
-      if (this.label != undefined && this.value != undefined) {
-        this.$toasted.success("Attributes is register", {
-          position: "top-center",
-          duration: 2000
-        });
-        if (this.selectedNode != undefined) {
-          ServiceCDE.addAttribute(this.selectedNode, this.label, this.value);
-        } else {
-          let myNewBIMObject = await ServiceCDE.addAttribute(
-            this.dbid,
-            this.label,
-            this.value
-          );
-          this.$emit("updateMyBIMObject", myNewBIMObject);
-        }
-        this.label = undefined;
-        this.value = undefined;
-      } else {
-        this.$toasted.error("BAD Request", {
-          position: "top-center",
-          duration: 2000
-        });
-      }
+    addAttributes() {
+      let option = utilities.addAttributes(this.option, this.label, this.value);
+      // if (option.selectedNode != undefined) {
+      //   this.$toasted.success("URL is register", {
+      //     position: "bot-right",
+      //     duration: 2000
+      //   });
+      // } else {
+      //   this.$toasted.error("BAD Request", {
+      //     position: "top-center",
+      //     duration: 2000
+      //   });
+      // }
+      this.updateURLList();
       this.activeDialogStatus = false;
     }
   },
   mounted() {
-    // console.log("MOUNTED OF URL PANEL");
-    // console.log(this.selectedNode);
-    if (this.selectedNode != undefined) {
-      // this.updateURLList();
+    if (this.option.selectedNode != undefined) {
       if (this.myBind == undefined)
-        this.myBind = this.selectedNode.bind(this.updateURLList.bind(this));
+        this.myBind = this.option.selectedNode.bind(
+          this.updateURLList.bind(this)
+        );
+      1;
+    }
+  },
+  watch: {
+    option: function() {
+      this.updateURLList();
     }
   },
   beforeDestroy() {
-    if (this.selectedNode != undefined && this.myBind != undefined)
-      this.selectedNode.unbind(this.myBind);
+    if (this.option.selectedNode != undefined && this.myBind != undefined)
+      this.option.selectedNode.unbind(this.myBind);
   }
 };
 </script>
