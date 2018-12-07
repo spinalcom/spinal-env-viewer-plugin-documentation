@@ -28,7 +28,7 @@ with this file. If not, see
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
       <div class="centerSelectedNodeName"
-           v-if="selectedNode != undefined">{{selectedNode.name.get()}}
+           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}
       </div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
