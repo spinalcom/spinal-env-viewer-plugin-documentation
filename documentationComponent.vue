@@ -28,7 +28,8 @@ with this file. If not, see
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
       <div class="centerSelectedNodeName"
-           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
+           v-if="selectedNode != undefined">{{selectedNode.name.get()}}
+      </div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
@@ -63,11 +64,11 @@ with this file. If not, see
 </template>
 
 <script>
-import urlpanel from "./view/documentation/URLPanel.vue";
-import filepanel from "./view/documentation/FilePanel.vue";
-import attributespanel from "./view/documentation/AttributesPanel.vue";
+  import urlpanel from "./view/documentation/URLPanel.vue";
+  import filepanel from "./view/documentation/FilePanel.vue";
+  import attributespanel from "./view/documentation/AttributesPanel.vue";
 
-export default {
+  export default {
   name: "my_compo",
   data() {
     return {

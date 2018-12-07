@@ -13,10 +13,9 @@
     "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-panel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
     "spinal-env-viewer-panel-manager-service_spinalforgeextention": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
-    "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
-    "spinal-env-viewer-plugin-circular-menu": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-circular-menu.git",
-    "spinalgraph": "git+https://github.com/spinalcom/spinal-model-graph.git#v01",
-    "spinal-env-viewer-plugin-documentation-service": "https://github.com/spinalcom/spinal-env-viewer-plugin-cde-service.git",
+    "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice#develop",
+    "spinal-env-viewer-plugin-circular-menu": "git+https://github.com/spinal-env-viewer-plugin-circular-menu.git",
+    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinal-env-viewer-plugin-documentation-service",
     "vue-toasted": "^1.1.25"
   },
   "browserify": {
