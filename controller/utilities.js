@@ -4,9 +4,7 @@ import {
 import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
 
 class DocumentationUtilities {
-  constructor() {
-
-  }
+  constructor() {}
 
   async addLink(option, label = undefined, URL = undefined) {
     if (label != undefined && URL != undefined && URL != "" && label != "") {
@@ -17,6 +15,7 @@ class DocumentationUtilities {
           option.dbid,
           'bimObject_' + option.dbid
         );
+        console.log("call service add url")
         serviceDocumentation.addURL(
           option.selectedNode,
           label,
@@ -30,26 +29,34 @@ class DocumentationUtilities {
     }
   }
 
-  async addAttributes(option, label = undefined, value = undefined) {
+  async addAttributes(option, label, value) {
     if (label != undefined && value != undefined && value != "" && label !=
       "") {
       if (option.selectedNode != undefined) {
         serviceDocumentation.addAttribute(option.selectedNode, label, value);
+        return option
       } else if (option.dbid != undefined) {
+        // console.log(option)
+        // console.log("before create node", option.selectedNode)
         option.selectedNode = await bimObjectService.createBIMObject(
           option.dbid,
           'bimObject_' + option.dbid
         );
+        // ici le bim object est créer
+        // console.log("BIM object created", option.selectedNode)
+        // console.log(option)
         serviceDocumentation.addAttribute(
           option.selectedNode,
           label,
           value
         );
         return option;
+      } else {
+        return option
       }
 
     } else {
-      return undefined
+      return option
     }
   }
 

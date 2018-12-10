@@ -48,27 +48,22 @@ with this file. If not, see
     </md-toolbar>
 
     <filepanel v-if="activeTab == 0"
-               :option="option"
-               :selectedNode="selectedNode"
-               :dbid="dbid"></filepanel>
+               :option="option"></filepanel>
     <urlpanel v-if="activeTab == 1"
               :option="option"
-              :selectedNode="selectedNode"
-              @updateMyBIMObject="updateSelectedBIMObject"
-              :dbid="dbid"></urlpanel>
+              @updateMyBIMObject="updateSelectedBIMObject"></urlpanel>
     <attributespanel v-if="activeTab == 2"
-                     :selectedNode="selectedNode"
                      :option="option"
-                     :dbid="dbid"></attributespanel>
+                     @updateMyBIMObject="updateSelectedBIMObject"></attributespanel>
   </div>
 </template>
 
 <script>
-  import urlpanel from "./view/documentation/URLPanel.vue";
-  import filepanel from "./view/documentation/FilePanel.vue";
-  import attributespanel from "./view/documentation/AttributesPanel.vue";
+import urlpanel from "./view/documentation/URLPanel.vue";
+import filepanel from "./view/documentation/FilePanel.vue";
+import attributespanel from "./view/documentation/AttributesPanel.vue";
 
-  export default {
+export default {
   name: "my_compo",
   data() {
     return {
@@ -85,8 +80,11 @@ with this file. If not, see
       if (this.activeTab == value) return { background: "#356BaB" };
       else return { background: "unset" };
     },
-    updateSelectedBIMObject(newBIMObject) {
-      this.selectedNode = newBIMObject;
+    updateSelectedBIMObject(option) {
+      console.log("ICI ON UPDATE OPTION");
+      console.log(option);
+      this.selectedNode = option.selectedNode;
+      this.option = option;
     },
     opened(option) {
       this.option = option;
