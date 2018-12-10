@@ -42,6 +42,7 @@ class DocumentationUtilities {
           option.dbid,
           'bimObject_' + option.dbid
         );
+        option.exist = true;
         // ici le bim object est créer
         // console.log("BIM object created", option.selectedNode)
         // console.log(option)

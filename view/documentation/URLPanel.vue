@@ -90,7 +90,7 @@ export default {
       else this.URLDisplayList = [];
     },
     async addLink() {
-      console.log("call service add url");
+      // console.log("call service add url");
 
       let option = await utilities.addLink(this.option, this.label, this.URL);
       this.$emit("updateMyBIMObject", option);

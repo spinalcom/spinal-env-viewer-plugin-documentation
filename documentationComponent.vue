@@ -81,8 +81,6 @@ export default {
       else return { background: "unset" };
     },
     updateSelectedBIMObject(option) {
-      console.log("ICI ON UPDATE OPTION");
-      console.log(option);
       this.selectedNode = option.selectedNode;
       this.option = option;
     },

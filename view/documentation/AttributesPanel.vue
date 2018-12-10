@@ -121,6 +121,7 @@ export default {
   },
   watch: {
     option: function() {
+      console.log("watch option");
       this.updateURLList();
     }
   },
