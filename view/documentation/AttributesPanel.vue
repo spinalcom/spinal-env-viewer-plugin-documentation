@@ -79,9 +79,9 @@ export default {
   props: ["option"],
   methods: {
     async updateURLList() {
-      if (this.option.selectedNode != undefined)
+      if (this.option.info != undefined)
         this.URLDisplayList = await serviceDocumentation.getAttributes(
-          this.option.selectedNode
+          this.option.info
         );
       else this.URLDisplayList = [];
     },
@@ -103,11 +103,9 @@ export default {
     }
   },
   mounted() {
-    if (this.option.selectedNode != undefined) {
+    if (this.option.info != undefined) {
       if (this.myBind == undefined)
-        this.myBind = this.option.selectedNode.bind(
-          this.updateURLList.bind(this)
-        );
+        this.myBind = this.option.info.bind(this.updateURLList.bind(this));
       1;
     }
   },
@@ -117,8 +115,8 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.option.selectedNode != undefined && this.myBind != undefined)
-      this.option.selectedNode.unbind(this.myBind);
+    if (this.option.info != undefined && this.myBind != undefined)
+      this.option.info.unbind(this.myBind);
   }
 };
 </script>

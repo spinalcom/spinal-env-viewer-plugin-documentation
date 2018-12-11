@@ -83,11 +83,12 @@ export default {
   props: ["option"],
   methods: {
     async updateURLList() {
-      if (this.option.selectedNode != undefined)
+      if (this.option.info != undefined) {
+        console.log(await serviceDocumentation.getURL(this.option.info));
         this.URLDisplayList = await serviceDocumentation.getURL(
-          this.option.selectedNode
+          this.option.info
         );
-      else this.URLDisplayList = [];
+      } else this.URLDisplayList = [];
     },
     addLink() {
       let selectedNode = utilities.addLink(this.option, this.label, this.URL);
@@ -107,11 +108,11 @@ export default {
     }
   },
   mounted() {
-    if (this.option.selectedNode != undefined) {
-      if (this.myBind == undefined)
-        this.myBind = this.option.selectedNode.bind(
-          this.updateURLList.bind(this)
-        );
+    if (this.option.info != undefined) {
+      if (this.myBind == undefined) {
+        console.log(this.option);
+        this.myBind = this.option.info.bind(this.updateURLList.bind(this));
+      }
     }
   },
   watch: {
@@ -120,8 +121,8 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.option.selectedNode != undefined && this.myBind != undefined)
-      this.option.selectedNode.unbind(this.myBind);
+    if (this.option.info != undefined && this.myBind != undefined)
+      this.option.info.unbind(this.myBind);
   }
 };
 </script>

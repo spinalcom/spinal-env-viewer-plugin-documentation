@@ -10,15 +10,15 @@ class DocumentationUtilities {
 
   async addLink(option, label = undefined, URL = undefined) {
     if (label != undefined && URL != undefined && URL != "" && label != "") {
-      if (option.selectedNode != undefined) {
-        serviceDocumentation.addURL(option.selectedNode, label, URL);
+      if (option.info != undefined) {
+        serviceDocumentation.addURL(option.info, label, URL);
       } else if (option.dbid != undefined) {
-        option.selectedNode = await bimObjectService.createBIMObject(
+        option.info = await bimObjectService.createBIMObject(
           option.dbid,
           'bimObject_' + option.dbid
         );
         serviceDocumentation.addURL(
-          option.selectedNode,
+          option.info,
           label,
           URL
         );
@@ -33,15 +33,15 @@ class DocumentationUtilities {
   async addAttributes(option, label = undefined, value = undefined) {
     if (label != undefined && value != undefined && value != "" && label !=
       "") {
-      if (option.selectedNode != undefined) {
-        serviceDocumentation.addAttribute(option.selectedNode, label, value);
+      if (option.info != undefined) {
+        serviceDocumentation.addAttribute(option.info, label, value);
       } else if (option.dbid != undefined) {
-        option.selectedNode = await bimObjectService.createBIMObject(
+        option.info = await bimObjectService.createBIMObject(
           option.dbid,
           'bimObject_' + option.dbid
         );
         serviceDocumentation.addAttribute(
-          option.selectedNode,
+          option.info,
           label,
           value
         );

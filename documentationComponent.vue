@@ -66,7 +66,7 @@ with this file. If not, see
 import urlpanel from "./view/documentation/URLPanel.vue";
 import filepanel from "./view/documentation/FilePanel.vue";
 import attributespanel from "./view/documentation/AttributesPanel.vue";
-
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 export default {
   name: "my_compo",
   data() {
@@ -88,13 +88,22 @@ export default {
       this.selectedNode = newBIMObject;
     },
     opened(option) {
-      this.option = option;
-      if (option.selectedNode !== undefined) {
+      if (option.selectedNode != undefined) {
+        option.selectedNode = SpinalGraphService.getRealNode(
+          option.selectedNode.id.get()
+        );
         this.selectedNode = option.selectedNode;
-        this.dbid = option.dbid;
+        this.option = { info: option.selectedNode };
+        console.log(this.option);
       } else {
-        this.selectedNode = undefined;
-        this.dbid = option.dbid;
+        this.option = option;
+        if (option.info !== undefined) {
+          this.selectedNode = option.info;
+          this.dbid = option.dbid;
+        } else {
+          this.selectedNode = undefined;
+          this.dbid = option.dbid;
+        }
       }
     },
     removed(option, viewer) {
