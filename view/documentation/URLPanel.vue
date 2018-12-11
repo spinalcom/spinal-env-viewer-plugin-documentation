@@ -24,10 +24,10 @@
             </md-table-cell>
             <md-table-cell class="size-md-cell">
               <a class="back-line"
-                 v-tooltip="url.value.get()"
-                 :href="url.value.get()"
+                 v-tooltip="url.URL.get()"
+                 :href="url.URL.get()"
                  target="_blank">
-                {{url.value.get()}}</a>
+                {{url.URL.get()}}</a>
 
             </md-table-cell>
           </md-table-row>
@@ -83,14 +83,11 @@ export default {
   props: ["option"],
   methods: {
     async updateURLList() {
-      if (this.option.selectedNode != undefined) {
-        console.log(
-          await serviceDocumentation.getURL(this.option.selectedNode)
-        );
+      if (this.option.selectedNode != undefined)
         this.URLDisplayList = await serviceDocumentation.getURL(
           this.option.selectedNode
         );
-      } else this.URLDisplayList = [];
+      else this.URLDisplayList = [];
     },
     addLink() {
       let selectedNode = utilities.addLink(this.option, this.label, this.URL);
@@ -111,12 +108,10 @@ export default {
   },
   mounted() {
     if (this.option.selectedNode != undefined) {
-      if (this.myBind == undefined) {
-        console.log(this.option);
+      if (this.myBind == undefined)
         this.myBind = this.option.selectedNode.bind(
           this.updateURLList.bind(this)
         );
-      }
     }
   },
   watch: {
