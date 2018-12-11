@@ -79,22 +79,14 @@ export default {
   props: ["option"],
   methods: {
     async updateURLList() {
-      if (this.option.selectedNode != undefined) {
+      if (this.option.selectedNode != undefined)
         this.URLDisplayList = await serviceDocumentation.getAttributes(
           this.option.selectedNode
         );
-        // console.log("///////////////////////////////////////////////////");
-        // console.log(this.URLDisplayList);
-        // console.log("///////////////////////////////////////////////////");
-      } else this.URLDisplayList = [];
+      else this.URLDisplayList = [];
     },
-    async addAttributes() {
-      let option = await utilities.addAttributes(
-        this.option,
-        this.label,
-        this.value
-      );
-      this.$emit("updateMyBIMObject", option);
+    addAttributes() {
+      let option = utilities.addAttributes(this.option, this.label, this.value);
       // if (option.selectedNode != undefined) {
       //   this.$toasted.success("URL is register", {
       //     position: "bot-right",
@@ -121,7 +113,6 @@ export default {
   },
   watch: {
     option: function() {
-      console.log("watch option");
       this.updateURLList();
     }
   },

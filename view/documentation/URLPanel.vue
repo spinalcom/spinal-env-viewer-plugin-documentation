@@ -24,10 +24,10 @@
             </md-table-cell>
             <md-table-cell class="size-md-cell">
               <a class="back-line"
-                 v-tooltip="url.URL.get()"
-                 :href="url.URL.get()"
+                 v-tooltip="url.value.get()"
+                 :href="url.value.get()"
                  target="_blank">
-                {{url.URL.get()}}</a>
+                {{url.value.get()}}</a>
 
             </md-table-cell>
           </md-table-row>
@@ -83,17 +83,17 @@ export default {
   props: ["option"],
   methods: {
     async updateURLList() {
-      if (this.option.selectedNode != undefined)
+      if (this.option.selectedNode != undefined) {
+        console.log(
+          await serviceDocumentation.getURL(this.option.selectedNode)
+        );
         this.URLDisplayList = await serviceDocumentation.getURL(
           this.option.selectedNode
         );
-      else this.URLDisplayList = [];
+      } else this.URLDisplayList = [];
     },
-    async addLink() {
-      // console.log("call service add url");
-
-      let option = await utilities.addLink(this.option, this.label, this.URL);
-      this.$emit("updateMyBIMObject", option);
+    addLink() {
+      let selectedNode = utilities.addLink(this.option, this.label, this.URL);
       // if (selectedNode != undefined) {
       //   this.$toasted.success("URL is register", {
       //     position: "bot-right",
@@ -111,10 +111,12 @@ export default {
   },
   mounted() {
     if (this.option.selectedNode != undefined) {
-      if (this.myBind == undefined)
+      if (this.myBind == undefined) {
+        console.log(this.option);
         this.myBind = this.option.selectedNode.bind(
           this.updateURLList.bind(this)
         );
+      }
     }
   },
   watch: {

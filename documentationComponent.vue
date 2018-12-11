@@ -28,8 +28,7 @@ with this file. If not, see
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
       <div class="centerSelectedNodeName"
-           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}
-      </div>
+           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
@@ -48,13 +47,18 @@ with this file. If not, see
     </md-toolbar>
 
     <filepanel v-if="activeTab == 0"
-               :option="option"></filepanel>
+               :option="option"
+               :selectedNode="selectedNode"
+               :dbid="dbid"></filepanel>
     <urlpanel v-if="activeTab == 1"
               :option="option"
-              @updateMyBIMObject="updateSelectedBIMObject"></urlpanel>
+              :selectedNode="selectedNode"
+              @updateMyBIMObject="updateSelectedBIMObject"
+              :dbid="dbid"></urlpanel>
     <attributespanel v-if="activeTab == 2"
+                     :selectedNode="selectedNode"
                      :option="option"
-                     @updateMyBIMObject="updateSelectedBIMObject"></attributespanel>
+                     :dbid="dbid"></attributespanel>
   </div>
 </template>
 
@@ -80,9 +84,8 @@ export default {
       if (this.activeTab == value) return { background: "#356BaB" };
       else return { background: "unset" };
     },
-    updateSelectedBIMObject(option) {
-      this.selectedNode = option.selectedNode;
-      this.option = option;
+    updateSelectedBIMObject(newBIMObject) {
+      this.selectedNode = newBIMObject;
     },
     opened(option) {
       this.option = option;
