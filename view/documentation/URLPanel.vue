@@ -90,8 +90,12 @@ export default {
         );
       } else this.URLDisplayList = [];
     },
-    addLink() {
-      let selectedNode = utilities.addLink(this.option, this.label, this.URL);
+    async addLink() {
+      let option = await utilities.addLink(this.option, this.label, this.URL);
+      console.log(option);
+      this.$emit("updateMyBIMObject", option);
+      this.label = undefined;
+      this.URL = undefined;
       // if (selectedNode != undefined) {
       //   this.$toasted.success("URL is register", {
       //     position: "bot-right",

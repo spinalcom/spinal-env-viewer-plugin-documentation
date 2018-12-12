@@ -58,6 +58,7 @@ with this file. If not, see
     <attributespanel v-if="activeTab == 2"
                      :selectedNode="selectedNode"
                      :option="option"
+                     @updateMyBIMObject="updateSelectedBIMObject"
                      :dbid="dbid"></attributespanel>
   </div>
 </template>
@@ -84,8 +85,10 @@ export default {
       if (this.activeTab == value) return { background: "#356BaB" };
       else return { background: "unset" };
     },
-    updateSelectedBIMObject(newBIMObject) {
-      this.selectedNode = newBIMObject;
+    updateSelectedBIMObject(option) {
+      console.log("update option");
+      this.selectedNode = option.info;
+      this.option = option;
     },
     opened(option) {
       if (option.selectedNode != undefined) {

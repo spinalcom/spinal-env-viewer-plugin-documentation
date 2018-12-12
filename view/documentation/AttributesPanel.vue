@@ -85,8 +85,16 @@ export default {
         );
       else this.URLDisplayList = [];
     },
-    addAttributes() {
-      let option = utilities.addAttributes(this.option, this.label, this.value);
+    async addAttributes() {
+      let option = await utilities.addAttributes(
+        this.option,
+        this.label,
+        this.value
+      );
+      console.log(option);
+      this.$emit("updateMyBIMObject", option);
+      this.label = undefined;
+      this.value = undefined;
       // if (option.selectedNode != undefined) {
       //   this.$toasted.success("URL is register", {
       //     position: "bot-right",

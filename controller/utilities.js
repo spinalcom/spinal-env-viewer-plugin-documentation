@@ -12,6 +12,7 @@ class DocumentationUtilities {
     if (label != undefined && URL != undefined && URL != "" && label != "") {
       if (option.info != undefined) {
         serviceDocumentation.addURL(option.info, label, URL);
+        return option
       } else if (option.dbid != undefined) {
         option.info = await bimObjectService.createBIMObject(
           option.dbid,
@@ -24,7 +25,6 @@ class DocumentationUtilities {
         );
         return option;
       }
-
     } else {
       return undefined
     }
@@ -35,6 +35,7 @@ class DocumentationUtilities {
       "") {
       if (option.info != undefined) {
         serviceDocumentation.addAttribute(option.info, label, value);
+        return option
       } else if (option.dbid != undefined) {
         option.info = await bimObjectService.createBIMObject(
           option.dbid,
@@ -47,7 +48,6 @@ class DocumentationUtilities {
         );
         return option;
       }
-
     } else {
       return undefined
     }
