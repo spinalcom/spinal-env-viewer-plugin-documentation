@@ -26,7 +26,7 @@ with this file. If not, see
   <md-content class="md-scrollbar filesBox">
     <md-button class="addURLButtonPanel"
                @click="addURLDialogueStatus = true">
-      File System Import
+      not available yet
     </md-button>
   </md-content>
 </template>
@@ -47,8 +47,8 @@ export default {
   },
   methods: {
     opened(option, viewer) {
-      console.log("opened option", option);
-      console.log("opened viewer", viewer);
+      // console.log("opened option", option);
+      // console.log("opened viewer", viewer);
       if (option.paramSent) this.openedlabel = option.paramSent;
     },
     removed(option, viewer) {

@@ -154,6 +154,7 @@ export default {
         );
         this.sendAddFile();
       }
+      this.resetBind();
       // this.updateDisplayList();
       this.resetImportedFiles();
       this.activeAddDirectory = false;
@@ -167,12 +168,13 @@ export default {
             this.myBind = undefined;
           }
           if (this.myBind == undefined) {
-            // console.log("reset bind");
             // console.log(this.option.info);
-            if (this.selectedDirectory != undefined)
+            // console.log("reset bind");
+            if (this.selectedDirectory != undefined) {
               this.myBind = this.selectedDirectory.bind(
                 this.updateDisplayList.bind(this)
               );
+            }
           }
         }
       }

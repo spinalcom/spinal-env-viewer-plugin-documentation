@@ -98,7 +98,7 @@ export default {
         );
         this.selectedNode = option.selectedNode;
         this.option = { info: option.selectedNode };
-        console.log(this.option);
+        // console.log(this.option);
       } else {
         this.option = option;
         if (option.info !== undefined) {

@@ -41,7 +41,7 @@ export class DocumentationButton extends SpinalContextApp {
 
   isShown(option) {
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
-    console.log(option)
+    // console.log(option)
     return Promise.resolve(true);
   }
 
