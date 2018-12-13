@@ -48,7 +48,7 @@ class FileSystemExplorer {
     if (selectedNode != undefined) {
       const fileNode = await selectedNode.getChildren("hasFiles");
       if (fileNode.length == 0) {
-        return []
+        return undefined
       } else {
         let directory = await fileNode[0].getElement();
         return (directory)
@@ -60,7 +60,7 @@ class FileSystemExplorer {
     return fileNode.length
   }
   async createDirectory(selectedNode) {
-    // console.log("createDirectory")
+    console.log("createDirectory")
     let nbNode = await this.getNbChildren(selectedNode);
     if (nbNode == 0) {
       let myDirectory = new Directory();
@@ -69,6 +69,8 @@ class FileSystemExplorer {
         'hasFiles',
         SPINAL_RELATION_PTR_LST_TYPE
       );
+      // console.log(myDirectoryNode)
+      // myDirectoryNode.info.type.set("SpinalDirectory");
       return myDirectory;
     } else {
       return this.getDirectory(selectedNode)

@@ -86,8 +86,9 @@ export default {
       return FileExplorer.getIconFile(file);
     },
     loadRoute(index) {
+      // console.log(this.selectedDirectory);
       if (index == this.pathTab.length - 1) {
-        console.log("ici on ne modifie pas le current directory");
+        console.log("current directory");
       } else {
         this.selectedDirectory = this.pathTab[index].directory;
         let length = this.pathTab.length - 1;
@@ -110,6 +111,8 @@ export default {
       }
     },
     updateDisplayList() {
+      // console.log("update display list");
+
       this.displayList = [];
       if (this.selectedDirectory != undefined) {
         for (let i = 0; i < this.selectedDirectory.length; i++) {
@@ -139,7 +142,6 @@ export default {
         this.sendAddFile();
       } else {
         if (this.option.exist == false) {
-          // create a node
           let option = this.option;
           option.info = await bimObjectService.createBIMObject(
             option.dbid,
@@ -152,18 +154,26 @@ export default {
         );
         this.sendAddFile();
       }
-      this.updateDisplayList();
+      // this.updateDisplayList();
       this.resetImportedFiles();
       this.activeAddDirectory = false;
     },
     resetBind() {
-      if (this.option.info != undefined && this.myBind != undefined) {
-        this.option.info.unbind(this.myBind);
-        this.myBind = undefined;
-        if (this.myBind == undefined) {
-          this.myBind = this.option.info.bind(
-            this.updateDisplayList.bind(this)
-          );
+      // console.log(this.option, this.myBind);
+      if (this.option.info != undefined) {
+        if (this.option != undefined) {
+          if (this.myBind != undefined) {
+            this.selectedDirectory.unbind(this.myBind);
+            this.myBind = undefined;
+          }
+          if (this.myBind == undefined) {
+            // console.log("reset bind");
+            // console.log(this.option.info);
+            if (this.selectedDirectory != undefined)
+              this.myBind = this.selectedDirectory.bind(
+                this.updateDisplayList.bind(this)
+              );
+          }
         }
       }
     }
@@ -177,11 +187,9 @@ export default {
         name: "home /",
         directory: this.selectedDirectory
       };
+      this.pathTab = [];
       this.pathTab.push(pathObj);
-      if (this.myBind == undefined) {
-        this.myBind = this.option.info.bind(this.updateDisplayList.bind(this));
-      }
-      this.updateDisplayList();
+      this.resetBind();
     }
   },
   async mounted() {
@@ -195,12 +203,7 @@ export default {
           directory: this.selectedDirectory
         };
         this.pathTab.push(pathObj);
-        if (this.myBind == undefined) {
-          this.myBind = this.option.info.bind(
-            this.updateDisplayList.bind(this)
-          );
-        }
-        this.updateDisplayList();
+        this.resetBind();
       }
     }
   },
