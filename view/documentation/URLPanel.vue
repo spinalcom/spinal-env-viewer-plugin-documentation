@@ -65,7 +65,7 @@
 import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { utilities } from "../../controller/utilities.js";
+import { utilities } from "../../service/utilities.js";
 Vue.use(Toasted);
 
 export default {
@@ -84,7 +84,7 @@ export default {
   methods: {
     async updateURLList() {
       if (this.option.info != undefined) {
-        console.log(await serviceDocumentation.getURL(this.option.info));
+        // console.log(await serviceDocumentation.getURL(this.option.info));
         this.URLDisplayList = await serviceDocumentation.getURL(
           this.option.info
         );
@@ -92,7 +92,7 @@ export default {
     },
     async addLink() {
       let option = await utilities.addLink(this.option, this.label, this.URL);
-      console.log(option);
+      // console.log(option);
       this.$emit("updateMyBIMObject", option);
       this.label = undefined;
       this.URL = undefined;
@@ -114,7 +114,7 @@ export default {
   mounted() {
     if (this.option.info != undefined) {
       if (this.myBind == undefined) {
-        console.log(this.option);
+        // console.log(this.option);
         this.myBind = this.option.info.bind(this.updateURLList.bind(this));
       }
     }

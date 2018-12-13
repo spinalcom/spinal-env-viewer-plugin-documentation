@@ -32,7 +32,7 @@
 
 
 <script>
-import { FileExplorer } from "../../controller/fileSystemExplorer.js";
+import { FileExplorer } from "../../service/fileSystemExplorer.js";
 // var viewer;
 export default {
   name: "addGroup",
@@ -58,7 +58,7 @@ export default {
       this.selected = [];
       let type = driveFiles.type;
       if (type == "Directory") {
-        let route = FileExplorer.createRoute(this.currentPath, driveFiles);
+        let route = FileExplorer.createDriveRoute(this.currentPath, driveFiles);
         this.pathTab.push(route);
         this.currentPath = route.path;
         this.getPath();

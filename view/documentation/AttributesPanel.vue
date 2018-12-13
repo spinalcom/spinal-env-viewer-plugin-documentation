@@ -61,7 +61,7 @@
 import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { utilities } from "../../controller/utilities.js";
+import { utilities } from "../../service/utilities.js";
 Vue.use(Toasted);
 
 export default {
@@ -91,7 +91,7 @@ export default {
         this.label,
         this.value
       );
-      console.log(option);
+      // console.log(option);
       this.$emit("updateMyBIMObject", option);
       this.label = undefined;
       this.value = undefined;

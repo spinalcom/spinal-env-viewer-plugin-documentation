@@ -48,6 +48,7 @@ with this file. If not, see
 
     <filepanel v-if="activeTab == 0"
                :option="option"
+               @updateMyBIMObject="updateSelectedBIMObject"
                :selectedNode="selectedNode"
                :dbid="dbid"></filepanel>
     <urlpanel v-if="activeTab == 1"
