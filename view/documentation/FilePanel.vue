@@ -82,9 +82,7 @@ export default {
       this.importedDriveFiles = undefined;
       this.multipleFile = undefined;
     },
-
     getIconFile(file) {
-      // console.log(file);
       return FileExplorer.getIconFile(file);
     },
     loadRoute(index) {
@@ -99,19 +97,20 @@ export default {
     },
 
     enterInDirectory(file) {
-      file._ptr.load(directory => {
-        let pathObj = {
-          name: file.name.get() + " /",
-          directory: directory
-        };
-        this.pathTab.push(pathObj);
-        this.selectedDirectory = directory;
-        this.resetBind();
-      });
+      if (file._info.model_type.get() == "Directory") {
+        file._ptr.load(directory => {
+          let pathObj = {
+            name: file.name.get() + " /",
+            directory: directory
+          };
+          this.pathTab.push(pathObj);
+          this.selectedDirectory = directory;
+          this.resetBind();
+        });
+      }
     },
     updateDisplayList() {
       this.displayList = [];
-      console.log(this.selectedDirectory);
       if (this.selectedDirectory != undefined) {
         for (let i = 0; i < this.selectedDirectory.length; i++) {
           const file = this.selectedDirectory[i];
@@ -162,7 +161,6 @@ export default {
         this.option.info.unbind(this.myBind);
         this.myBind = undefined;
         if (this.myBind == undefined) {
-          console.log("newbind");
           this.myBind = this.option.info.bind(
             this.updateDisplayList.bind(this)
           );
