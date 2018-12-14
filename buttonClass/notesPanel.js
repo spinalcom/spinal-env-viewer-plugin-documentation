@@ -32,7 +32,7 @@ SpinalForgeExtention.registerExtention(name, noteExtension);
 
 export class NotesButton extends SpinalContextApp {
   constructor() {
-    super('Spinal CDE', 'Spinal CDE description', {
+    super('Spinal Notes', 'Spinal CDE description', {
       icon: 'border_color',
       icon_type: 'in',
       backgroundColor: '#356BAB',
