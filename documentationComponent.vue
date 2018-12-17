@@ -92,20 +92,14 @@ export default {
       this.option = option;
     },
     opened(option) {
+      this.option = option;
       if (option.selectedNode != undefined) {
-        if (option.selectedNode instanceof SpinalNode) {
-          this.option = option;
-          this.option = { info: option.selectedNode };
-          this.selectedNode = option.selectedNode;
-        } else {
-          option.selectedNode = SpinalGraphService.getRealNode(
-            option.selectedNode.id.get()
-          );
-          this.selectedNode = option.selectedNode;
-          this.option = { info: option.selectedNode };
-        }
+        option.info = SpinalGraphService.getRealNode(
+          option.selectedNode.id.get()
+        );
+        this.selectedNode = option.info;
+        option.exist = true;
       } else {
-        this.option = option;
         if (option.info !== undefined) {
           this.selectedNode = option.info;
           this.dbid = option.dbid;
