@@ -68,7 +68,7 @@ with this file. If not, see
 import urlpanel from "./view/documentation/URLPanel.vue";
 import filepanel from "./view/documentation/FilePanel.vue";
 import attributespanel from "./view/documentation/AttributesPanel.vue";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { SpinalGraphService, SpinalNode } from "spinal-env-viewer-graph-service";
 export default {
   name: "my_compo",
   data() {
