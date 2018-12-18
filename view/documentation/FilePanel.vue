@@ -90,6 +90,7 @@ export default {
       if (index == this.pathTab.length - 1) {
         console.log("current directory");
       } else {
+        this.deleteBind();
         this.selectedDirectory = this.pathTab[index].directory;
         let length = this.pathTab.length - 1;
         this.pathTab.splice(length - index, length);
@@ -111,8 +112,6 @@ export default {
       }
     },
     updateDisplayList() {
-      // console.log("update display list");
-
       this.displayList = [];
       if (this.selectedDirectory != undefined) {
         for (let i = 0; i < this.selectedDirectory.length; i++) {
@@ -128,7 +127,8 @@ export default {
       } else if (this.importedDriveFiles != undefined) {
         FileExplorer.addFileDrive(
           this.selectedDirectory,
-          this.importedDriveFiles
+          this.importedDriveFiles,
+          this.pathTab
         );
       }
     },
@@ -137,7 +137,6 @@ export default {
       // check if node has a directory
       // if node doesn't exist, i create it
       // if node haven't a directory, add it
-      // console.log(this.option);
       if (this.selectedDirectory != undefined) {
         this.sendAddFile();
       } else {
@@ -147,7 +146,10 @@ export default {
             option.dbid,
             "bimObject_" + option.dbid
           );
-          this.$emit("updateMyBIMObject", option);
+          if (option.exist == false) {
+            option.exist = true;
+            this.$emit("updateMyBIMObject", option);
+          }
         }
         this.selectedDirectory = await FileExplorer.createDirectory(
           this.option.info
@@ -155,21 +157,20 @@ export default {
         this.sendAddFile();
       }
       this.resetBind();
-      // this.updateDisplayList();
       this.resetImportedFiles();
       this.activeAddDirectory = false;
     },
+    deleteBind() {
+      if (this.myBind != undefined) {
+        this.selectedDirectory.unbind(this.myBind);
+        this.myBind = undefined;
+      }
+    },
     resetBind() {
-      // console.log(this.option, this.myBind);
       if (this.option.info != undefined) {
         if (this.option != undefined) {
-          if (this.myBind != undefined) {
-            this.selectedDirectory.unbind(this.myBind);
-            this.myBind = undefined;
-          }
+          this.deleteBind();
           if (this.myBind == undefined) {
-            // console.log(this.option.info);
-            // console.log("reset bind");
             if (this.selectedDirectory != undefined) {
               this.myBind = this.selectedDirectory.bind(
                 this.updateDisplayList.bind(this)

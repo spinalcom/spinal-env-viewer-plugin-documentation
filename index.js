@@ -30,11 +30,11 @@ spinalContextMenuService.registerApp(
   new DocumentationButton()
 );
 
-spinalContextMenuService.registerApp(
-  circularMenuHookName,
-  new NotesButton()
-);
-spinalContextMenuService.registerApp(
-  SideBarHookName,
-  new NotesButton()
-);
+//spinalContextMenuService.registerApp(
+//  circularMenuHookName,
+//  new NotesButton()
+//);
+//spinalContextMenuService.registerApp(
+//  SideBarHookName,
+//  new NotesButton()
+//);

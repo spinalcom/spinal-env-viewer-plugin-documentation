@@ -4,11 +4,11 @@ import {
 import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
 
 class DocumentationUtilities {
-  constructor() {
+  constructor() {}
 
-  }
-
-  async addLink(option, label = undefined, URL = undefined) {
+  async addLink(option, BIMObjectName, label = undefined, URL = undefined) {
+    // console.log("add LINK")
+    // console.log(option, label, URL)
     if (label != undefined && URL != undefined && URL != "" && label != "") {
       if (option.info != undefined) {
         serviceDocumentation.addURL(option.info, label, URL);
@@ -16,8 +16,9 @@ class DocumentationUtilities {
       } else if (option.dbid != undefined) {
         option.info = await bimObjectService.createBIMObject(
           option.dbid,
-          'bimObject_' + option.dbid
+          BIMObjectName
         );
+        // console.log(option.info)
         serviceDocumentation.addURL(
           option.info,
           label,
@@ -26,11 +27,13 @@ class DocumentationUtilities {
         return option;
       }
     } else {
-      return undefined
+      console.log("wazzaa le bug")
+      return option
     }
   }
 
-  async addAttributes(option, label = undefined, value = undefined) {
+  async addAttributes(option, BIMObjectName, label = undefined, value =
+    undefined) {
     if (label != undefined && value != undefined && value != "" && label !=
       "") {
       if (option.info != undefined) {
@@ -39,7 +42,7 @@ class DocumentationUtilities {
       } else if (option.dbid != undefined) {
         option.info = await bimObjectService.createBIMObject(
           option.dbid,
-          'bimObject_' + option.dbid
+          BIMObjectName
         );
         serviceDocumentation.addAttribute(
           option.info,
@@ -49,7 +52,7 @@ class DocumentationUtilities {
         return option;
       }
     } else {
-      return undefined
+      return option
     }
   }
 

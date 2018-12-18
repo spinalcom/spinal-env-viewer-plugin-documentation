@@ -87,20 +87,22 @@ export default {
       else return { background: "unset" };
     },
     updateSelectedBIMObject(option) {
-      console.log("update option");
-      this.selectedNode = option.info;
-      this.option = option;
+      // console.log("update option");
+      // this.option = option;
+      this.option = {};
+      Object.assign(this.option, option);
+      this.selectedNode = this.option.info;
     },
     opened(option) {
+      this.option = option;
+      // console.log(this.option);
       if (option.selectedNode != undefined) {
-        option.selectedNode = SpinalGraphService.getRealNode(
+        option.info = SpinalGraphService.getRealNode(
           option.selectedNode.id.get()
         );
-        this.selectedNode = option.selectedNode;
-        this.option = { info: option.selectedNode };
-        // console.log(this.option);
+        this.selectedNode = option.info;
+        option.exist = true;
       } else {
-        this.option = option;
         if (option.info !== undefined) {
           this.selectedNode = option.info;
           this.dbid = option.dbid;
@@ -111,13 +113,13 @@ export default {
       }
     },
     removed(option, viewer) {
-      console.log("removed option", option);
-      console.log("removed viewer", viewer);
+      // console.log("removed option", option);
+      // console.log("removed viewer", viewer);
     },
     closed(option, viewer) {
-      console.log("closed option", option);
-      console.log("closed");
-      console.log("closed viewer", viewer);
+      // console.log("closed option", option);
+      // console.log("closed");
+      // console.log("closed viewer", viewer);
     }
   }
 };

@@ -67,7 +67,7 @@ import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { utilities } from "../../service/utilities.js";
 Vue.use(Toasted);
-
+var viewer;
 export default {
   name: "linkPanel",
   data() {
@@ -90,10 +90,28 @@ export default {
         );
       } else this.URLDisplayList = [];
     },
-    async addLink() {
-      let option = await utilities.addLink(this.option, this.label, this.URL);
+    addLink() {
+      let _this = this;
+      let label = this.label;
+      let URL = this.URL;
+      viewer.model.getProperties(this.option.dbid, function(res) {
+        // console.log(res);
+        // console.log(label, URL);
+        let option = utilities.addLink(_this.option, res.name, label, URL);
+        // console.log(option);
+        option.then(option => {
+          // console.log(option);
+          console.log(_this.option);
+          // if (_this.option.info == undefined)
+          if (_this.option.exist == false) {
+            _this.option.exist = true;
+            _this.$emit("updateMyBIMObject", option);
+          }
+        });
+      });
+      // console.log(BIMObjectName);
+
       // console.log(option);
-      this.$emit("updateMyBIMObject", option);
       this.label = undefined;
       this.URL = undefined;
       // if (selectedNode != undefined) {
@@ -107,21 +125,32 @@ export default {
       //     duration: 2000
       //   });
       // }
-      this.updateURLList();
+      // this.resetBind();
+      // this.updateURLList();
       this.addURLDialogueStatus = false;
-    }
-  },
-  mounted() {
-    if (this.option.info != undefined) {
-      if (this.myBind == undefined) {
-        // console.log(this.option);
-        this.myBind = this.option.info.bind(this.updateURLList.bind(this));
+    },
+    resetBind() {
+      if (this.option.info != undefined) {
+        if (this.option != undefined) {
+          if (this.myBind != undefined) {
+            this.option.info.unbind(this.myBind);
+            this.myBind = undefined;
+          }
+          if (this.myBind == undefined) {
+            this.myBind = this.option.info.bind(this.updateURLList.bind(this));
+          }
+        }
       }
     }
   },
+  mounted() {
+    viewer = window.spinal.ForgeViewer.viewer;
+    this.resetBind();
+  },
   watch: {
     option: function() {
-      this.updateURLList();
+      console.log("update option in url panel");
+      this.resetBind();
     }
   },
   beforeDestroy() {

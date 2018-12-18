@@ -60,7 +60,7 @@ class FileSystemExplorer {
     return fileNode.length
   }
   async createDirectory(selectedNode) {
-    console.log("createDirectory")
+    // console.log("createDirectory")
     let nbNode = await this.getNbChildren(selectedNode);
     if (nbNode == 0) {
       let myDirectory = new Directory();
@@ -84,10 +84,11 @@ class FileSystemExplorer {
       directory.push(myFile);
     }
   }
-  addFileDrive(directory, driveFileList) {
+  addFileDrive(directory, driveFileList, pathTab) {
     for (let i = 0; i < driveFileList.length; i++) {
       const driveFile = driveFileList[i];
-      let test = this.checkInfinitInclusion(FileSystem._objects[driveFile.serverid]);
+      let test = this.checkInfinitInclusion(FileSystem._objects[driveFile.serverid],
+        pathTab);
       test.then((res) => {
         if (res == false) {
           return false
@@ -111,11 +112,18 @@ class FileSystemExplorer {
       file._ptr.load(resolve);
     })
   }
-  checkInfinitInclusion(file) {
+  checkInfinitInclusion(file, pathTab) {
+    // console.log(file, pathTab)
     let DigitalTwinPath = this.spinalSystem.getPath();
     let nameFile = this.pathParse(DigitalTwinPath);
     let _this = this;
     let tab = [];
+    for (let j = 0; j < pathTab.length; j++) {
+      const name = pathTab[j].name.substring(0, pathTab[j].name.length - 2);
+      // console.log(name, file.name.get())
+      if (name == file.name.get())
+        return Promise.resolve(false)
+    }
     if (file.name.get() == nameFile) {
       return Promise.resolve(false)
     } else if (file._info.model_type.get() === "Directory") {
@@ -123,7 +131,7 @@ class FileSystemExplorer {
         if (resdir.length > 0) {
           for (let i = 0; i < resdir.length; i++) {
             const file = resdir[i];
-            tab.push(_this.checkInfinitInclusion(file))
+            tab.push(_this.checkInfinitInclusion(file, pathTab))
           }
           return Promise.all(tab).then((array) => {
             return !array.includes(false);
