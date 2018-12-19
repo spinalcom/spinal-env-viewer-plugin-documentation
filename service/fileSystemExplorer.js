@@ -91,10 +91,10 @@ class FileSystemExplorer {
         pathTab);
       test.then((res) => {
         if (res == false) {
-          return false
+          //return false
         } else {
           directory.push(FileSystem._objects[driveFile.serverid])
-          return true
+          //return true
         }
       })
     }
