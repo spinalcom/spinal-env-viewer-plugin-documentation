@@ -44,7 +44,6 @@ class FileSystemExplorer {
 
   }
   async getDirectory(selectedNode) {
-    // console.log("getDirectory")
     if (selectedNode != undefined) {
       const fileNode = await selectedNode.getChildren("hasFiles");
       if (fileNode.length == 0) {
@@ -60,7 +59,6 @@ class FileSystemExplorer {
     return fileNode.length
   }
   async createDirectory(selectedNode) {
-    // console.log("createDirectory")
     let nbNode = await this.getNbChildren(selectedNode);
     if (nbNode == 0) {
       let myDirectory = new Directory();
@@ -69,8 +67,6 @@ class FileSystemExplorer {
         'hasFiles',
         SPINAL_RELATION_PTR_LST_TYPE
       );
-      // console.log(myDirectoryNode)
-      // myDirectoryNode.info.type.set("SpinalDirectory");
       return myDirectory;
     } else {
       return this.getDirectory(selectedNode)
@@ -91,10 +87,10 @@ class FileSystemExplorer {
         pathTab);
       test.then((res) => {
         if (res == false) {
-          return false
+          // return false
         } else {
           directory.push(FileSystem._objects[driveFile.serverid])
-          return true
+          // return true
         }
       })
     }
@@ -113,14 +109,12 @@ class FileSystemExplorer {
     })
   }
   checkInfinitInclusion(file, pathTab) {
-    // console.log(file, pathTab)
     let DigitalTwinPath = this.spinalSystem.getPath();
     let nameFile = this.pathParse(DigitalTwinPath);
     let _this = this;
     let tab = [];
     for (let j = 0; j < pathTab.length; j++) {
       const name = pathTab[j].name.substring(0, pathTab[j].name.length - 2);
-      // console.log(name, file.name.get())
       if (name == file.name.get())
         return Promise.resolve(false)
     }

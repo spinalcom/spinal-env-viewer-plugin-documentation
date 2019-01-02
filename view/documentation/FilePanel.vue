@@ -17,6 +17,13 @@
           <md-icon>{{getIconFile(files)}}</md-icon>
         </md-table-cell>
         <md-table-cell md-numeric>{{files.name.get()}}</md-table-cell>
+        <md-table-cell>
+          <menuFile :file="files"
+                    :index="index"
+                    @downloadFile="downloadFile"
+                    @removeFile="removeFile">
+          </menuFile>
+        </md-table-cell>
       </md-table-row>
     </md-table>
 
@@ -51,7 +58,8 @@
 <script>
 import { FileExplorer } from "../../service/fileSystemExplorer.js";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
-import drive from "./drive.vue";
+import drive from "./component/drive.vue";
+import menuFile from "./component/menuFile.vue";
 export default {
   name: "linkPanel",
   data() {
@@ -66,9 +74,28 @@ export default {
       pathTab: []
     };
   },
-  components: { drive },
+  components: { drive, menuFile },
   props: ["option"],
   methods: {
+    downloadFile(file, index) {
+      console.log(file, index);
+
+      if (file._info.model_type.get() != "Directory") {
+        file._ptr.load(path => {
+          console.log(path);
+          var element = document.createElement("a");
+          element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+          element.setAttribute("download", file.name);
+          element.click();
+        });
+      } else {
+        // check recursive directory & create a ZIP
+      }
+    },
+    removeFile(file, index) {
+      console.log(file, index);
+      this.selectedDirectory.splice(index, 1);
+    },
     getFileImported(files) {
       // ici il y a un bug sur les fichier importé, quand j'import un fichier toto.txt, que je change vers le drive tabs,
       // je retourne sur le upload tabs, je ne peux pas ajouter le meme fichier, levent md-change ne triger pas

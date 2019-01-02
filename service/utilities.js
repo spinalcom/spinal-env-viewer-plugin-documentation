@@ -8,7 +8,6 @@ class DocumentationUtilities {
 
   async addLink(option, BIMObjectName, label = undefined, URL = undefined) {
     // console.log("add LINK")
-    // console.log(option, label, URL)
     if (label != undefined && URL != undefined && URL != "" && label != "") {
       if (option.info != undefined) {
         serviceDocumentation.addURL(option.info, label, URL);
@@ -18,7 +17,6 @@ class DocumentationUtilities {
           option.dbid,
           BIMObjectName
         );
-        // console.log(option.info)
         serviceDocumentation.addURL(
           option.info,
           label,
@@ -27,7 +25,6 @@ class DocumentationUtilities {
         return option;
       }
     } else {
-      console.log("wazzaa le bug")
       return option
     }
   }

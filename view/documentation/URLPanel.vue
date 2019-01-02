@@ -7,7 +7,28 @@
       </md-button>
 
       <md-content>
-        <md-table>
+
+        <md-list>
+          <md-list-item class="myRowStyle">
+            <span class="span-opacity"> Label </span>
+            <span class="span-opacity"> URL </span>
+          </md-list-item>
+          <md-list-item class="myRowStyle"
+                        v-for="(url, index) in URLDisplayList"
+                        :key="index">
+            <span class="span-opacity">{{url.element.label.get()}}</span>
+            <a class="back-line"
+               v-tooltip="url.element.URL.get()"
+               :href="url.element.URL.get()"
+               target="_blank">
+              {{url.element.URL.get()}}</a>
+            <menuURL @editURLNode="editURLNode"
+                     @removeURLNode="removeURLNode"
+                     :url="url"></menuURL>
+          </md-list-item>
+        </md-list>
+
+        <!-- <md-table>
           <md-table-row class="myRowStyle ">
             <md-table-head class="size-md-cell myCellStyle">
               <span class="span-opacity"> Label </span>
@@ -28,10 +49,12 @@
                  :href="url.URL.get()"
                  target="_blank">
                 {{url.URL.get()}}</a>
-
+            </md-table-cell>
+            <md-table-cell>
+              <menuURL :url="url"></menuURL>
             </md-table-cell>
           </md-table-row>
-        </md-table>
+        </md-table>-->
       </md-content>
 
     </div>
@@ -66,6 +89,7 @@ import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { utilities } from "../../service/utilities.js";
+import menuURL from "./component/menuURL.vue";
 Vue.use(Toasted);
 var viewer;
 export default {
@@ -79,12 +103,22 @@ export default {
       myBind: undefined
     };
   },
-  components: {},
+  components: { menuURL },
   props: ["option"],
   methods: {
+    editURLNode(urlNode, urlChange) {
+      console.log(urlNode);
+      console.log(urlChange);
+      urlNode.element.label.set(urlChange.label);
+      urlNode.element.URL.set(urlChange.URL);
+    },
+    removeURLNode(urlNode) {
+      console.log(urlNode);
+      urlNode.removeFromGraph();
+    },
     async updateURLList() {
       if (this.option.info != undefined) {
-        // console.log(await serviceDocumentation.getURL(this.option.info));
+        console.log(await serviceDocumentation.getURL(this.option.info));
         this.URLDisplayList = await serviceDocumentation.getURL(
           this.option.info
         );
@@ -95,23 +129,15 @@ export default {
       let label = this.label;
       let URL = this.URL;
       viewer.model.getProperties(this.option.dbid, function(res) {
-        // console.log(res);
-        // console.log(label, URL);
         let option = utilities.addLink(_this.option, res.name, label, URL);
-        // console.log(option);
         option.then(option => {
-          // console.log(option);
           console.log(_this.option);
-          // if (_this.option.info == undefined)
           if (_this.option.exist == false) {
             _this.option.exist = true;
             _this.$emit("updateMyBIMObject", option);
           }
         });
       });
-      // console.log(BIMObjectName);
-
-      // console.log(option);
       this.label = undefined;
       this.URL = undefined;
       // if (selectedNode != undefined) {

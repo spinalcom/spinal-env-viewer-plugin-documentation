@@ -68,10 +68,7 @@ with this file. If not, see
 import urlpanel from "./view/documentation/URLPanel.vue";
 import filepanel from "./view/documentation/FilePanel.vue";
 import attributespanel from "./view/documentation/AttributesPanel.vue";
-import {
-  SpinalGraphService,
-  SpinalNode
-} from "spinal-env-viewer-graph-service";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 export default {
   name: "my_compo",
   data() {
@@ -98,6 +95,7 @@ export default {
     },
     opened(option) {
       this.option = option;
+      // console.log(this.option);
       if (option.selectedNode != undefined) {
         option.info = SpinalGraphService.getRealNode(
           option.selectedNode.id.get()
@@ -154,6 +152,9 @@ export default {
   padding: unset;
 }
 .containerCDE .md-content.md-theme-default {
+  background-color: unset;
+}
+.containerCDE ul.md-list.md-theme-default {
   background-color: unset;
 }
 

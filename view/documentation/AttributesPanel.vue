@@ -20,11 +20,16 @@
                         v-for="(url, index) in URLDisplayList"
                         :key="index">
             <md-table-cell class="size-md-cell">
-              <span class="span-opacity">{{url.label.get()}}</span>
+              <span class="span-opacity">{{url.element.label.get()}}</span>
             </md-table-cell>
             <md-table-cell class="size-md-cell">
               <span class="back-line span-opacity">
-                {{url.value.get()}}</span>
+                {{url.element.value.get()}}</span>
+            </md-table-cell>
+            <md-table-cell>
+              <menu-attributes @editURLNode="editURLNode"
+                               @removeURLNode="removeURLNode"
+                               :url="url"></menu-attributes>
             </md-table-cell>
           </md-table-row>
         </md-table>
@@ -61,6 +66,7 @@
 import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import menuAttributes from "./component/menuAttributes.vue";
 import { utilities } from "../../service/utilities.js";
 Vue.use(Toasted);
 let viewer;
@@ -76,9 +82,19 @@ export default {
       myBind: undefined
     };
   },
-  components: {},
+  components: { menuAttributes },
   props: ["option"],
   methods: {
+    editURLNode(urlNode, urlChange) {
+      console.log(urlNode);
+      console.log(urlChange);
+      urlNode.element.label.set(urlChange.label);
+      urlNode.element.value.set(urlChange.value);
+    },
+    removeURLNode(urlNode) {
+      console.log(urlNode);
+      urlNode.removeFromGraph();
+    },
     async updateURLList() {
       if (this.option.info != undefined)
         this.URLDisplayList = await serviceDocumentation.getAttributes(
