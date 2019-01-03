@@ -62,11 +62,13 @@ class FileSystemExplorer {
     let nbNode = await this.getNbChildren(selectedNode);
     if (nbNode == 0) {
       let myDirectory = new Directory();
-      selectedNode.addChild(
+      let node = await selectedNode.addChild(
         myDirectory,
         'hasFiles',
         SPINAL_RELATION_PTR_LST_TYPE
       );
+      node.info.name.set("[Files]")
+      node.info.type.set("SpinalFiles")
       return myDirectory;
     } else {
       return this.getDirectory(selectedNode)
