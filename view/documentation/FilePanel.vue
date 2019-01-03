@@ -120,7 +120,8 @@ export default {
         this.deleteBind();
         this.selectedDirectory = this.pathTab[index].directory;
         let length = this.pathTab.length - 1;
-        this.pathTab.splice(length - index, length);
+        console.log(index, length - index);
+        this.pathTab.splice(index + 1, length - index);
         this.resetBind();
       }
     },
