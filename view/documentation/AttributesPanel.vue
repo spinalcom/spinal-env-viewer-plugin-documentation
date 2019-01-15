@@ -91,9 +91,9 @@ export default {
       urlNode.element.label.set(urlChange.label);
       urlNode.element.value.set(urlChange.value);
     },
-    removeURLNode(urlNode) {
-      console.log(urlNode);
-      urlNode.removeFromGraph();
+    removeURLNode(attributeNode) {
+      console.log(attributeNode);
+      serviceDocumentation.removeNode(attributeNode);
     },
     async updateURLList() {
       if (this.option.info != undefined)
@@ -155,8 +155,4 @@ export default {
 </script>
 
 <style>
-.size-md-cell {
-  padding-right: unset;
-  padding-left: unset;
-}
 </style>

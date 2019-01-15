@@ -113,8 +113,7 @@ export default {
       urlNode.element.URL.set(urlChange.URL);
     },
     removeURLNode(urlNode) {
-      console.log(urlNode);
-      urlNode.removeFromGraph();
+      serviceDocumentation.removeNode(urlNode);
     },
     async updateURLList() {
       if (this.option.info != undefined) {
@@ -187,54 +186,4 @@ export default {
 </script>
 
 <style>
-.container-link * {
-  box-sizing: border-box;
-}
-
-.container-link .md-table-cell-container {
-  white-space: nowrap;
-  overflow: hidden;
-  white-space: initial;
-}
-.container-link .md-ripple.md-list-item-content {
-  box-sizing: border-box;
-  min-height: 20px;
-  height: 25px;
-  font-size: 14px;
-  border-bottom: 1px solid #212121;
-}
-
-.container-link td.md-table-cell {
-  height: unset;
-}
-.size-md-cell {
-  padding-right: unset;
-  padding-left: unset;
-  max-width: 280px;
-}
-.myRowStyle {
-  padding-top: 5px;
-  padding-right: 15px;
-  padding-left: 20px;
-}
-.back-line {
-  width: calc(100% - 25px);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
-
-.span-opacity {
-  color: white;
-  width: 100%;
-}
-.addURLButtonPanel {
-  width: calc(100% - 16px);
-  box-sizing: border-box;
-}
-.urlBox {
-  box-sizing: border-box;
-}
 </style>

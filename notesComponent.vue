@@ -23,33 +23,154 @@ with this file. If not, see
 -->
 
 <template>
-  <md-content class="md-scrollbar filesBox">
-    <md-button class="addURLButtonPanel"
-               @click="addURLDialogueStatus = true">
-      not available yet
-    </md-button>
+  <md-content class="md-scrollbar notesBox">
+    <md-dialog :md-active.sync="editNodePopup">
+      <div class="boxTextarea">
+        <md-field class="textareaSize">
+          <md-textarea v-model="messageUserEdit"></md-textarea>
+          <md-button class="md-icon-button sendButtonInTextarea"
+                     @click="editNote()">
+            <md-icon style="color: white">send</md-icon>
+          </md-button>
+        </md-field>
+
+      </div>
+      <md-dialog-actions>
+        <md-button class="md-primary"
+                   @click="editNodePopup = false">Close</md-button>
+
+      </md-dialog-actions>
+    </md-dialog>
+    <div class="chat">
+      <div v-for="(note, index) in notesDisplayList"
+           :key="index"
+           class="myMessage">
+        <div v-if="note.username == getUsername()">
+          <div class="testLine"><span>{{note.date}}</span></div>
+          <md-card>
+            <md-card-content>
+              <div>
+                <span style="font-size: 15px; color: #819FF7">{{note.username}}</span>
+              </div>
+              <div>
+                <pre class="preMessage">{{note.message}}</pre>
+              </div>
+            </md-card-content>
+            <md-card-actions>
+              <md-button @click="editNodePopup = true ; selectedNote = note; messageUserEdit = note.message"
+                         class="md-icon-button">
+                <md-icon>edit</md-icon>
+              </md-button>
+              <md-button @click="deleteNote(note.selectedNode)"
+                         class="md-icon-button">
+                <md-icon>delete_forever</md-icon>
+              </md-button>
+            </md-card-actions>
+          </md-card>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="boxTextarea">
+      <md-field class="boxTextarea">
+        <md-textarea class="boxTextarea"
+                     v-model="messageUser"></md-textarea>
+        <md-button class="md-icon-button sendButtonInTextarea"
+                   @click="addNote">
+          <md-icon style="color: white">send</md-icon>
+        </md-button>
+      </md-field>
+
+    </div>
   </md-content>
 </template>
 
 <script>
-const {
-  spinalPanelManagerService
-} = require("spinal-env-viewer-panel-manager-service");
-
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import moment from "moment";
+// import { constants } from "http2";
 export default {
   name: "my_compo",
   data() {
     return {
-      outputNbr: 0,
-      outputDialog: "",
-      openedlabel: ""
+      nodeInfo: undefined,
+      messageUser: "",
+      messageUserEdit: "",
+      notesDisplayList: [],
+      editNodePopup: false,
+      selectedNote: undefined
     };
   },
+  components: {},
   methods: {
+    async updateNotesList() {
+      this.notesDisplayList = [];
+      let notes = await serviceDocumentation.getNotes(
+        this.nodeInfo.selectedNode
+      );
+      // console.log(notes);
+      let i = 0;
+      for (let note of notes) {
+        let obj = {
+          id: i,
+          username: note.element.username.get(),
+          message: note.element.message.get(),
+          date: this.toDate(note.element.date.get()),
+          selectedNode: note.selectedNode,
+          element: note.element
+        };
+        // console.log(obj);
+        this.notesDisplayList.push(obj);
+        i++;
+      }
+    },
+    toDate: function(date) {
+      let newDateFormat = moment(date).format("MMMM Do YYYY, h:mm:ss a");
+      return newDateFormat;
+      // convert date to 18min ago , 1h ago , ..., not necessery now we pref full date
+
+      // let newDateFormat = moment(date);
+      // let newDateFormat2 = moment();
+      // newDateFormat2.subtract(1, "days");
+      // if (newDateFormat.isBefore(newDateFormat2)) {
+      //   return newDateFormat.format("L , LT");
+      // } else return newDateFormat.fromNow();
+      // "DD MM YY, HH:mm:ss a"
+      // return convert.toLocaleDateString("fr-fr", { timeZone: "UTC" });
+    },
+    addNote() {
+      // check if node exist, if node doesn't exist it create it
+      serviceDocumentation.addNote(
+        this.nodeInfo.selectedNode,
+        window.spinal.spinalSystem.getUser().username,
+        this.messageUser
+      );
+      this.messageUser = "";
+    },
+    editNote() {
+      // let notes = serviceDocumentation.editNote(selectedNode);
+      // console.log(this.selectedNote);
+      // console.log(this.messageUserEdit);
+      serviceDocumentation.editNote(
+        this.selectedNote.element,
+        this.messageUserEdit
+      );
+      this.selectedNote = undefined;
+      this.editNodePopup = false;
+      this.resetBind();
+    },
+    deleteNote(noteNode) {
+      // console.log(notes);
+      serviceDocumentation.removeNode(noteNode);
+    },
+    getUsername() {
+      return window.spinal.spinalSystem.getUser().username;
+    },
     opened(option, viewer) {
-      // console.log("opened option", option);
-      // console.log("opened viewer", viewer);
-      if (option.paramSent) this.openedlabel = option.paramSent;
+      this.nodeInfo = option;
+      this.resetBind();
+      // console.log(this.nodeInfo);
     },
     removed(option, viewer) {
       console.log("removed option", option);
@@ -59,20 +180,109 @@ export default {
       console.log("closed option", option);
       console.log("closed viewer", viewer);
     },
-    openDialog() {
-      spinalPanelManagerService.openPanel("myCustomDialogName", {
-        paramSent: this.outputDialog
-      });
+    resetBind() {
+      if (this.nodeInfo != undefined) {
+        if (this.nodeInfo.selectedNode != undefined) {
+          if (this.myBind != undefined) {
+            this.nodeInfo.selectedNode.unbind(this.myBind);
+            this.myBind = undefined;
+          }
+          if (this.myBind == undefined) {
+            this.myBind = this.nodeInfo.selectedNode.bind(
+              this.updateNotesList.bind(this)
+            );
+          }
+        }
+      }
     }
   }
 };
 </script>
 
-<style>
+<style >
 .my-test-panel-container * {
   box-sizing: border-box;
 }
 .my-test-panel-container-nbr-output {
   text-align: center;
 }
+
+.boxTextarea {
+  width: 98%;
+  margin: auto;
+  margin-top: 7px;
+  max-height: 120px;
+}
+.textareaSize {
+  width: 100%;
+}
+.sendButtonInTextarea {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+.testLine {
+  margin-top: 2px;
+  text-align: center;
+  border-bottom: 1px solid orange;
+}
+.preMessage {
+  margin: unset;
+  overflow-wrap: break-word;
+  overflow: "hidden";
+  white-space: pre-line;
+}
+
+.chat {
+  width: 95%;
+  height: calc(100% - 125px);
+  border: solid 1px #eee;
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column;
+  margin: auto;
+}
+.noteTextAreaSize {
+  margin: unset;
+  margin-top: 7px;
+}
+
+/* .messages {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  border-radius: 20px;
+  padding: 8px 15px;
+  max-width: 90%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.yours {
+  margin-left: 5px;
+  align-items: flex-start;
+}
+
+.yours .message {
+  background-color: #eee;
+  position: relative;
+}
+
+.mine {
+  margin-right: 5px;
+  align-items: flex-end;
+}
+
+.mine .message {
+  color: white;
+  margin-left: 25%;
+  background: linear-gradient(to bottom, #00d0ea 0%, #0085d1 100%);
+  background-attachment: fixed;
+  position: relative;
+}
+*/
 </style>

@@ -59,10 +59,4 @@ export default {
 </script>
 
 <style>
-.my-test-panel-container * {
-  box-sizing: border-box;
-}
-.my-test-panel-container-nbr-output {
-  text-align: center;
-}
 </style>

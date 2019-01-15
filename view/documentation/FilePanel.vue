@@ -246,12 +246,4 @@ export default {
 </script>
 
 <style>
-.filesPaddingPath {
-  padding-left: 17px;
-}
-.filesBox {
-  background: transparent !important;
-  box-sizing: border-box;
-  height: calc(100% - 50px);
-}
 </style>

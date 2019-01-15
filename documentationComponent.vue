@@ -169,4 +169,118 @@ export default {
   margin-top: unset;
   margin-bottom: unset;
 }
+
+/* .commentcutPart {
+  margin: unset
+} */
+
+.filesPaddingPath {
+  padding-left: 17px;
+}
+.filesBox {
+  background: transparent !important;
+  box-sizing: border-box;
+  height: calc(100% - 50px);
+}
+
+.notesBox {
+  background: transparent !important;
+  box-sizing: border-box;
+  height: 100%;
+}
+/* .commentcutPart {
+  margin: unset
+} */
+
+.container-link * {
+  box-sizing: border-box;
+}
+
+.container-link .md-table-cell-container {
+  white-space: nowrap;
+  overflow: hidden;
+  white-space: initial;
+}
+.container-link .md-ripple.md-list-item-content {
+  box-sizing: border-box;
+  min-height: 20px;
+  height: 25px;
+  font-size: 14px;
+  border-bottom: 1px solid #212121;
+}
+
+.container-link td.md-table-cell {
+  height: unset;
+}
+.size-md-cell {
+  padding-right: unset;
+  padding-left: unset;
+  max-width: 280px;
+}
+.myRowStyle {
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-left: 20px;
+}
+.back-line {
+  width: calc(100% - 25px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.span-opacity {
+  color: white;
+  width: 100%;
+}
+.addURLButtonPanel {
+  width: calc(100% - 16px);
+  box-sizing: border-box;
+}
+.urlBox {
+  box-sizing: border-box;
+}
+.size-md-cell {
+  padding-right: unset;
+  padding-left: unset;
+}
+
+/* .commentcutPart {
+  margin: unset
+} */
+
+.my-test-panel-container * {
+  box-sizing: border-box;
+}
+.my-test-panel-container-nbr-output {
+  text-align: center;
+}
+
+/* .commentcutPart {
+  margin: unset
+} */
+
+.my-test-panel-container * {
+  box-sizing: border-box;
+}
+.my-test-panel-container-nbr-output {
+  text-align: center;
+}
+
+/* .commentcutPart {
+  margin: unset
+} */
+
+.my-test-panel-container * {
+  box-sizing: border-box;
+}
+.my-test-panel-container-nbr-output {
+  text-align: center;
+}
+
+/* .commentcutPart {
+  margin: unset
+} */
 </style>
