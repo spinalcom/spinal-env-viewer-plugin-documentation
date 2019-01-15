@@ -33,19 +33,24 @@ with this file. If not, see
             <md-icon style="color: white">send</md-icon>
           </md-button>
         </md-field>
-
       </div>
       <md-dialog-actions>
         <md-button class="md-primary"
                    @click="editNodePopup = false">Close</md-button>
-
       </md-dialog-actions>
     </md-dialog>
-    <div class="chat">
+    <md-toolbar class="md-layout md-gutter headerCDE"
+                layout-align="center center">
+      <div v-if="nodeInfo.selectedNode != undefined"
+           class="centerSelectedNodeName">{{nodeInfo.selectedNode.info.name.get()}}</div>
+      <div class="centerSelectedNodeName"
+           v-else>BIM Object not created</div>
+    </md-toolbar>
+    <div class="chat md-scrollbar">
       <div v-for="(note, index) in notesDisplayList"
            :key="index"
            class="myMessage">
-        <div v-if="note.username == getUsername()">
+        <div>
           <div class="testLine"><span>{{note.date}}</span></div>
           <md-card>
             <md-card-content>
@@ -56,7 +61,7 @@ with this file. If not, see
                 <pre class="preMessage">{{note.message}}</pre>
               </div>
             </md-card-content>
-            <md-card-actions>
+            <md-card-actions v-if="note.username == getUsername()">
               <md-button @click="editNodePopup = true ; selectedNote = note; messageUserEdit = note.message"
                          class="md-icon-button">
                 <md-icon>edit</md-icon>
@@ -73,15 +78,21 @@ with this file. If not, see
     </div>
 
     <div class="boxTextarea">
-      <md-field class="boxTextarea">
-        <md-textarea class="boxTextarea"
-                     v-model="messageUser"></md-textarea>
+      <!-- <md-field class="boxTextarea"> -->
+      <!-- <input class="boxTextarea" v-model="messageUser" placeholder="modifiez-moi"> -->
+      <div class="textareaSizeLikeBehind">
+        <textarea v-model="messageUser"
+                  placeholder="ajoutez plusieurs lignes"
+                  class="textareaNote"></textarea>
+        <!-- <md-textarea style="-webkit-text-fill-color: black; ;width: 100%; min-height: calc(100% - 10px); resize:unset;padding-top: unset; margin-top: 10px; "
+                     class="boxTextarea md-scrollbar"
+                     v-model="messageUser"></md-textarea> -->
         <md-button class="md-icon-button sendButtonInTextarea"
                    @click="addNote">
-          <md-icon style="color: white">send</md-icon>
+          <md-icon style="color:black;">send</md-icon>
         </md-button>
-      </md-field>
-
+        <!-- </md-field> -->
+      </div>
     </div>
   </md-content>
 </template>
@@ -89,7 +100,6 @@ with this file. If not, see
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import moment from "moment";
-// import { constants } from "http2";
 export default {
   name: "my_compo",
   data() {
@@ -141,12 +151,19 @@ export default {
     },
     addNote() {
       // check if node exist, if node doesn't exist it create it
+      // console.log(
+      //   this.nodeInfo.selectedNode,
+      //   window.spinal.spinalSystem.getUser().username,
+      //   this.messageUser
+      // );
+
       serviceDocumentation.addNote(
         this.nodeInfo.selectedNode,
         window.spinal.spinalSystem.getUser().username,
         this.messageUser
       );
-      this.messageUser = "";
+      // this.messageUser = "";
+      this.resetBind();
     },
     editNote() {
       // let notes = serviceDocumentation.editNote(selectedNode);
@@ -208,20 +225,27 @@ export default {
 }
 
 .boxTextarea {
-  width: 98%;
+  width: 95%;
   margin: auto;
   margin-top: 7px;
-  max-height: 120px;
+  margin-left: 3%;
+  border-radius: 10px;
+  height: 19%;
+  /* background-color: white; */
+  resize: unset;
+  padding-top: unset;
 }
 .textareaSize {
   width: 100%;
 }
 .sendButtonInTextarea {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+  bottom: 3%;
+  right: 7%;
 }
 .testLine {
+  margin-right: 16px;
+  margin-left: 16px;
   margin-top: 2px;
   text-align: center;
   border-bottom: 1px solid orange;
@@ -235,18 +259,29 @@ export default {
 
 .chat {
   width: 95%;
-  height: calc(100% - 125px);
-  border: solid 1px #eee;
+  height: 70%;
+  /* border: solid 1px #eee; */
   display: flex;
   overflow-y: scroll;
   flex-direction: column;
   margin: auto;
-}
-.noteTextAreaSize {
-  margin: unset;
-  margin-top: 7px;
+  margin-top: 9px;
 }
 
+.myMessage {
+  margin-top: 5px;
+}
+.textareaNote {
+  width: calc(100% - 16px);
+  resize: none;
+  margin: auto;
+  height: 95%;
+}
+.textareaSizeLikeBehind {
+  margin-right: 16px;
+  margin-left: 16px;
+  height: 100%;
+}
 /* .messages {
   margin-top: 30px;
   display: flex;

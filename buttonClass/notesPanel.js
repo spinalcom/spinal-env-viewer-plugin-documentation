@@ -26,6 +26,7 @@ const noteExtension = SpinalForgeExtention.createExtention({
   },
   style: {
     left: '405px',
+    width: '400px'
   },
   onload: () => {},
   onUnLoad: () => {},
