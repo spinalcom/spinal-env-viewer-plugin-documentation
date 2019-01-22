@@ -1,13 +1,16 @@
 <template>
   <md-content class="container-link urlBox">
     <div>
-      <md-button class="addURLButtonPanel"
+      <md-button class="attributesButtonPanel"
                  @click="activeDialogStatus = true">
         ADD ATTRIBUTES
       </md-button>
-
+      <md-button class="attributesButtonPanel"
+                 @click="activeDialogCategory = true">
+        ADD CATEGORY
+      </md-button>
       <md-content>
-        <md-table>
+        <!-- <md-table>
           <md-table-row class="myRowStyle ">
             <md-table-head class="size-md-cell myCellStyle">
               <span class="span-opacity"> Label </span>
@@ -32,13 +35,52 @@
                                :url="url"></menu-attributes>
             </md-table-cell>
           </md-table-row>
-        </md-table>
+        </md-table> -->
       </md-content>
+      <md-list class="widthOfList">
+        <md-list-item class="colorForCategory"
+                      v-for="(cat) in categoryDisplayList"
+                      :key="cat.node.info.name.get()"
+                      md-expand>
+          <!-- <md-icon>whatshot</md-icon> -->
+          <span class="nameOfCategory md-list-item-text">{{cat.node.info.name.get()}}</span>
+          <menuCategoryAttributes class="buttonRight"
+                                  @editCategoryNode="editCategoryNode"
+                                  @removeCategoryNode="removeCategoryNode"
+                                  :category="cat">
+          </menuCategoryAttributes>
+          <md-list class="unsetPadding"
+                   slot="md-expand">
+            <md-list-item v-for="(attributess, index) in getLstOfAttributes(cat)"
+                          @click="selectAttributes(attributes)"
+                          :key="index"
+                          class="md-inset">{{attributess.label.get()}} -
+              {{attributess.value.get()}}
+              <menu-attributes @editURLNode="editURLNode"
+                               @removeURLNode="removeURLNode"
+                               :url="attributess"
+                               :category="cat"></menu-attributes>
+            </md-list-item>
 
+          </md-list>
+
+        </md-list-item>
+      </md-list>
     </div>
     <md-dialog :md-active.sync="activeDialogStatus">
       <md-dialog-title>Add Attributes</md-dialog-title>
-
+      <div class="md-layout-item">
+        <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
+          <md-select v-model="categorySelected"
+                     name="country"
+                     id="country"
+                     placeholder="Country">
+            <md-option v-for="(category, index) in categoryDisplayList"
+                       :key="index"
+                       :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
+          </md-select>
+        </md-field>
+      </div>
       <md-field md-inline
                 style="width: 80%; margin-left: auto; margin-right: auto;">
         <label>Label</label>
@@ -58,6 +100,23 @@
                    @click="addAttributes">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <md-dialog :md-active.sync="activeDialogCategory">
+      <md-dialog-title>Add Category</md-dialog-title>
+
+      <md-field md-inline
+                style="width: 80%; margin-left: auto; margin-right: auto;">
+        <label>category</label>
+        <md-input v-model="category"></md-input>
+      </md-field>
+
+      <md-dialog-actions>
+        <md-button class="md-primary"
+                   @click="activeDialogCategory = false">Close</md-button>
+        <md-button class="md-primary"
+                   @click="addCategory">Save</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </md-content>
 </template>
 
@@ -67,7 +126,9 @@ import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import menuAttributes from "./component/menuAttributes.vue";
+import menuCategoryAttributes from "./component/menuCategoryAttributes.vue";
 import { utilities } from "../../service/utilities.js";
+import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 Vue.use(Toasted);
 let viewer;
 
@@ -76,53 +137,129 @@ export default {
   data() {
     return {
       activeDialogStatus: false,
+      activeDialogCategory: false,
       label: undefined,
       value: undefined,
+      categorySelected: undefined,
+      category: undefined,
+      categoryDisplayList: [],
       URLDisplayList: [],
       myBind: undefined
     };
   },
-  components: { menuAttributes },
+  components: { menuAttributes, menuCategoryAttributes },
   props: ["option"],
   methods: {
-    editURLNode(urlNode, urlChange) {
-      console.log(urlNode);
+    editURLNode(attributes, urlChange) {
+      console.log(attributes);
       console.log(urlChange);
-      urlNode.element.label.set(urlChange.label);
-      urlNode.element.value.set(urlChange.value);
+      attributes.label.set(urlChange.label);
+      attributes.value.set(urlChange.value);
     },
-    removeURLNode(attributeNode) {
-      console.log(attributeNode);
-      serviceDocumentation.removeNode(attributeNode);
+    removeURLNode(attributes, category) {
+      for (let i = 0; i < category.element.length; i++) {
+        const element = category.element[i];
+        if (element.label.get() == attributes.label.get()) {
+          category.element.splice(i, 1);
+        }
+      }
+    },
+    editCategoryNode(category, change) {
+      category.node.info.name.set(change.name);
+    },
+    removeCategoryNode(category) {
+      serviceDocumentation.removeNode(category.node);
     },
     async updateURLList() {
-      if (this.option.info != undefined)
-        this.URLDisplayList = await serviceDocumentation.getAttributes(
+      if (this.option.info != undefined) {
+        // let test = await serviceDocumentation.getAllAttributes(
+        //   this.option.info
+        // );
+        this.categoryDisplayList = await serviceDocumentation.getCategory(
           this.option.info
         );
-      else this.URLDisplayList = [];
+        // console.log(this.categoryDisplayList);
+      }
+
+      // if (this.option.info != undefined)
+      //   this.URLDisplayList = await serviceDocumentation.getAttributes(
+      //     this.option.info
+      //   );
+      // else this.URLDisplayList = [];
     },
-    addAttributes() {
+    getLstOfAttributes(cat) {
+      let tab = [];
+      for (let i = 0; i < cat.element.length; i++) {
+        const element = cat.element[i];
+        tab.push(element);
+      }
+      return tab;
+    },
+    async addAttributes() {
       let _this = this;
       let label = this.label;
       let value = this.value;
-      viewer.model.getProperties(this.option.dbid, function(res) {
-        let option = utilities.addAttributes(
-          _this.option,
-          res.name,
-          label,
-          value
-        );
-        option.then(option => {
-          if (_this.option.exist == false) {
-            _this.option.exist = true;
-            _this.$emit("updateMyBIMObject", option);
-          }
-        });
-      });
+      let cat = await serviceDocumentation.getCategoryByName(
+        this.option.info,
+        this.categorySelected
+      );
+      console.log(cat);
+      serviceDocumentation.addAttributeByCategory(
+        this.option.info,
+        cat,
+        this.label,
+        this.value
+      );
+
+      // viewer.model.getProperties(this.option.dbid, function(res) {
+      //   let option = utilities.addAttributes(
+      //     _this.option,
+      //     res.name,
+      //     label,
+      //     value
+      //   );
+      //   option.then(option => {
+      //     if (_this.option.exist == false) {
+      //       _this.option.exist = true;
+      //       _this.$emit("updateMyBIMObject", option);
+      //     }
+      //   });
+      // });
       this.label = undefined;
       this.value = undefined;
+      this.categorySelected = undefined;
       this.activeDialogStatus = false;
+    },
+    addCategory() {
+      // console.log(this.category);
+      // console.log(this.option);
+      if (this.option.exist) {
+        serviceDocumentation.addCategoryAttribute(
+          this.option.info,
+          this.category
+        );
+      } else {
+        // create bim object before add note
+        if (this.option.dbid != undefined) {
+          console.log(this.option.dbid);
+          window.spinal.ForgeViewer.viewer.model.getProperties(
+            this.option.dbid,
+            async res => {
+              this.option.info = await bimObjectService.createBIMObject(
+                this.option.dbid,
+                res.name
+              );
+              serviceDocumentation.addCategoryAttribute(
+                this.option.info,
+                this.category
+              );
+              this.resetBind();
+            }
+          );
+        }
+      }
+      this.category = undefined;
+      this.activeDialogCategory = false;
     },
     resetBind() {
       if (this.option.info != undefined) {
@@ -155,4 +292,29 @@ export default {
 </script>
 
 <style>
+.container-link
+  i.md-icon.md-icon-font.md-icon-image.md-list-expand-icon.md-theme-default {
+  position: absolute;
+  margin: unset;
+}
+
+.nameOfCategory {
+  position: absolute;
+  left: 26px;
+}
+.unsetPadding {
+  padding: unset;
+}
+.widthOfList {
+  width: 93%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.colorForCategory > .md-list-item-container > .md-list-item-content {
+  background-color: rgba(53, 107, 171, 0.5);
+}
+.buttonRight {
+  position: absolute;
+  right: 0%;
+}
 </style>

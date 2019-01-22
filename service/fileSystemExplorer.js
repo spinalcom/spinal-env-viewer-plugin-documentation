@@ -41,7 +41,6 @@ class FileSystemExplorer {
       }
       return tabDisplay;
     });
-
   }
   async getDirectory(selectedNode) {
     if (selectedNode != undefined) {

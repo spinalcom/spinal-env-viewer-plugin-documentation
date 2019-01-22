@@ -107,8 +107,6 @@ export default {
   props: ["option"],
   methods: {
     editURLNode(urlNode, urlChange) {
-      console.log(urlNode);
-      console.log(urlChange);
       urlNode.element.label.set(urlChange.label);
       urlNode.element.URL.set(urlChange.URL);
     },
@@ -117,7 +115,6 @@ export default {
     },
     async updateURLList() {
       if (this.option.info != undefined) {
-        console.log(await serviceDocumentation.getURL(this.option.info));
         this.URLDisplayList = await serviceDocumentation.getURL(
           this.option.info
         );

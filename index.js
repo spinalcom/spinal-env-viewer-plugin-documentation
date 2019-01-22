@@ -13,7 +13,8 @@ import {
 } from './buttonClass/notesPanel.js'
 import {
   DocumentationButton,
-  DocumentationExtension
+  DocumentationExtension,
+  ExportToDriveButton
 } from './buttonClass/documentationPanel.js'
 
 
@@ -37,4 +38,8 @@ spinalContextMenuService.registerApp(
 spinalContextMenuService.registerApp(
   SideBarHookName,
   new NotesButton()
+);
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new ExportToDriveButton()
 );

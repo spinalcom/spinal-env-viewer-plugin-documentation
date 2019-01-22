@@ -239,6 +239,10 @@ export default {
   width: calc(100% - 16px);
   box-sizing: border-box;
 }
+.attributesButtonPanel {
+  width: calc(50% - 16px);
+  box-sizing: border-box;
+}
 .urlBox {
   box-sizing: border-box;
 }

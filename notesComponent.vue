@@ -41,12 +41,13 @@ with this file. If not, see
     </md-dialog>
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
-      <div v-if="nodeInfo.selectedNode != undefined"
+      <div v-if="nodeInfo != undefined && nodeInfo.selectedNode != undefined"
            class="centerSelectedNodeName">{{nodeInfo.selectedNode.info.name.get()}}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
-    <div class="chat md-scrollbar">
+    <md-content id="myList"
+                class="chat md-scrollbar">
       <div v-for="(note, index) in notesDisplayList"
            :key="index"
            class="myMessage">
@@ -73,9 +74,9 @@ with this file. If not, see
             </md-card-actions>
           </md-card>
         </div>
-
       </div>
-    </div>
+
+    </md-content>
 
     <div class="boxTextarea">
       <!-- <md-field class="boxTextarea"> -->
@@ -99,6 +100,7 @@ with this file. If not, see
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import moment from "moment";
 export default {
   name: "my_compo",
@@ -109,7 +111,8 @@ export default {
       messageUserEdit: "",
       notesDisplayList: [],
       editNodePopup: false,
-      selectedNote: undefined
+      selectedNote: undefined,
+      scrollToEnd: false
     };
   },
   components: {},
@@ -156,14 +159,36 @@ export default {
       //   window.spinal.spinalSystem.getUser().username,
       //   this.messageUser
       // );
-
-      serviceDocumentation.addNote(
-        this.nodeInfo.selectedNode,
-        window.spinal.spinalSystem.getUser().username,
-        this.messageUser
-      );
-      // this.messageUser = "";
+      if (this.nodeInfo.exist) {
+        serviceDocumentation.addNote(
+          this.nodeInfo.selectedNode,
+          window.spinal.spinalSystem.getUser().username,
+          this.messageUser
+        );
+      } else {
+        // create bim object before add note
+        if (this.nodeInfo.dbid != undefined) {
+          console.log(this.nodeInfo.dbid);
+          window.spinal.ForgeViewer.viewer.model.getProperties(
+            this.nodeInfo.dbid,
+            async res => {
+              this.nodeInfo.selectedNode = await bimObjectService.createBIMObject(
+                this.nodeInfo.dbid,
+                res.name
+              );
+              serviceDocumentation.addNote(
+                this.nodeInfo.selectedNode,
+                window.spinal.spinalSystem.getUser().username,
+                this.messageUser
+              );
+              this.resetBind();
+            }
+          );
+        }
+      }
+      this.messageUser = "";
       this.resetBind();
+      this.updatedd();
     },
     editNote() {
       // let notes = serviceDocumentation.editNote(selectedNode);
@@ -187,6 +212,7 @@ export default {
     opened(option, viewer) {
       this.nodeInfo = option;
       this.resetBind();
+      this.updatedd();
       // console.log(this.nodeInfo);
     },
     removed(option, viewer) {
@@ -196,6 +222,11 @@ export default {
     closed(option, viewer) {
       console.log("closed option", option);
       console.log("closed viewer", viewer);
+    },
+    updatedd() {
+      var container = this.$el.querySelector("#myList");
+      container.scrollTop = container.scrollHeight;
+      // this.onModelChange();
     },
     resetBind() {
       if (this.nodeInfo != undefined) {
@@ -262,7 +293,7 @@ export default {
   height: 70%;
   /* border: solid 1px #eee; */
   display: flex;
-  overflow-y: scroll;
+  overflow-y: auto;
   flex-direction: column;
   margin: auto;
   margin-top: 9px;
@@ -278,8 +309,6 @@ export default {
   height: 95%;
 }
 .textareaSizeLikeBehind {
-  margin-right: 16px;
-  margin-left: 16px;
   height: 100%;
 }
 /* .messages {

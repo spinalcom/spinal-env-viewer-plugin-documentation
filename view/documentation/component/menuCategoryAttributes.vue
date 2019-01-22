@@ -38,16 +38,11 @@ with this file. If not, see
       </md-menu-content>
     </md-menu>
     <md-dialog :md-active.sync="activeEditAttributesNode">
-      <md-dialog-title>Edit Link</md-dialog-title>
+      <md-dialog-title>Edit Category</md-dialog-title>
       <md-field md-inline
                 style="width: 80%; margin-left: auto; margin-right: auto;">
         <label>Label</label>
-        <md-input v-model="urlChange.label"></md-input>
-      </md-field>
-      <md-field md-inline
-                style="width: 80%; margin-left: auto; margin-right: auto;">
-        <label>Link</label>
-        <md-input v-model="urlChange.value"></md-input>
+        <md-input v-model="urlChange.name"></md-input>
       </md-field>
 
       <md-dialog-actions>
@@ -63,29 +58,28 @@ with this file. If not, see
 <script>
 export default {
   name: "my_compo",
-  props: ["url", "category"],
+  props: ["category"],
   data() {
     return {
       activeEditAttributesNode: false,
-      urlChange: { label: "", URL: "" }
+      urlChange: { name: "" }
     };
   },
   methods: {
     edit() {
       console.log("edit node");
-      this.$emit("editURLNode", this.url, this.urlChange);
+      this.$emit("editCategoryNode", this.category, this.urlChange);
       this.activeEditAttributesNode = false;
     },
 
     remove() {
-      this.$emit("removeURLNode", this.url, this.category);
+      this.$emit("removeCategoryNode", this.category);
       console.log("edit node");
     }
   },
   mounted() {
-    if (this.url != undefined) {
-      this.urlChange.label = this.url.label.get();
-      this.urlChange.value = this.url.value.get();
+    if (this.category != undefined) {
+      this.urlChange.name = this.category.node.info.name.get();
     }
   }
 };
