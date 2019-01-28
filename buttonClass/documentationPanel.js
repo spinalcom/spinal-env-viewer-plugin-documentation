@@ -14,7 +14,6 @@ const {
   SpinalForgeExtention,
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 import documentationComponent from '../documentationComponent.vue';
-import ExportToDrive from '../exportToDrive.js';
 import Vue from 'vue';
 import SpinalContext from 'spinal-model-graph/build/Nodes/SpinalContext';
 
