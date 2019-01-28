@@ -16,7 +16,8 @@
     "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
     "spinal-env-viewer-plugin-circular-menu": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-circular-menu.git",
     "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
-    "vue-toasted": "^1.1.25"
+    "vue-toasted": "^1.1.25",
+    "vue-moment": "^4.0.0"
   },
   "browserify": {
     "transform": [
