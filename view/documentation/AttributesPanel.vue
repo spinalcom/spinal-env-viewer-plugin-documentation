@@ -2,12 +2,12 @@
   <md-content class="container-link urlBox">
     <div>
       <md-button class="attributesButtonPanel"
-                 @click="activeDialogStatus = true">
-        ADD ATTRIBUTES
-      </md-button>
-      <md-button class="attributesButtonPanel"
                  @click="activeDialogCategory = true">
         ADD CATEGORY
+      </md-button>
+      <md-button class="attributesButtonPanel"
+                 @click="activeDialogStatus = true">
+        ADD ATTRIBUTES
       </md-button>
       <md-content>
         <!-- <md-table>
@@ -54,8 +54,9 @@
             <md-list-item v-for="(attributess, index) in getLstOfAttributes(cat)"
                           @click="selectAttributes(attributes)"
                           :key="index"
-                          class="md-inset">{{attributess.label.get()}} -
-              {{attributess.value.get()}}
+                          class="md-inset">
+              <span>{{attributess.label.get()}}</span>
+              <span>{{attributess.value.get()}}</span>
               <menu-attributes @editURLNode="editURLNode"
                                @removeURLNode="removeURLNode"
                                :url="attributess"
@@ -69,30 +70,41 @@
     </div>
     <md-dialog :md-active.sync="activeDialogStatus">
       <md-dialog-title>Add Attributes</md-dialog-title>
-      <div class="md-layout-item">
-        <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
-          <md-select v-model="categorySelected"
-                     name="country"
-                     id="country"
-                     placeholder="Country">
-            <md-option v-for="(category, index) in categoryDisplayList"
-                       :key="index"
-                       :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
-          </md-select>
-        </md-field>
-      </div>
-      <md-field md-inline
-                style="width: 80%; margin-left: auto; margin-right: auto;">
-        <label>Label</label>
-        <md-input v-model="label"></md-input>
-      </md-field>
+      <md-tabs md-dynamic-height
+               @md-changed="resetAttributes"
+               md-alignment="fixed">
+        <md-tab md-label="Create">
+          <div class="md-layout-item">
+            <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
+              <md-select v-model="categorySelected"
+                         name="category"
+                         id="category"
+                         placeholder="category">
+                <md-option v-for="(category, index) in categoryDisplayList"
+                           :key="index"
+                           :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <md-field md-inline
+                    style="width: 80%; margin-left: auto; margin-right: auto;">
+            <label>Label</label>
+            <md-input v-model="label"></md-input>
+          </md-field>
 
-      <md-field md-inline
-                style="width: 80%; margin-left: auto; margin-right: auto;">
-        <label>Value</label>
-        <md-input v-model="value"></md-input>
-      </md-field>
-
+          <md-field md-inline
+                    style="width: 80%; margin-left: auto; margin-right: auto;">
+            <label>Value</label>
+            <md-input v-model="value"></md-input>
+          </md-field>
+        </md-tab>
+        <md-tab md-label="Import">
+          <attributesImport :option="option"
+                            :categoryDisplayList="categoryDisplayList"
+                            @getAttributesFromForge="getAttributesFromForge"
+                            @updatecategorySelected="updatecategorySelected"></attributesImport>
+        </md-tab>
+      </md-tabs>
       <md-dialog-actions>
         <md-button class="md-primary"
                    @click="activeDialogStatus = false">Close</md-button>
@@ -127,6 +139,7 @@ import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import menuAttributes from "./component/menuAttributes.vue";
 import menuCategoryAttributes from "./component/menuCategoryAttributes.vue";
+import attributesImport from "./component/attributesImport.vue";
 import { utilities } from "../../service/utilities.js";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 Vue.use(Toasted);
@@ -147,7 +160,7 @@ export default {
       myBind: undefined
     };
   },
-  components: { menuAttributes, menuCategoryAttributes },
+  components: { menuAttributes, menuCategoryAttributes, attributesImport },
   props: ["option"],
   methods: {
     editURLNode(attributes, urlChange) {
@@ -155,6 +168,7 @@ export default {
       console.log(urlChange);
       attributes.label.set(urlChange.label);
       attributes.value.set(urlChange.value);
+      this.resetBind();
     },
     removeURLNode(attributes, category) {
       for (let i = 0; i < category.element.length; i++) {
@@ -169,6 +183,16 @@ export default {
     },
     removeCategoryNode(category) {
       serviceDocumentation.removeNode(category.node);
+    },
+    getAttributesFromForge(attributes) {
+      console.log(attributes);
+      this.selectedAttributesForge = attributes;
+      // get la list d'attributs depuis les attributes de forge
+    },
+    updatecategorySelected(categorySelected) {
+      console.log("updateCategorySelected");
+
+      this.categorySelected = categorySelected;
     },
     async updateURLList() {
       if (this.option.info != undefined) {
@@ -196,21 +220,41 @@ export default {
       return tab;
     },
     async addAttributes() {
-      let _this = this;
-      let label = this.label;
-      let value = this.value;
-      let cat = await serviceDocumentation.getCategoryByName(
-        this.option.info,
-        this.categorySelected
-      );
-      console.log(cat);
-      serviceDocumentation.addAttributeByCategory(
-        this.option.info,
-        cat,
-        this.label,
-        this.value
-      );
-
+      // on check si les attributs viennent de forge ou on créer un attributs
+      if (this.categorySelected != undefined) {
+        if (this.label == undefined || this.value == undefined) {
+          console.log(this.selectedAttributesForge);
+          let cat = await serviceDocumentation.getCategoryByName(
+            this.option.info,
+            this.categorySelected
+          );
+          for (let i = 0; i < this.selectedAttributesForge.length; i++) {
+            const element = this.selectedAttributesForge[i];
+            serviceDocumentation.addAttributeByCategory(
+              this.option.info,
+              cat,
+              element.displayName,
+              element.displayValue
+            );
+          }
+        } else {
+          let label = this.label;
+          let value = this.value;
+          let cat = await serviceDocumentation.getCategoryByName(
+            this.option.info,
+            this.categorySelected
+          );
+          console.log(cat);
+          serviceDocumentation.addAttributeByCategory(
+            this.option.info,
+            cat,
+            this.label,
+            this.value
+          );
+        }
+      } else {
+        console.log("error");
+      }
       // viewer.model.getProperties(this.option.dbid, function(res) {
       //   let option = utilities.addAttributes(
       //     _this.option,
@@ -260,6 +304,13 @@ export default {
       }
       this.category = undefined;
       this.activeDialogCategory = false;
+    },
+    resetAttributes() {
+      console.log("reset attributs");
+
+      this.label = undefined;
+      this.value = undefined;
+      this.selectedAttributesForge = undefined;
     },
     resetBind() {
       if (this.option.info != undefined) {
