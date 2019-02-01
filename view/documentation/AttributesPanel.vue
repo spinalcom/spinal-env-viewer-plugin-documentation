@@ -164,8 +164,8 @@ export default {
   props: ["option"],
   methods: {
     editURLNode(attributes, urlChange) {
-      console.log(attributes);
-      console.log(urlChange);
+      // console.log(attributes);
+      // console.log(urlChange);
       attributes.label.set(urlChange.label);
       attributes.value.set(urlChange.value);
       this.resetBind();
@@ -185,14 +185,14 @@ export default {
       serviceDocumentation.removeNode(category.node);
     },
     getAttributesFromForge(attributes) {
-      console.log(attributes);
+      // console.log(attributes);
       this.selectedAttributesForge = attributes;
       // get la list d'attributs depuis les attributes de forge
     },
     updatecategorySelected(categorySelected) {
-      console.log("updateCategorySelected");
-
+      // console.log("updateCategorySelected");
       this.categorySelected = categorySelected;
+      // console.log(this.categorySelected);
     },
     async updateURLList() {
       if (this.option.info != undefined) {
@@ -219,11 +219,12 @@ export default {
       }
       return tab;
     },
-    async addAttributes() {
-      // on check si les attributs viennent de forge ou on créer un attributs
-      if (this.categorySelected != undefined) {
+    async testAttributes() {
+      // console.log(this.categorySelected);
+
+      if (this.categorySelected != undefined || this.categorySelected != "") {
         if (this.label == undefined || this.value == undefined) {
-          console.log(this.selectedAttributesForge);
+          // console.log(this.selectedAttributesForge);
           let cat = await serviceDocumentation.getCategoryByName(
             this.option.info,
             this.categorySelected
@@ -255,6 +256,27 @@ export default {
       } else {
         console.log("error");
       }
+    },
+    async addAttributes() {
+      if (this.option.exist == false) {
+        window.spinal.ForgeViewer.viewer.model.getProperties(
+          this.option.dbid,
+          async res => {
+            this.option.info = await bimObjectService.createBIMObject(
+              this.option.dbid,
+              res.name
+            );
+            await this.testAttributes();
+            this.resetAttributes();
+            this.resetBind();
+          }
+        );
+      } else {
+        await this.testAttributes();
+        this.resetAttributes();
+      }
+      // on check si les attributs viennent de forge ou on créer un attributs
+
       // viewer.model.getProperties(this.option.dbid, function(res) {
       //   let option = utilities.addAttributes(
       //     _this.option,
@@ -269,23 +291,30 @@ export default {
       //     }
       //   });
       // });
-      this.label = undefined;
-      this.value = undefined;
-      this.categorySelected = undefined;
+      // this.label = undefined;
+      // this.value = undefined;
+      // this.categorySelected = undefined;
       this.activeDialogStatus = false;
+    },
+    checkCategory() {
+      // console.log(this.category);
+
+      if (this.category != undefined && this.category != "") {
+        serviceDocumentation.addCategoryAttribute(
+          this.option.info,
+          this.category
+        );
+        this.category = "";
+      }
     },
     addCategory() {
       // console.log(this.category);
       // console.log(this.option);
       if (this.option.exist) {
-        serviceDocumentation.addCategoryAttribute(
-          this.option.info,
-          this.category
-        );
+        this.checkCategory();
       } else {
         // create bim object before add note
         if (this.option.dbid != undefined) {
-          console.log(this.option.dbid);
           window.spinal.ForgeViewer.viewer.model.getProperties(
             this.option.dbid,
             async res => {
@@ -293,23 +322,22 @@ export default {
                 this.option.dbid,
                 res.name
               );
-              serviceDocumentation.addCategoryAttribute(
-                this.option.info,
-                this.category
-              );
+              // console.log(this.option.info);
+              this.checkCategory();
               this.resetBind();
             }
           );
         }
       }
-      this.category = undefined;
+      // this.category = "";
       this.activeDialogCategory = false;
     },
     resetAttributes() {
-      console.log("reset attributs");
+      // console.log("reset attributs");
 
       this.label = undefined;
       this.value = undefined;
+      this.categorySelected = undefined;
       this.selectedAttributesForge = undefined;
     },
     resetBind() {

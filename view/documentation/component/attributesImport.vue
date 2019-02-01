@@ -31,12 +31,7 @@
           </md-table-cell>
         </md-table-row>
       </md-table>
-
     </div>
-    <md-button class="md-icon-button"
-               @click="benef()">
-      <md-icon>more_vert</md-icon>
-    </md-button>
   </md-content>
 </template>
 
@@ -58,8 +53,14 @@ export default {
     async benef() {
       // console.log(this.option);
       this.selectedNode = this.option.info;
-      this.dbid = this.option.dbid;
+      if (this.option.dbid) {
+        this.dbid = this.option.dbid;
+      } else {
+        if (this.option.info.info.type.get() == "BIMObject")
+          this.dbid = this.option.info.info.dbid.get();
+      }
       this.exist = this.option.exist;
+
       this.propertiesTab = await this.promiseGetPorperties(this.dbid);
       this.updateDisplayAttributesList();
     },
@@ -71,12 +72,9 @@ export default {
       }
     },
     updatecategorySelected() {
-      console.log("updatecategorySelected");
-
       this.$emit("updatecategorySelected", this.categorySelected);
     },
     onSelectAttribute(items) {
-      // console.log(items);
       this.$emit("getAttributesFromForge", items);
     },
     promiseGetPorperties(dbId) {
@@ -85,7 +83,10 @@ export default {
       });
     }
   },
-  mounted() {},
+  mounted() {
+    this.categorySelected = undefined;
+    this.benef();
+  },
   watch: {
     categorySelected: function() {
       this.updatecategorySelected();
