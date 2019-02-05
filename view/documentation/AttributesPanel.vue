@@ -55,8 +55,8 @@
                           @click="selectAttributes(attributes)"
                           :key="index"
                           class="md-inset">
-              <span>{{attributess.label.get()}}</span>
-              <span>{{attributess.value.get()}}</span>
+              <span style="width: 40%">{{attributess.label.get()}}</span>
+              <span style="width: 40%">{{attributess.value.get()}}</span>
               <menu-attributes @editURLNode="editURLNode"
                                @removeURLNode="removeURLNode"
                                :url="attributess"

@@ -106,6 +106,8 @@ export default {
                     this.label,
                     this.value
                   );
+                  // this.label = "";
+                  // this.value = "";
                 });
             });
           } else {
@@ -117,6 +119,8 @@ export default {
               this.label,
               this.value
             );
+            // this.label = "";
+            // this.value = "";
           }
         });
         // window.spinal.ForgeViewer.viewer.model.getProperties(
