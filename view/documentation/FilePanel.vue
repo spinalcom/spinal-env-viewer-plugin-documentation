@@ -1,5 +1,5 @@
 <template>
-  <md-content class="md-scrollbar filesBox">
+  <md-content class="md-scrollbar urlBox">
     <md-button class="addURLButtonPanel"
                @click="activeAddDirectory= true">
       File System Import

@@ -24,7 +24,7 @@ with this file. If not, see
 
 
 <template>
-  <md-content class="unsetBackgroundContent">
+  <md-content class="unsetBackgroundContent ">
     <md-button @click="forgeSelection">
       {{selectedDbidArray.length}} Selected Object
     </md-button>
@@ -170,5 +170,8 @@ export default {
 }
 .unsetBackgroundContent ul.md-list.md-theme-default {
   background-color: unset;
+}
+.unsetBackgroundContent .md-field.md-theme-default.md-inline {
+  margin: unset;
 }
 </style>
