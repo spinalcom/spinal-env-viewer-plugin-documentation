@@ -251,6 +251,7 @@ export default {
   box-sizing: border-box;
 }
 .urlBox {
+  height: calc(100% - 90px);
   box-sizing: border-box;
 }
 .size-md-cell {

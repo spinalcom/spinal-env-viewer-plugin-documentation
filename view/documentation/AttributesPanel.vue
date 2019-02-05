@@ -322,6 +322,9 @@ export default {
                 this.option.dbid,
                 res.name
               );
+              this.option.exist = true;
+              this.$emit("updateMyBIMObject", this.option);
+
               // console.log(this.option.info);
               this.checkCategory();
               this.resetBind();
@@ -390,7 +393,7 @@ export default {
   margin-right: auto;
 }
 .colorForCategory > .md-list-item-container > .md-list-item-content {
-  background-color: rgba(53, 107, 171, 0.5);
+  background-color: rgba(53, 107, 171, 1);
 }
 .buttonRight {
   position: absolute;

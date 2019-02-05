@@ -1,6 +1,7 @@
 const circularMenuHookName = 'circularMenu';
 const SideBarHookName = 'GraphManagerSideBar';
 const namePanel = 'panel-documentation'
+const nameAttributesRightClickPanel = 'attributes-right-click'
 const {
   spinalContextMenuService,
 } = require('spinal-env-viewer-context-menu-service');
@@ -14,12 +15,15 @@ import {
 import {
   DocumentationButton,
   DocumentationExtension,
-  ExportToDriveButton
+  ExportToDriveButton,
+  addAutoAttributesRightClick,
+  registerRightClickButton
 } from './buttonClass/documentationPanel.js'
-
-
+import attributesRightClick from './view/rightClick/attributesRightClick.vue'
 
 SpinalForgeExtention.registerExtention(namePanel, DocumentationExtension);
+SpinalForgeExtention.registerExtention("attributes-right-click",
+  addAutoAttributesRightClick);
 
 
 spinalContextMenuService.registerApp(
@@ -43,3 +47,5 @@ spinalContextMenuService.registerApp(
   SideBarHookName,
   new ExportToDriveButton()
 );
+
+registerRightClickButton();
