@@ -2,7 +2,8 @@ const {
   SpinalContextApp,
 } = require('spinal-env-viewer-context-menu-service');
 import {
-  SpinalGraphService
+  SpinalGraphService,
+  SpinalNode
 } from "spinal-env-viewer-graph-service";
 
 const {
@@ -52,12 +53,13 @@ export class NotesButton extends SpinalContextApp {
 
   action(option) {
     // option.paramSent = "hello from NoteCircularMenu";
-    // console.log(option)
-    let selectedNode = option.info;
+    let selectedNode = option.selectedNode;
     let dbid = option.dbid
     let boolBIMObject = option.exist
-    if (option.selectedNode != undefined) {
+    if (option.selectedNode instanceof SpinalNode) {
       // get real node
+      selectedNode = option.selectedNode;
+    } else {
       selectedNode = SpinalGraphService.getRealNode(
         option.selectedNode.id.get()
       );
