@@ -28,24 +28,25 @@ SpinalForgeExtention.registerExtention("attributes-right-click",
 
 spinalContextMenuService.registerApp(
   circularMenuHookName,
-  new DocumentationButton()
+  new DocumentationButton(),
+  [7]
 );
 spinalContextMenuService.registerApp(
   SideBarHookName,
-  new DocumentationButton()
+  new DocumentationButton(),[7]
 );
 
 spinalContextMenuService.registerApp(
   circularMenuHookName,
-  new NotesButton()
+  new NotesButton(),[7]
 );
 spinalContextMenuService.registerApp(
   SideBarHookName,
-  new NotesButton()
+  new NotesButton(),[7]
 );
 spinalContextMenuService.registerApp(
   SideBarHookName,
-  new ExportToDriveButton()
+  new ExportToDriveButton(),[7]
 );
 
 registerRightClickButton();
