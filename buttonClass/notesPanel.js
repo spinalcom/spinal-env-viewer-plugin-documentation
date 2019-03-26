@@ -1,19 +1,24 @@
-const {SpinalContextApp} = require ('spinal-env-viewer-context-menu-service');
-import {SpinalGraphService, SpinalNode} from 'spinal-env-viewer-graph-service';
+const {
+  SpinalContextApp
+} = require('spinal-env-viewer-context-menu-service');
+import {
+  SpinalGraphService,
+  SpinalNode
+} from 'spinal-env-viewer-graph-service';
 
 const {
   spinalPanelManagerService,
-} = require ('spinal-env-viewer-panel-manager-service');
+} = require('spinal-env-viewer-panel-manager-service');
 const {
   SpinalForgeExtention,
-} = require ('spinal-env-viewer-panel-manager-service_spinalforgeextention');
+} = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 import notesComponent from '../notesComponent.vue';
 import Vue from 'vue';
 import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
 
-const noteExtension = SpinalForgeExtention.createExtention ({
+const noteExtension = SpinalForgeExtention.createExtention({
   name: 'panel-notes',
-  vueMountComponent: Vue.extend (notesComponent),
+  vueMountComponent: Vue.extend(notesComponent),
   // toolbar is optional
 
   panel: {
@@ -29,11 +34,11 @@ const noteExtension = SpinalForgeExtention.createExtention ({
   onUnLoad: () => {},
 });
 
-SpinalForgeExtention.registerExtention (name, noteExtension);
+SpinalForgeExtention.registerExtention(name, noteExtension);
 
 export class NotesButton extends SpinalContextApp {
-  constructor () {
-    super ('Spinal Notes', 'Spinal CDE description', {
+  constructor() {
+    super('Spinal Notes', 'Spinal CDE description', {
       icon: 'border_color',
       icon_type: 'in',
       backgroundColor: '#356BAB',
@@ -41,13 +46,13 @@ export class NotesButton extends SpinalContextApp {
     });
   }
 
-  isShown (option) {
+  isShown(option) {
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
     // console.log(option)
-    return Promise.resolve (true);
+    return Promise.resolve(true);
   }
 
-  action (option) {
+  action(option) {
     // option.paramSent = "hello from NoteCircularMenu";
     let selectedNode = option.selectedNode;
     let dbid = option.dbid;
@@ -57,8 +62,8 @@ export class NotesButton extends SpinalContextApp {
         // get real node
         selectedNode = option.selectedNode;
       } else {
-        selectedNode = SpinalGraphService.getRealNode (
-          option.selectedNode.id.get ()
+        selectedNode = SpinalGraphService.getRealNode(
+          option.selectedNode.id.get()
         );
       }
       let obj = {
@@ -67,22 +72,22 @@ export class NotesButton extends SpinalContextApp {
         exist: boolBIMObject,
       };
 
-      spinalPanelManagerService.openPanel ('panel-notes', obj);
+      spinalPanelManagerService.openPanel('panel-notes', obj);
     } else {
-      window.spinal.ForgeViewer.viewer.model.getProperties (
+      window.spinal.ForgeViewer.viewer.model.getProperties(
         option.dbid,
         async res => {
-          selectedNode = await bimObjectService.createBIMObject (
+          selectedNode = await bimObjectService.createBIMObject(
             option.dbid,
             res.name
           );
           let obj = {
             selectedNode,
             dbid,
-            exist: boolBIMObject,
+            exist: true,
           };
 
-          spinalPanelManagerService.openPanel ('panel-notes', obj);
+          spinalPanelManagerService.openPanel('panel-notes', obj);
         }
       );
     }

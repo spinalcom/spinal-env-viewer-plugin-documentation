@@ -160,30 +160,33 @@ export default {
       //   this.messageUser
       // );
       if (this.nodeInfo.exist) {
+        console.log("nodeinfo exist");
+
         serviceDocumentation.addNote(
           this.nodeInfo.selectedNode,
           window.spinal.spinalSystem.getUser().username,
           this.messageUser
         );
       } else {
+        console.log("nodeinfo not exist");
         // create bim object before add note
         if (this.nodeInfo.dbid != undefined) {
           console.log(this.nodeInfo.dbid);
-          window.spinal.ForgeViewer.viewer.model.getProperties(
-            this.nodeInfo.dbid,
-            async res => {
-              this.nodeInfo.selectedNode = await bimObjectService.createBIMObject(
-                this.nodeInfo.dbid,
-                res.name
-              );
-              serviceDocumentation.addNote(
-                this.nodeInfo.selectedNode,
-                window.spinal.spinalSystem.getUser().username,
-                this.messageUser
-              );
-              this.resetBind();
-            }
+          // window.spinal.ForgeViewer.viewer.model.getProperties(
+          //   this.nodeInfo.dbid,
+          //   async res => {
+          //     this.nodeInfo.selectedNode = await bimObjectService.createBIMObject(
+          //       this.nodeInfo.dbid,
+          //       res.name
+          //     );
+          serviceDocumentation.addNote(
+            this.nodeInfo.selectedNode,
+            window.spinal.spinalSystem.getUser().username,
+            this.messageUser
           );
+          this.resetBind();
+          // }
+          // );
         }
       }
       this.messageUser = "";
