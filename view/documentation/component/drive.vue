@@ -57,7 +57,7 @@ export default {
     clickPath: function(driveFiles) {
       this.selected = [];
       let type = driveFiles.type;
-      if (type == "Directory") {
+      if (type == "Directory" || type == "Synchronized Directory") {
         let route = FileExplorer.createDriveRoute(this.currentPath, driveFiles);
         this.pathTab.push(route);
         this.currentPath = route.path;
