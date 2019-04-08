@@ -85,12 +85,12 @@
 
 
 <script>
-import Toasted from "vue-toasted";
+//import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { utilities } from "../../service/utilities.js";
 import menuURL from "./component/menuURL.vue";
-Vue.use(Toasted);
+//Vue.use(Toasted);
 var viewer;
 export default {
   name: "linkPanel",

@@ -134,7 +134,9 @@
 
 
 <script>
-import Toasted from "vue-toasted";
+
+//import Toasted from "vue-toasted";
+
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import menuAttributes from "./component/menuAttributes.vue";
@@ -142,7 +144,7 @@ import menuCategoryAttributes from "./component/menuCategoryAttributes.vue";
 import attributesImport from "./component/attributesImport.vue";
 import { utilities } from "../../service/utilities.js";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
-Vue.use(Toasted);
+//Vue.use(Toasted);
 let viewer;
 
 export default {
