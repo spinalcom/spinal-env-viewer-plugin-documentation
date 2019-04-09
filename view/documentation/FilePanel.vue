@@ -82,11 +82,26 @@ export default {
 
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
-          console.log(path);
-          var element = document.createElement("a");
-          element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-          element.setAttribute("download", file.name);
-          element.click();
+          if (file._info.model_type.get() == "HttpPath") {
+            const element = document.createElement("a");
+            const _path =
+              path.host.get() +
+              "/file/" +
+              encodeURIComponent(path.httpRootPath.get()) +
+              "/" +
+              encodeURIComponent(path.httpPath.get());
+            element.setAttribute("href", _path);
+            element.setAttribute("download", file.name.get());
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          } else {
+            var element = document.createElement("a");
+            element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+            element.setAttribute("download", file.name);
+            element.click();
+          }
         });
       } else {
         // check recursive directory & create a ZIP
@@ -240,7 +255,7 @@ export default {
   },
   beforeDestroy() {
     if (this.option.info != undefined && this.myBind != undefined)
-      this.option.info.unbind(this.myBind);
+      {this.option.info.unbind(this.myBind);}
   }
 };
 </script>
