@@ -99,10 +99,10 @@ with this file. If not, see
 </template>
 
 <script>
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
-import moment from "moment";
-export default {
+  import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+  import moment from "moment";
+
+  export default {
   name: "my_compo",
   data() {
     return {
@@ -122,11 +122,11 @@ export default {
       let notes = await serviceDocumentation.getNotes(
         this.nodeInfo.selectedNode
       );
-      // console.log(notes);
-      let i = 0;
-      for (let note of notes) {
+
+      for (let j = 0; j < j < notes.length; j++) {
+        const note = notes[j];
         let obj = {
-          id: i,
+          id: j,
           username: note.element.username.get(),
           message: note.element.message.get(),
           date: this.toDate(note.element.date.get()),
@@ -135,12 +135,11 @@ export default {
         };
         // console.log(obj);
         this.notesDisplayList.push(obj);
-        i++;
       }
+
     },
     toDate: function(date) {
-      let newDateFormat = moment(date).format("MMMM Do YYYY, h:mm:ss a");
-      return newDateFormat;
+      return moment( date ).format( "MMMM Do YYYY, h:mm:ss a" );
       // convert date to 18min ago , 1h ago , ..., not necessery now we pref full date
 
       // let newDateFormat = moment(date);
@@ -160,7 +159,6 @@ export default {
       //   this.messageUser
       // );
       if (this.nodeInfo.exist) {
-        console.log("nodeinfo exist");
 
         serviceDocumentation.addNote(
           this.nodeInfo.selectedNode,
@@ -168,9 +166,8 @@ export default {
           this.messageUser
         );
       } else {
-        console.log("nodeinfo not exist");
         // create bim object before add note
-        if (this.nodeInfo.dbid != undefined) {
+        if (this.nodeInfo.dbid !== undefined) {
           console.log(this.nodeInfo.dbid);
           // window.spinal.ForgeViewer.viewer.model.getProperties(
           //   this.nodeInfo.dbid,
@@ -232,13 +229,13 @@ export default {
       // this.onModelChange();
     },
     resetBind() {
-      if (this.nodeInfo != undefined) {
-        if (this.nodeInfo.selectedNode != undefined) {
-          if (this.myBind != undefined) {
+      if (this.nodeInfo !== undefined) {
+        if (this.nodeInfo.selectedNode !== undefined) {
+          if (this.myBind !== undefined) {
             this.nodeInfo.selectedNode.unbind(this.myBind);
             this.myBind = undefined;
           }
-          if (this.myBind == undefined) {
+          if (this.myBind === undefined) {
             this.myBind = this.nodeInfo.selectedNode.bind(
               this.updateNotesList.bind(this)
             );

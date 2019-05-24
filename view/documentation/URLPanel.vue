@@ -171,7 +171,6 @@ export default {
   },
   watch: {
     option: function() {
-      console.log("update option in url panel");
       this.resetBind();
     }
   },
