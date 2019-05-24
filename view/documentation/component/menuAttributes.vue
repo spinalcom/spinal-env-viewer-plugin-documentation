@@ -72,18 +72,16 @@ export default {
   },
   methods: {
     edit() {
-      console.log("edit node");
       this.$emit("editURLNode", this.url, this.urlChange);
       this.activeEditAttributesNode = false;
     },
 
     remove() {
       this.$emit("removeURLNode", this.url, this.category);
-      console.log("edit node");
     }
   },
   mounted() {
-    if (this.url != undefined) {
+    if (this.url !== undefined) {
       this.urlChange.label = this.url.label.get();
       this.urlChange.value = this.url.value.get();
     }

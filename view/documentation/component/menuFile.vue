@@ -47,11 +47,9 @@ export default {
   },
   methods: {
     download() {
-      // console.log(this.file);
       this.$emit("downloadFile", this.file, this.index);
     },
     remove() {
-      // console.log(this.file);
       this.$emit("removeFile", this.file, this.index);
     }
   }

@@ -41,7 +41,7 @@ with this file. If not, see
     </md-dialog>
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
-      <div v-if="nodeInfo != undefined && nodeInfo.selectedNode != undefined"
+      <div v-if="nodeInfo !== undefined && nodeInfo.selectedNode !== undefined"
            class="centerSelectedNodeName">{{nodeInfo.selectedNode.info.name.get()}}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
@@ -62,7 +62,7 @@ with this file. If not, see
                 <pre class="preMessage">{{note.message}}</pre>
               </div>
             </md-card-content>
-            <md-card-actions v-if="note.username == getUsername()">
+            <md-card-actions v-if="note.username === getUsername()">
               <md-button @click="editNodePopup = true ; selectedNote = note; messageUserEdit = note.message"
                          class="md-icon-button">
                 <md-icon>edit</md-icon>
@@ -168,7 +168,7 @@ with this file. If not, see
       } else {
         // create bim object before add note
         if (this.nodeInfo.dbid !== undefined) {
-          console.log(this.nodeInfo.dbid);
+
           // window.spinal.ForgeViewer.viewer.model.getProperties(
           //   this.nodeInfo.dbid,
           //   async res => {
@@ -209,7 +209,7 @@ with this file. If not, see
     getUsername() {
       return window.spinal.spinalSystem.getUser().username;
     },
-    opened(option, viewer) {
+    opened(option) {
       this.nodeInfo = option;
       this.resetBind();
       this.updatedd();

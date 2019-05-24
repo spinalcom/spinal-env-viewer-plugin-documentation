@@ -9,14 +9,11 @@ const {
 const {
   SpinalForgeExtention,
 } = require ('spinal-env-viewer-panel-manager-service_spinalforgeextention');
-import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
 import documentationComponent from '../documentationComponent.vue';
 import attributesRightClick from '../view/rightClick/attributesRightClick.vue';
 import Vue from 'vue';
 import SpinalContext from 'spinal-model-graph/build/Nodes/SpinalContext';
 import forgeTree from '../service/forgeTree.js';
-import {type} from 'os';
-import SpinalNode from 'spinal-env-viewer-graph-service';
 export const DocumentationExtension = SpinalForgeExtention.createExtention ({
   name: 'panel-documentation',
   vueMountComponent: Vue.extend (documentationComponent),
@@ -95,7 +92,7 @@ export class ExportToDriveButton extends SpinalContextApp {
     let selectedNode = option.info;
     // let dbid = option.dbid
     // let boolBIMObject = option.exist
-    if (option.selectedNode != undefined) {
+    if (option.selectedNode !== undefined) {
       // get real node
       selectedNode = SpinalGraphService.getRealNode (
         option.selectedNode.id.get ()
@@ -114,7 +111,7 @@ export class ExportToDriveButton extends SpinalContextApp {
     let selectedNode = option.info;
     let dbid = option.dbid;
     let boolBIMObject = option.exist;
-    if (option.selectedNode != undefined) {
+    if (option.selectedNode !== undefined) {
       // get real node
       selectedNode = SpinalGraphService.getRealNode (
         option.selectedNode.id.get ()
@@ -134,7 +131,7 @@ export function registerRightClickButton () {
   var checkExist = setInterval (function () {
     // console.log(viewer);
     const viewer = window.spinal.ForgeViewer.viewer;
-    if (viewer != undefined) {
+    if (viewer !== undefined) {
       viewer.registerContextMenuCallback (
         'MyChangingColorMenuItems',
         (menu, status) => {
