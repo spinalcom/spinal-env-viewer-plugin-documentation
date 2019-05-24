@@ -47,7 +47,7 @@ export class NotesButton extends SpinalContextApp {
   }
 
   isShown(option) {
-    if (option.selectedNode.type === 'BIMObject')
+    if ((option.selectedNode && option.selectedNode.type === 'BIMObject') || option.dbid)
       return Promise.resolve(true);
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
     // console.log(option)
