@@ -123,8 +123,9 @@ with this file. If not, see
         this.nodeInfo.selectedNode
       );
 
-      for (let j = 0; j < j < notes.length; j++) {
-        const note = notes[j];
+      let i =0;
+      for (let note of notes){
+
         let obj = {
           id: j,
           username: note.element.username.get(),
@@ -133,8 +134,11 @@ with this file. If not, see
           selectedNode: note.selectedNode,
           element: note.element
         };
-        // console.log(obj);
         this.notesDisplayList.push(obj);
+        i++;
+      }
+      for (let j = 0; j < j < notes.length; j++) {
+
       }
 
     },
