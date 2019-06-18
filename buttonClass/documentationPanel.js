@@ -15,6 +15,7 @@ const {
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 import documentationComponent from '../documentationComponent.vue';
 import attributesRightClick from '../view/rightClick/attributesRightClick.vue';
+import deleteUrlRightClick from '../view/rightClick/deleteUrlRightClick.vue';
 import urlRightClick from '../view/rightClick/urlRightClick.vue';
 import Vue from 'vue';
 import SpinalContext from 'spinal-model-graph/build/Nodes/SpinalContext';
@@ -168,6 +169,26 @@ export const addAutoAttributesRightClick = SpinalForgeExtention
     onUnLoad: () => {},
   });
 
+export const deleteAutoUrlRightClick = SpinalForgeExtention
+  .createExtention({
+    name: 'delete-right-click',
+    vueMountComponent: Vue.extend(deleteUrlRightClick),
+    // toolbar is optional
+
+    panel: {
+      title: 'delete attributes',
+      classname: 'spinal-pannel',
+      closeBehaviour: 'remove', // if something else panel is deleted
+    },
+    style: {
+      left: '405px',
+      height: '50vh',
+    },
+    onload: () => {},
+    onUnLoad: () => {},
+  });
+
+
 export function registerRightClickButton() {
   var checkExist = setInterval(function() {
     // console.log(viewer);
@@ -213,6 +234,24 @@ export function registerRightClickButton() {
                   'open panel add attributes mult');
                 spinalPanelManagerService.openPanel(
                   'url-right-click',
+                  propsData
+                );
+              },
+            });
+            menu.push({
+              title: 'Delete Spinal url',
+              target: () => {
+                const selSet = viewer.getSelection();
+                let allChildDbid = forgeTree.getAllLeafDbIds(
+                  selSet);
+
+                const propsData = {
+                  dbid: allChildDbid,
+                };
+                console.log(
+                  'open panel add attributes mult');
+                spinalPanelManagerService.openPanel(
+                  'delete-right-click',
                   propsData
                 );
               },

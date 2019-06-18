@@ -18,7 +18,8 @@ import {
   ExportToDriveButton,
   addAutoAttributesRightClick,
   registerRightClickButton,
-  addAutoUrlRightClick
+  addAutoUrlRightClick,
+  deleteAutoUrlRightClick
 } from './buttonClass/documentationPanel.js'
 import attributesRightClick from './view/rightClick/attributesRightClick.vue'
 
@@ -27,7 +28,9 @@ SpinalForgeExtention.registerExtention("attributes-right-click",
   addAutoAttributesRightClick);
 SpinalForgeExtention.registerExtention("url-right-click",
   addAutoUrlRightClick);
-
+SpinalForgeExtention.registerExtention("delete-right-click",
+  deleteAutoUrlRightClick);
+// deleteAutoUrlRightClick
 spinalContextMenuService.registerApp(
   circularMenuHookName,
   new DocumentationButton(),
