@@ -28,7 +28,8 @@ with this file. If not, see
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
       <div class="centerSelectedNodeName"
-           v-if="selectedNode != undefined">{{selectedNode.info.name.get()}}</div>
+           v-if="selectedNode !== undefined">{{selectedNode.info.name.get()
+        }}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
@@ -99,7 +100,7 @@ export default {
     opened(option) {
       this.option = option;
       // console.log(this.option);
-      if (option.selectedNode != undefined) {
+      if (option.selectedNode !== undefined) {
         if (option.selectedNode instanceof SpinalNode) {
           option.info = option.selectedNode;
         } else {

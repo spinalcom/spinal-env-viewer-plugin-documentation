@@ -7,7 +7,6 @@
       </md-button>
 
       <md-content>
-
         <md-list>
           <md-list-item class="myRowStyle">
             <span class="span-opacity"> Label </span>
@@ -27,34 +26,6 @@
                      :url="url"></menuURL>
           </md-list-item>
         </md-list>
-
-        <!-- <md-table>
-          <md-table-row class="myRowStyle ">
-            <md-table-head class="size-md-cell myCellStyle">
-              <span class="span-opacity"> Label </span>
-            </md-table-head>
-            <md-table-head class="size-md-cell myCellStyle2">
-              <span class="span-opacity"> URL </span>
-            </md-table-head>
-          </md-table-row>
-          <md-table-row class="myRowStyle"
-                        v-for="(url, index) in URLDisplayList"
-                        :key="index">
-            <md-table-cell class="size-md-cell">
-              <span class="span-opacity">{{url.label.get()}}</span>
-            </md-table-cell>
-            <md-table-cell class="size-md-cell">
-              <a class="back-line"
-                 v-tooltip="url.URL.get()"
-                 :href="url.URL.get()"
-                 target="_blank">
-                {{url.URL.get()}}</a>
-            </md-table-cell>
-            <md-table-cell>
-              <menuURL :url="url"></menuURL>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>-->
       </md-content>
 
     </div>
@@ -85,12 +56,10 @@
 
 
 <script>
-//import Toasted from "vue-toasted";
 import Vue from "vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { utilities } from "../../service/utilities.js";
 import menuURL from "./component/menuURL.vue";
-//Vue.use(Toasted);
 var viewer;
 export default {
   name: "linkPanel",
@@ -136,19 +105,6 @@ export default {
       });
       this.label = undefined;
       this.URL = undefined;
-      // if (selectedNode != undefined) {
-      //   this.$toasted.success("URL is register", {
-      //     position: "bot-right",
-      //     duration: 2000
-      //   });
-      // } else {
-      //   this.$toasted.error("BAD Request", {
-      //     position: "top-center",
-      //     duration: 2000
-      //   });
-      // }
-      // this.resetBind();
-      // this.updateURLList();
       this.addURLDialogueStatus = false;
     },
     resetBind() {
@@ -171,7 +127,6 @@ export default {
   },
   watch: {
     option: function() {
-      console.log("update option in url panel");
       this.resetBind();
     }
   },

@@ -28,25 +28,6 @@ with this file. If not, see
     <md-button @click="forgeSelection">
       {{selectedDbidArray.length}} Selected Object
     </md-button>
-    <div class="md-layout-item">
-      <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
-        <md-select v-model="categorySelected"
-                   name="category"
-                   id="category"
-                   placeholder="category">
-          <md-option value="none">Create Category</md-option>
-          <md-option v-for="(category, index) in allCategory"
-                     :key="index"
-                     :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
-        </md-select>
-      </md-field>
-      <md-field v-if="categorySelected === 'none'"
-                md-inline
-                style="width: 80%; margin-left: auto; margin-right: auto;">
-        <label>category</label>
-        <md-input v-model="categoryCreate"></md-input>
-      </md-field>
-    </div>
     <md-field md-inline
               style="width: 80%; margin-left: auto; margin-right: auto;">
       <label>Label</label>
@@ -55,11 +36,11 @@ with this file. If not, see
 
     <md-field md-inline
               style="width: 80%; margin-left: auto; margin-right: auto;">
-      <label>Value</label>
+      <label>URL</label>
       <md-input v-model="value"></md-input>
     </md-field>
     <md-button class="md-primary"
-               @click="addAttributes">Save</md-button>
+               @click="addURL">Save</md-button>
   </md-content>
 </template>
 
@@ -71,8 +52,6 @@ export default {
   data() {
     return {
       selectedDbidArray: [],
-      allCategory: [],
-      categorySelected: "none",
       label: undefined,
       value: undefined,
       categoryCreate: undefined
@@ -83,11 +62,8 @@ export default {
     forgeSelection() {
       this.viewer.select(this.selectedDbidArray);
     },
-    addAttributes() {
+    addURL() {
       let myCategoerySelected = this.categorySelected;
-      if (myCategoerySelected === "none") {
-        myCategoerySelected = this.categoryCreate;
-      }
       this.selectedDbidArray.forEach(dbid => {
         bimObjectService.getBIMObject(dbid).then(node => {
           if (node === undefined) {
@@ -97,9 +73,8 @@ export default {
               bimObjectService
                 .createBIMObject(dbid, res.name)
                 .then(myBIMObject => {
-                  serviceDocumentation.addAttributeByCategoryName(
+                  serviceDocumentation.addURL(
                     myBIMObject,
-                    myCategoerySelected,
                     this.label,
                     this.value
                   );
@@ -107,13 +82,7 @@ export default {
             });
           } else {
             // bim object is created, node is our bim object
-            // console.log("bim object exist");
-            serviceDocumentation.addAttributeByCategoryName(
-              node,
-              myCategoerySelected,
-              this.label,
-              this.value
-            );
+            serviceDocumentation.addURL(node, this.label, this.value);
           }
         });
       });
@@ -121,7 +90,6 @@ export default {
     opened(objet, viewer) {
       this.viewer = viewer;
       this.selectedDbidArray = objet.dbid;
-      this.allCategory = objet.category;
     },
     removed(option, viewer) {},
     closed(option, viewer) {}

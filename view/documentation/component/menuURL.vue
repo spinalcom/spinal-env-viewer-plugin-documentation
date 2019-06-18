@@ -71,14 +71,12 @@ export default {
   },
   methods: {
     edit() {
-      console.log("edit node");
       this.$emit("editURLNode", this.url, this.urlChange);
       this.activeEditURLNode = false;
     },
 
     remove() {
       this.$emit("removeURLNode", this.url.node);
-      console.log("edit node");
     }
   },
   mounted() {
