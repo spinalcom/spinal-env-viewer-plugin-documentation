@@ -10,40 +10,14 @@
         ADD ATTRIBUTES
       </md-button>
       <md-content>
-        <!-- <md-table>
-          <md-table-row class="myRowStyle ">
-            <md-table-head class="size-md-cell myCellStyle">
-              <span class="span-opacity"> Label </span>
-            </md-table-head>
-            <md-table-head class="size-md-cell myCellStyle2">
-              <span class="span-opacity"> Value </span>
-            </md-table-head>
-          </md-table-row>
-          <md-table-row class="myRowStyle"
-                        v-for="(url, index) in URLDisplayList"
-                        :key="index">
-            <md-table-cell class="size-md-cell">
-              <span class="span-opacity">{{url.element.label.get()}}</span>
-            </md-table-cell>
-            <md-table-cell class="size-md-cell">
-              <span class="back-line span-opacity">
-                {{url.element.value.get()}}</span>
-            </md-table-cell>
-            <md-table-cell>
-              <menu-attributes @editURLNode="editURLNode"
-                               @removeURLNode="removeURLNode"
-                               :url="url"></menu-attributes>
-            </md-table-cell>
-          </md-table-row>
-        </md-table> -->
       </md-content>
       <md-list class="widthOfList">
-        <md-list-item class="colorForCategory"
-                      v-for="(cat) in categoryDisplayList"
-                      :key="cat.node.info.name.get()"
+        <md-subheader>Local</md-subheader>
+        <md-list-item v-for="(cat) in categoryDisplayList"
+                      :key="cat.nameCat"
                       md-expand>
           <!-- <md-icon>whatshot</md-icon> -->
-          <span class="nameOfCategory md-list-item-text">{{cat.node.info.name.get()}}</span>
+          <span class="nameOfCategory md-list-item-text">{{cat.nameCat}}</span>
           <menuCategoryAttributes class="buttonRight"
                                   @editCategoryNode="editCategoryNode"
                                   @removeCategoryNode="removeCategoryNode"
@@ -67,6 +41,35 @@
 
         </md-list-item>
       </md-list>
+      <md-subheader>Shared Attributes</md-subheader>
+      <div v-for="(group) in groupURLDisplayList"
+           :key="group.groupName">
+        <span class="tabulationGroupName">{{group.groupName}}</span>
+
+        <md-list class="widthOfList">
+          <md-list-item v-for="(cat) in group.groupAttr"
+                        :key="cat.nameCat"
+                        md-expand>
+            <!-- <md-icon>whatshot</md-icon> -->
+            <span class="nameOfCategory md-list-item-text">{{cat.nameCat}}</span>
+
+            <md-list class="unsetPadding"
+                     slot="md-expand">
+              <md-list-item v-for="(attributess, index) in getLstOfAttributes(cat)"
+                            @click="selectAttributes(attributes)"
+                            :key="index"
+                            class="md-inset">
+                <span style="width: 40%">{{attributess.label.get()}}</span>
+                <span style="width: 40%">{{attributess.value.get()}}</span>
+
+              </md-list-item>
+
+            </md-list>
+
+          </md-list-item>
+        </md-list>
+      </div>
+
     </div>
     <md-dialog :md-active.sync="activeDialogStatus">
       <md-dialog-title>Add Attributes</md-dialog-title>
@@ -134,7 +137,6 @@
 
 
 <script>
-
 //import Toasted from "vue-toasted";
 
 import Vue from "vue";
@@ -159,11 +161,14 @@ export default {
       category: undefined,
       categoryDisplayList: [],
       URLDisplayList: [],
-      myBind: undefined
+      myBind: undefined,
+      groupURLDisplayList: [],
+      myBindParent: undefined,
+      parentListToBind: undefined
     };
   },
   components: { menuAttributes, menuCategoryAttributes, attributesImport },
-  props: ["option"],
+  props: ["option", "parentGroup"],
   methods: {
     editURLNode(attributes, urlChange) {
       // console.log(attributes);
@@ -192,32 +197,37 @@ export default {
       // get la list d'attributs depuis les attributes de forge
     },
     updatecategorySelected(categorySelected) {
-      // console.log("updateCategorySelected");
       this.categorySelected = categorySelected;
-      // console.log(this.categorySelected);
     },
     async updateURLList() {
       if (this.option.info != undefined) {
-        // let test = await serviceDocumentation.getAllAttributes(
-        //   this.option.info
-        // );
         this.categoryDisplayList = await serviceDocumentation.getCategory(
           this.option.info
         );
-        // console.log(this.categoryDisplayList);
       }
-
-      // if (this.option.info != undefined)
-      //   this.URLDisplayList = await serviceDocumentation.getAttributes(
-      //     this.option.info
-      //   );
-      // else this.URLDisplayList = [];
+    },
+    async updateAttrParent() {
+      this.groupURLDisplayList = [];
+      let json = {};
+      for (let i = 0; i < this.parentGroup.length; i++) {
+        const node = this.parentGroup[i];
+        json = {
+          groupName: node.info.name.get(),
+          groupAttr: await serviceDocumentation.getCategory(node)
+        };
+        this.groupURLDisplayList.push(json);
+      }
+      console.log(this.groupURLDisplayList);
     },
     getLstOfAttributes(cat) {
+      console.log(cat);
+
       let tab = [];
-      for (let i = 0; i < cat.element.length; i++) {
-        const element = cat.element[i];
-        tab.push(element);
+      if (cat.element != undefined) {
+        for (let i = 0; i < cat.element.length; i++) {
+          const element = cat.element[i];
+          tab.push(element);
+        }
       }
       return tab;
     },
@@ -247,7 +257,7 @@ export default {
             this.option.info,
             this.categorySelected
           );
-          console.log(cat);
+          // console.log(cat);
           serviceDocumentation.addAttributeByCategory(
             this.option.info,
             cat,
@@ -357,15 +367,37 @@ export default {
           }
         }
       }
+    },
+    resetBindParent() {
+      // j'ai la liste de tous les node parent
+      // console.log("reserbindparent");
+      // console.log(this.parentGroup);
+
+      if (this.parentListToBind == undefined) {
+        this.parentListToBind = new Lst();
+      }
+      if (!this.parentListToBind.length == this.parentGroup.length) {
+        this.parentListToBind.splice(0, this.parentListToBind.length);
+        for (let i = 0; i < this.parentGroup.length; i++) {
+          const element = this.parentGroup[i];
+          this.parentListToBind.push(element);
+        }
+      }
+      if (this.myBindParent == undefined)
+        this.parentListToBind.bind(this.updateAttrParent.bind(this));
     }
   },
   mounted() {
     viewer = window.spinal.ForgeViewer.viewer;
     this.resetBind();
+    this.resetBindParent();
   },
   watch: {
     option: function() {
       this.resetBind();
+    },
+    parentGroup: function() {
+      this.resetBindParent();
     }
   },
   beforeDestroy() {
@@ -400,5 +432,8 @@ export default {
 .buttonRight {
   position: absolute;
   right: 0%;
+}
+.tabulationGroupName {
+  padding-left: 20px;
 }
 </style>

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 const {
   SpinalContextApp
 } = require('spinal-env-viewer-context-menu-service');
@@ -17,9 +18,11 @@ import documentationComponent from '../documentationComponent.vue';
 import attributesRightClick from '../view/rightClick/attributesRightClick.vue';
 import deleteUrlRightClick from '../view/rightClick/deleteUrlRightClick.vue';
 import urlRightClick from '../view/rightClick/urlRightClick.vue';
-import Vue from 'vue';
 import SpinalContext from 'spinal-model-graph/build/Nodes/SpinalContext';
 import forgeTree from '../service/forgeTree.js';
+import {
+  typeLst
+} from "spinal-env-viewer-room-manager/js/service";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                Documentation Panel                                             //
@@ -57,7 +60,10 @@ export class DocumentationButton extends SpinalContextApp {
   isShown(option) {
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
     // console.log(option)
-    return Promise.resolve(true);
+    // console.log(typeLst);
+
+
+    return Promise.resolve(true)
   }
 
   action(option) {

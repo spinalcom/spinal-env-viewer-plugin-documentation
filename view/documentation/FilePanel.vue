@@ -75,7 +75,7 @@ export default {
     };
   },
   components: { drive, menuFile },
-  props: ["option"],
+  props: ["option", "parentGroup"],
   methods: {
     downloadFile(file, index) {
       console.log(file, index);
@@ -236,6 +236,9 @@ export default {
       this.pathTab = [];
       this.pathTab.push(pathObj);
       this.resetBind();
+    },
+    parentGroup: function() {
+      // this.resetBindParent();
     }
   },
   async mounted() {
@@ -254,8 +257,9 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.option.info != undefined && this.myBind != undefined)
-      {this.option.info.unbind(this.myBind);}
+    if (this.option.info != undefined && this.myBind != undefined) {
+      this.option.info.unbind(this.myBind);
+    }
   }
 };
 </script>

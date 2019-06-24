@@ -50,16 +50,19 @@ with this file. If not, see
     <filepanel v-if="activeTab == 0"
                :option="option"
                @updateMyBIMObject="updateSelectedBIMObject"
+               :parentGroup="parentGroup"
                :selectedNode="selectedNode"
                :dbid="dbid"></filepanel>
     <urlpanel v-if="activeTab == 1"
               :option="option"
+              :parentGroup="parentGroup"
               :selectedNode="selectedNode"
               @updateMyBIMObject="updateSelectedBIMObject"
               :dbid="dbid"></urlpanel>
     <attributespanel v-if="activeTab == 2"
                      :selectedNode="selectedNode"
                      :option="option"
+                     :parentGroup="parentGroup"
                      @updateMyBIMObject="updateSelectedBIMObject"
                      :dbid="dbid"></attributespanel>
   </div>
@@ -73,6 +76,7 @@ import {
   SpinalGraphService,
   SpinalNode
 } from "spinal-env-viewer-graph-service";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 export default {
   name: "my_compo",
   data() {
@@ -81,7 +85,8 @@ export default {
       selectedNode: undefined,
       dbid: undefined,
       option: undefined,
-      buttonList: []
+      buttonList: [],
+      parentGroup: undefined
     };
   },
   components: { urlpanel, filepanel, attributespanel },
@@ -91,15 +96,13 @@ export default {
       else return { background: "unset" };
     },
     updateSelectedBIMObject(option) {
-      // console.log("update option");
-      // this.option = option;
       this.option = {};
       Object.assign(this.option, option);
       this.selectedNode = this.option.info;
     },
     opened(option) {
       this.option = option;
-      // console.log(this.option);
+      let _this = this;
       if (option.selectedNode !== undefined) {
         if (option.selectedNode instanceof SpinalNode) {
           option.info = option.selectedNode;
@@ -119,6 +122,15 @@ export default {
           this.dbid = option.dbid;
         }
       }
+      // console.log("test of group parent");
+      // console.log(serviceDocumentation);
+
+      serviceDocumentation
+        .getParentGroup(this.selectedNode)
+        .then(allParentGroup => {
+          _this.parentGroup = allParentGroup;
+          // console.log(allParentGroup);
+        });
     },
     removed(option, viewer) {
       // console.log("removed option", option);
