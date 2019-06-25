@@ -13,12 +13,12 @@
             <span class="nameOfCategory md-list-item-text">Local</span> -->
 
         <md-list>
-          <md-subheader class="titleOfSharedLocal">Local</md-subheader>
+          <md-subheader class="hr-sect ">Local URL</md-subheader>
           <!-- <md-list-item class="myRowStyle">
                 <span class="span-opacity"> Label </span>
                 <span class="span-opacity"> URL </span>
               </md-list-item> -->
-          <md-list-item class="myRowStyle"
+          <md-list-item class="myRowStyle colorForCategory"
                         v-for="(url, index) in URLDisplayList"
                         :key="index">
             <span class="span-opacity">{{url.element.label.get()}}</span>
@@ -35,8 +35,8 @@
         <!-- </md-list-item>
         </md-list> -->
         <md-list v-if="groupURLDisplayList.length > 0">
-          <md-subheader class="titleOfSharedLocal">Shared URL</md-subheader>
-          <md-list-item class="myRowStyle"
+          <md-subheader class="hr-sect ">Shared URL</md-subheader>
+          <md-list-item class="colorForCategory myRowStyle"
                         v-for="(cat) in groupURLDisplayList"
                         :key="cat.groupName"
                         md-expand>

@@ -9,7 +9,7 @@
             @click="loadRoute(index)"
             :key="index">{{path.name}} </span>
     </div>
-    <md-subheader class="titleOfSharedLocal">Local Files</md-subheader>
+    <md-subheader class="hr-sect ">Local Files</md-subheader>
     <md-table v-if="displayList.length != 0">
       <md-table-row v-for="(files, index) in displayList"
                     @dblclick.native="enterInDirectory(files)"
@@ -28,7 +28,7 @@
       </md-table-row>
     </md-table>
     <div v-if="boolInDirectory == true && groupAttrDisplayList.length > 0">
-      <md-subheader class="titleOfSharedLocal">Shared Files</md-subheader>
+      <md-subheader class="hr-sect ">Shared Files</md-subheader>
       <md-table>
         <!-- <span>{{group.nameGroup}}</span> -->
         <md-table-row v-for="(group, index) in groupAttrDisplayList"

@@ -11,9 +11,10 @@
       </md-button>
       <md-content>
       </md-content>
+      <md-subheader class="hr-sect ">Local Attributes</md-subheader>
       <md-list class="widthOfList">
-        <md-subheader class="titleOfSharedLocal">Local Attributes</md-subheader>
-        <md-list-item v-for="(cat) in categoryDisplayList"
+        <md-list-item class="colorForCategory"
+                      v-for="(cat) in categoryDisplayList"
                       :key="cat.nameCat"
                       md-expand>
           <!-- <md-icon>whatshot</md-icon> -->
@@ -41,14 +42,15 @@
 
         </md-list-item>
       </md-list>
-      <div v-if="groupAttrDisplayList.length > 0"
-           class="widthOfList">
-        <md-subheader class="titleOfSharedLocal">Shared Attributes</md-subheader>
-        <md-list v-for="(group) in groupAttrDisplayList"
+      <div v-if="groupAttrDisplayList.length > 0">
+        <md-subheader class="hr-sect ">Shared Attributes</md-subheader>
+        <md-list class="widthOfList"
+                 v-for="(group) in groupAttrDisplayList"
                  :key="group.groupName">
           <span class="tabulationGroupName">{{group.groupName}}</span>
 
-          <md-list-item v-for="(cat) in group.groupAttr"
+          <md-list-item class="colorForCategory"
+                        v-for="(cat) in group.groupAttr"
                         :key="cat.nameCat"
                         md-expand>
             <!-- <md-icon>whatshot</md-icon> -->
@@ -428,7 +430,7 @@ export default {
   margin-right: auto;
 }
 .colorForCategory > .md-list-item-container > .md-list-item-content {
-  background-color: rgba(53, 107, 171, 1);
+  background-color: rgba(204, 204, 204, 0.2);
 }
 .buttonRight {
   position: absolute;
