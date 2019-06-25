@@ -129,7 +129,7 @@ export default {
         .getParentGroup(this.selectedNode)
         .then(allParentGroup => {
           _this.parentGroup = allParentGroup;
-          console.log(_this.parentGroup);
+          // console.log(_this.parentGroup);
 
           // console.log(allParentGroup);
         });
@@ -198,6 +198,14 @@ export default {
 
 .filesPaddingPath {
   padding-left: 17px;
+  display: flex;
+  padding-right: 17px;
+  height: auto;
+}
+.sizeOfPathTab {
+  flex-grow: 1;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .filesBox {
   background: transparent !important;
@@ -258,8 +266,10 @@ export default {
   width: 100%;
 }
 .addURLButtonPanel {
-  width: calc(100% - 16px);
   box-sizing: border-box;
+  float: right;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .attributesButtonPanel {
   width: calc(50% - 16px);

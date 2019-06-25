@@ -1,11 +1,13 @@
 <template>
   <md-content class=" container-link urlBox">
     <div>
-      <md-button class="addURLButtonPanel"
-                 @click="addURLDialogueStatus = true">
-        ADD URL
-      </md-button>
-
+      <div class="filesPaddingPath">
+        <div class="sizeOfPathTab"> </div>
+        <md-button class="md-icon-button addURLButtonPanel"
+                   @click="addURLDialogueStatus = true">
+          <md-icon>add_circle_outline</md-icon>
+        </md-button>
+      </div>
       <md-content>
         <!-- <md-list> -->
         <!-- <md-list-item md-expand

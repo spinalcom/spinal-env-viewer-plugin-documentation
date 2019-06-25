@@ -1,14 +1,19 @@
 <template>
   <md-content class="md-scrollbar urlBox">
-    <md-button class="addURLButtonPanel"
-               @click="activeAddDirectory= true"
-               :disabled="!boolInDirectory">
-      File System Import
-    </md-button>
+
     <div class="filesPaddingPath">
-      <span v-for="(path,index) in pathTab"
-            @click="loadRoute(index)"
-            :key="index">{{path.name}} </span>
+      <div class="sizeOfPathTab">
+        <span v-for="(path,index) in pathTab"
+              @click="loadRoute(index)"
+              :key="index">
+          {{path.name}}
+        </span>
+      </div>
+      <md-button class="md-icon-button addURLButtonPanel"
+                 @click="activeAddDirectory= true"
+                 :disabled="!boolInDirectory">
+        <md-icon>add_circle_outline</md-icon>
+      </md-button>
     </div>
     <md-subheader class="hr-sect ">Local Files</md-subheader>
     <md-table v-if="displayList.length != 0">
@@ -89,6 +94,7 @@ export default {
       importedFiles: undefined,
       importedDriveFiles: undefined,
       selectedDirectory: undefined,
+      oldDirectory: undefined,
       displayList: [],
       multipleFile: undefined,
       myBind: undefined,
@@ -157,8 +163,15 @@ export default {
         // console.log("current directory");
         // console.log("home");
       } else {
-        this.deleteBind();
         this.selectedDirectory = this.pathTab[index].directory;
+        // console.log("//////////////////////////////////////////////");
+
+        // console.log(index);
+        // console.log(this.pathTab);
+        // console.log(this.pathTab[index]);
+        // console.log(this.selectedDirectory);
+        // console.log("//////////////////////////////////////////////");
+
         let length = this.pathTab.length - 1;
         // console.log(index, length - index);
         this.pathTab.splice(index + 1, length - index);
@@ -178,7 +191,7 @@ export default {
           };
           this.pathTab.push(pathObj);
           this.selectedDirectory = directory;
-          console.log(this.pathTab);
+          // console.log(this.pathTab);
 
           this.resetBind();
         });
@@ -197,6 +210,8 @@ export default {
       this.resetBind;
     },
     updateDisplayList() {
+      // console.log("updateDisplayList");
+
       this.displayList = [];
       if (this.selectedDirectory != undefined) {
         for (let i = 0; i < this.selectedDirectory.length; i++) {
@@ -228,7 +243,7 @@ export default {
           groupAttr: dir,
           files: this.getFileInDir(dir)
         };
-        console.log(this.groupAttrDisplayList);
+        // console.log(this.groupAttrDisplayList);
 
         this.groupAttrDisplayList.push(json);
       }
@@ -275,8 +290,10 @@ export default {
     },
     deleteBind() {
       if (this.myBind != undefined) {
-        this.selectedDirectory.unbind(this.myBind);
-        this.myBind = undefined;
+        if (this.oldDirectory != undefined) {
+          this.oldDirectory.unbind(this.myBind);
+          this.myBind = undefined;
+        }
       }
     },
     resetBind() {
@@ -284,10 +301,16 @@ export default {
         if (this.option != undefined) {
           this.deleteBind();
           if (this.myBind == undefined) {
+            // console.log("updateList");
+            // console.log(this.selectedDirectory);
+
             if (this.selectedDirectory != undefined) {
               this.myBind = this.selectedDirectory.bind(
                 this.updateDisplayList.bind(this)
               );
+              this.oldDirectory = this.selectedDirectory;
+            } else {
+              this.updateDisplayList();
             }
           }
         }
@@ -316,8 +339,9 @@ export default {
       this.selectedDirectory = await FileExplorer.getDirectory(
         this.option.info
       );
+      let namePath = this.option.info.info.name.get() + " /";
       let pathObj = {
-        name: "home /",
+        name: namePath,
         directory: this.selectedDirectory
       };
       this.pathTab = [];
@@ -328,9 +352,9 @@ export default {
       this.resetBind();
     },
     parentGroup: function() {
-      console.log("update of parents group list");
-      console.log(this.parentGroup);
-      console.log("update of parents group list");
+      // console.log("update of parents group list");
+      // console.log(this.parentGroup);
+      // console.log("update of parents group list");
 
       this.resetBindParent();
     }
@@ -341,8 +365,11 @@ export default {
         this.selectedDirectory = await FileExplorer.getDirectory(
           this.option.info
         );
+        // console.log(this.option.info.info.name.get());
+
+        let namePath = this.option.info.info.name.get() + " /";
         let pathObj = {
-          name: "home /",
+          name: namePath,
           directory: this.selectedDirectory
         };
         this.boolInDirectory = true;
