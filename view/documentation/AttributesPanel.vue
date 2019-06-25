@@ -47,7 +47,7 @@
         <md-list class="widthOfList"
                  v-for="(group) in groupAttrDisplayList"
                  :key="group.groupName">
-          <span class="tabulationGroupName">{{group.groupName}}</span>
+          <md-subheader class="tabulationGroupName">{{group.groupName}}</md-subheader>
 
           <md-list-item class="colorForCategory"
                         v-for="(cat) in group.groupAttr"
@@ -429,15 +429,14 @@ export default {
   margin-left: auto;
   margin-right: auto;
 }
-.colorForCategory > .md-list-item-container > .md-list-item-content {
-  background-color: rgba(204, 204, 204, 0.2);
-}
+
 .buttonRight {
   position: absolute;
   right: 0%;
 }
 .tabulationGroupName {
   padding-left: 20px;
+  border-top: 2px dotted;
 }
 .titleOfSharedLocal {
   margin-left: auto;

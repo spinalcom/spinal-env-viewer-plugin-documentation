@@ -1,7 +1,8 @@
 <template>
   <md-content class="md-scrollbar urlBox">
     <md-button class="addURLButtonPanel"
-               @click="activeAddDirectory= true">
+               @click="activeAddDirectory= true"
+               :disabled="!boolInDirectory">
       File System Import
     </md-button>
     <div class="filesPaddingPath">
