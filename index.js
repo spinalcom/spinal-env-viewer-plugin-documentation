@@ -22,9 +22,9 @@ import {
   addAutoUrlRightClick,
   deleteAutoUrlRightClick
 } from './buttonClass/documentationPanel.js'
-import {
-  DocumentationGroupButton
-} from "./buttonClass/documentationGroup";
+// import {
+//   DocumentationGroupButton
+// } from "./buttonClass/documentationGroup";
 import attributesRightClick from './view/rightClick/attributesRightClick.vue'
 
 
