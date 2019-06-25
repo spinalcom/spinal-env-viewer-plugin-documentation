@@ -9,6 +9,7 @@
             @click="loadRoute(index)"
             :key="index">{{path.name}} </span>
     </div>
+    <md-subheader class="titleOfSharedLocal">Local Files</md-subheader>
     <md-table v-if="displayList.length != 0">
       <md-table-row v-for="(files, index) in displayList"
                     @dblclick.native="enterInDirectory(files)"
@@ -26,7 +27,26 @@
         </md-table-cell>
       </md-table-row>
     </md-table>
-
+    <div v-if="boolInDirectory == true && groupAttrDisplayList.length > 0">
+      <md-subheader class="titleOfSharedLocal">Shared Files</md-subheader>
+      <md-table>
+        <!-- <span>{{group.nameGroup}}</span> -->
+        <md-table-row v-for="(group, index) in groupAttrDisplayList"
+                      :key="index">
+          <md-table-cell>
+            <md-icon>folder</md-icon>
+          </md-table-cell>
+          <md-table-cell @dblclick.native="enterInDirectoryParent(group)"
+                         md-numeric>{{group.groupName}}</md-table-cell>
+          <md-table-cell>
+            <!-- <menuFile :file="files"
+                    :index="index"
+                    @downloadFile="downloadFile">
+          </menuFile> -->
+          </md-table-cell>
+        </md-table-row>
+      </md-table>
+    </div>
     <md-dialog :md-active.sync="activeAddDirectory">
       <md-tabs md-dynamic-height
                @md-changed="resetImportedFiles"
@@ -71,14 +91,17 @@ export default {
       displayList: [],
       multipleFile: undefined,
       myBind: undefined,
-      pathTab: []
+      pathTab: [],
+      parentListToBind: new Lst(),
+      groupAttrDisplayList: [],
+      boolInDirectory: false
     };
   },
   components: { drive, menuFile },
   props: ["option", "parentGroup"],
   methods: {
     downloadFile(file, index) {
-      console.log(file, index);
+      // console.log(file, index);
 
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
@@ -108,7 +131,7 @@ export default {
       }
     },
     removeFile(file, index) {
-      console.log(file, index);
+      // console.log(file, index);
       this.selectedDirectory.splice(index, 1);
     },
     getFileImported(files) {
@@ -130,14 +153,18 @@ export default {
     loadRoute(index) {
       // console.log(this.selectedDirectory);
       if (index == this.pathTab.length - 1) {
-        console.log("current directory");
+        // console.log("current directory");
+        // console.log("home");
       } else {
         this.deleteBind();
         this.selectedDirectory = this.pathTab[index].directory;
         let length = this.pathTab.length - 1;
-        console.log(index, length - index);
+        // console.log(index, length - index);
         this.pathTab.splice(index + 1, length - index);
         this.resetBind();
+        if (this.pathTab.length == 1) {
+          this.boolInDirectory = true;
+        }
       }
     },
 
@@ -150,9 +177,23 @@ export default {
           };
           this.pathTab.push(pathObj);
           this.selectedDirectory = directory;
+          console.log(this.pathTab);
+
           this.resetBind();
         });
+        this.boolInDirectory = false;
       }
+    },
+    enterInDirectoryParent(group) {
+      let pathObj = {
+        name: group.groupName + " /",
+        directory: group.groupAttr
+      };
+      this.pathTab.push(pathObj);
+      this.selectedDirectory = group.groupAttr;
+      this.boolInDirectory = false;
+      this.updateDisplayList();
+      this.resetBind;
     },
     updateDisplayList() {
       this.displayList = [];
@@ -161,6 +202,34 @@ export default {
           const file = this.selectedDirectory[i];
           this.displayList.push(file);
         }
+      }
+    },
+    getFileInDir(directory) {
+      let displayList = [];
+      if (directory != undefined) {
+        for (let i = 0; i < directory.length; i++) {
+          const file = directory[i];
+          displayList.push(file);
+        }
+      }
+      // console.log(displayList);
+      return displayList;
+    },
+    async updateDisplayListParent() {
+      // console.log(this.parentListToBind);
+      this.groupAttrDisplayList = [];
+      let json = {};
+      for (let i = 0; i < this.parentGroup.length; i++) {
+        const node = this.parentGroup[i];
+        const dir = await FileExplorer.getDirectory(node);
+        json = {
+          groupName: node.info.name.get(),
+          groupAttr: dir,
+          files: this.getFileInDir(dir)
+        };
+        console.log(this.groupAttrDisplayList);
+
+        this.groupAttrDisplayList.push(json);
       }
     },
     sendAddFile() {
@@ -222,6 +291,23 @@ export default {
           }
         }
       }
+    },
+    resetBindParent() {
+      // j'ai la liste de tous les node parent
+      // console.log("reserbindparent");
+      // console.log(this.parentGroup);
+      this.parentListToBind.splice(0, this.parentListToBind.length);
+      for (let i = 0; i < this.parentGroup.length; i++) {
+        const element = this.parentGroup[i];
+        this.parentListToBind.push(element);
+      }
+      if (this.myBindParent == undefined) {
+        // console.log(this.parentListToBind);
+
+        this.myBindParent = this.parentListToBind.bind(
+          this.updateDisplayListParent.bind(this)
+        );
+      }
     }
   },
   watch: {
@@ -235,10 +321,17 @@ export default {
       };
       this.pathTab = [];
       this.pathTab.push(pathObj);
+      this.boolInDirectory = true;
+      // console.log(this.parentGroup);
+
       this.resetBind();
     },
     parentGroup: function() {
-      // this.resetBindParent();
+      console.log("update of parents group list");
+      console.log(this.parentGroup);
+      console.log("update of parents group list");
+
+      this.resetBindParent();
     }
   },
   async mounted() {
@@ -251,8 +344,10 @@ export default {
           name: "home /",
           directory: this.selectedDirectory
         };
+        this.boolInDirectory = true;
         this.pathTab.push(pathObj);
         this.resetBind();
+        this.resetBindParent();
       }
     }
   },

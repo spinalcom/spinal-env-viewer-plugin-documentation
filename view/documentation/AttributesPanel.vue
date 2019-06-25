@@ -12,7 +12,7 @@
       <md-content>
       </md-content>
       <md-list class="widthOfList">
-        <md-subheader>Local</md-subheader>
+        <md-subheader class="titleOfSharedLocal">Local Attributes</md-subheader>
         <md-list-item v-for="(cat) in categoryDisplayList"
                       :key="cat.nameCat"
                       md-expand>
@@ -41,12 +41,13 @@
 
         </md-list-item>
       </md-list>
-      <md-subheader>Shared Attributes</md-subheader>
-      <div v-for="(group) in groupURLDisplayList"
-           :key="group.groupName">
-        <span class="tabulationGroupName">{{group.groupName}}</span>
+      <div v-if="groupAttrDisplayList.length > 0"
+           class="widthOfList">
+        <md-subheader class="titleOfSharedLocal">Shared Attributes</md-subheader>
+        <md-list v-for="(group) in groupAttrDisplayList"
+                 :key="group.groupName">
+          <span class="tabulationGroupName">{{group.groupName}}</span>
 
-        <md-list class="widthOfList">
           <md-list-item v-for="(cat) in group.groupAttr"
                         :key="cat.nameCat"
                         md-expand>
@@ -162,7 +163,7 @@ export default {
       categoryDisplayList: [],
       URLDisplayList: [],
       myBind: undefined,
-      groupURLDisplayList: [],
+      groupAttrDisplayList: [],
       myBindParent: undefined,
       parentListToBind: undefined
     };
@@ -207,7 +208,7 @@ export default {
       }
     },
     async updateAttrParent() {
-      this.groupURLDisplayList = [];
+      this.groupAttrDisplayList = [];
       let json = {};
       for (let i = 0; i < this.parentGroup.length; i++) {
         const node = this.parentGroup[i];
@@ -215,12 +216,12 @@ export default {
           groupName: node.info.name.get(),
           groupAttr: await serviceDocumentation.getCategory(node)
         };
-        this.groupURLDisplayList.push(json);
+        this.groupAttrDisplayList.push(json);
       }
-      console.log(this.groupURLDisplayList);
+      // console.log(this.groupAttrDisplayList);
     },
     getLstOfAttributes(cat) {
-      console.log(cat);
+      // console.log(cat);
 
       let tab = [];
       if (cat.element != undefined) {
@@ -435,5 +436,10 @@ export default {
 }
 .tabulationGroupName {
   padding-left: 20px;
+}
+.titleOfSharedLocal {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
 }
 </style>

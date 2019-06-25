@@ -13,7 +13,7 @@
             <span class="nameOfCategory md-list-item-text">Local</span> -->
 
         <md-list>
-          <md-subheader>Local</md-subheader>
+          <md-subheader class="titleOfSharedLocal">Local</md-subheader>
           <!-- <md-list-item class="myRowStyle">
                 <span class="span-opacity"> Label </span>
                 <span class="span-opacity"> URL </span>
@@ -35,7 +35,7 @@
         <!-- </md-list-item>
         </md-list> -->
         <md-list v-if="groupURLDisplayList.length > 0">
-          <md-subheader>Shared URL</md-subheader>
+          <md-subheader class="titleOfSharedLocal">Shared URL</md-subheader>
           <md-list-item class="myRowStyle"
                         v-for="(cat) in groupURLDisplayList"
                         :key="cat.groupName"
