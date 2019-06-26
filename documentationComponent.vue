@@ -46,25 +46,26 @@ with this file. If not, see
                  :style="activeTabColor(2)"
                  class="md-layout-item toolbarButton">Attributes</md-button>
     </md-toolbar>
-
-    <filepanel v-if="activeTab == 0"
-               :option="option"
-               @updateMyBIMObject="updateSelectedBIMObject"
-               :parentGroup="parentGroup"
-               :selectedNode="selectedNode"
-               :dbid="dbid"></filepanel>
-    <urlpanel v-if="activeTab == 1"
-              :option="option"
-              :parentGroup="parentGroup"
-              :selectedNode="selectedNode"
-              @updateMyBIMObject="updateSelectedBIMObject"
-              :dbid="dbid"></urlpanel>
-    <attributespanel v-if="activeTab == 2"
-                     :selectedNode="selectedNode"
-                     :option="option"
-                     :parentGroup="parentGroup"
-                     @updateMyBIMObject="updateSelectedBIMObject"
-                     :dbid="dbid"></attributespanel>
+    <transition name="changeTabDocumentation">
+      <filepanel v-if="activeTab == 0"
+                 :option="option"
+                 @updateMyBIMObject="updateSelectedBIMObject"
+                 :parentGroup="parentGroup"
+                 :selectedNode="selectedNode"
+                 :dbid="dbid"></filepanel>
+      <urlpanel v-else-if="activeTab == 1"
+                :option="option"
+                :parentGroup="parentGroup"
+                :selectedNode="selectedNode"
+                @updateMyBIMObject="updateSelectedBIMObject"
+                :dbid="dbid"></urlpanel>
+      <attributespanel v-else
+                       :selectedNode="selectedNode"
+                       :option="option"
+                       :parentGroup="parentGroup"
+                       @updateMyBIMObject="updateSelectedBIMObject"
+                       :dbid="dbid"></attributespanel>
+    </transition>
   </div>
 </template>
 
@@ -92,8 +93,9 @@ export default {
   components: { urlpanel, filepanel, attributespanel },
   methods: {
     activeTabColor: function(value) {
-      if (this.activeTab == value) return { background: "#356BaB" };
-      else return { background: "unset" };
+      if (this.activeTab == value)
+        return { background: "#356BaB", border: "1px solid white" };
+      else return { background: "unset", border: "1px solid white" };
     },
     updateSelectedBIMObject(option) {
       this.option = {};
@@ -378,4 +380,23 @@ export default {
 /* .commentcutPart {
   margin: unset
 } */
+
+.changeTabDocumentation-enter-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.changeTabDocumentation-enter {
+  opacity: 0;
+  transform: translateX(-1em);
+  min-width: unset;
+}
+
+.changeTabDocumentation-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+  min-width: unset;
+}
+
+.iconPlusDocumentation {
+  color: #356bab;
+}
 </style>

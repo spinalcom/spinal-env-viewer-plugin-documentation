@@ -5,7 +5,7 @@
         <div class="sizeOfPathTab"> </div>
         <md-button class="md-icon-button addURLButtonPanel"
                    @click="addURLDialogueStatus = true">
-          <md-icon>add_circle_outline</md-icon>
+          <i class="material-icons iconPlusDocumentation">add_circle_outline</i>
         </md-button>
       </div>
       <md-content>
@@ -55,9 +55,6 @@
                    :href="url.element.URL.get()"
                    target="_blank">
                   {{url.element.URL.get()}}</a>
-                <menuURL @editURLNode="editURLNode"
-                         @removeURLNode="removeURLNode"
-                         :url="url"></menuURL>
               </md-list-item>
 
             </md-list>

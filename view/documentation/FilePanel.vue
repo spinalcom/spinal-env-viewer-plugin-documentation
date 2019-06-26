@@ -12,7 +12,7 @@
       <md-button class="md-icon-button addURLButtonPanel"
                  @click="activeAddDirectory= true"
                  :disabled="!boolInShared">
-        <md-icon>add_circle_outline</md-icon>
+        <i class="material-icons iconPlusDocumentation">add_circle_outline</i>
       </md-button>
     </div>
     <md-subheader v-if="boolInShared == true"

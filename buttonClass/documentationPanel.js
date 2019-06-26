@@ -41,7 +41,8 @@ export const DocumentationExtension = SpinalForgeExtention.createExtention({
   },
   style: {
     left: '405px',
-    height: '50vh',
+    width: '30vh',
+    height: '40vh'
   },
   onload: () => {},
   onUnLoad: () => {},
