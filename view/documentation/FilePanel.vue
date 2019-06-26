@@ -31,8 +31,9 @@
           </div>
         </md-table-cell>
         <!-- <md-table-cell md-numeric>{{files.name.get()}}</md-table-cell> -->
-        <md-table-cell v-if="boolInShared == true">
+        <md-table-cell>
           <menuFile :file="files"
+                    :boolInShared="boolInShared"
                     :index="index"
                     @downloadFile="downloadFile"
                     @removeFile="removeFile">

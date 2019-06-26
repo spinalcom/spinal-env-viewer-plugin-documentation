@@ -33,7 +33,8 @@ with this file. If not, see
     <md-menu-content>
       <md-menu-item v-if="file._info.model_type.get() != 'Directory'"
                     @click="download">Download</md-menu-item>
-      <md-menu-item @click="remove">Remove</md-menu-item>
+      <md-menu-item v-if="boolInShared == true"
+                    @click="remove">Remove</md-menu-item>
     </md-menu-content>
   </md-menu>
 </template>
@@ -41,7 +42,7 @@ with this file. If not, see
 <script>
 export default {
   name: "my_compo",
-  props: ["file", "index"],
+  props: ["file", "index", "boolInShared"],
   data() {
     return {};
   },
