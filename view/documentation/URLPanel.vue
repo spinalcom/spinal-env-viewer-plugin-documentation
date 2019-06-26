@@ -36,32 +36,34 @@
         </md-list>
         <!-- </md-list-item>
         </md-list> -->
-        <md-list v-if="groupURLDisplayList.length > 0">
-          <md-subheader class="hr-sect ">Shared URL</md-subheader>
-          <md-list-item class="colorForCategory myRowStyle"
-                        v-for="(cat) in groupURLDisplayList"
-                        :key="cat.groupName"
-                        md-expand>
-            <!-- <md-icon>whatshot</md-icon> -->
-            <span class="nameOfCategory md-list-item-text">{{cat.groupName}}</span>
 
-            <md-list class="unsetPadding"
-                     slot="md-expand">
-              <md-list-item v-for="(url, index) in cat.url"
-                            :key="index"
-                            class="md-inset">
-                <span style="width: 40%">{{url.element.label.get()}}</span>
+        <div v-if="groupURLDisplayList.length > 0">
+          <md-subheader class="hr-sect ">Shared URL</md-subheader>
+          <div class="colorForCategory myRowStyle"
+               v-for="(cat) in groupURLDisplayList"
+               :key="cat.groupName">
+            <!-- <md-icon>whatshot</md-icon> -->
+            <md-subheader class="sharedCategoryCss">{{cat.groupName}}</md-subheader>
+
+            <md-list class="unsetPadding">
+              <md-list-item class=" colorForCategory"
+                            v-for="(url, index) in cat.url"
+                            :key="index">
+                <span class="span-opacity">{{url.element.label.get()}}</span>
                 <a class="back-line"
                    v-tooltip="url.element.URL.get()"
                    :href="url.element.URL.get()"
                    target="_blank">
                   {{url.element.URL.get()}}</a>
+                <menuURL @editURLNode="editURLNode"
+                         @removeURLNode="removeURLNode"
+                         :url="url"></menuURL>
               </md-list-item>
 
             </md-list>
 
-          </md-list-item>
-        </md-list>
+          </div>
+        </div>
       </md-content>
 
     </div>

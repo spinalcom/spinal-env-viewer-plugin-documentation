@@ -47,7 +47,7 @@
         <md-list class="widthOfList"
                  v-for="(group) in groupAttrDisplayList"
                  :key="group.groupName">
-          <md-subheader class="tabulationGroupName">{{group.groupName}}</md-subheader>
+          <md-subheader class="sharedCategoryCss">{{group.groupName}}</md-subheader>
 
           <md-list-item class="colorForCategory"
                         v-for="(cat) in group.groupAttr"
@@ -79,19 +79,22 @@
       <md-tabs md-dynamic-height
                @md-changed="resetAttributes"
                md-alignment="fixed">
-        <md-tab md-label="Create">
+        <md-tab class="heightTabsCreateAttr"
+                md-label="Create">
           <div class="md-layout-item">
             <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
               <md-select v-model="categorySelected"
                          name="category"
                          id="category"
                          placeholder="category">
+                <!-- <md-option value="none">Create Category</md-option> -->
                 <md-option v-for="(category, index) in categoryDisplayList"
                            :key="index"
                            :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
               </md-select>
             </md-field>
           </div>
+
           <md-field md-inline
                     style="width: 80%; margin-left: auto; margin-right: auto;">
             <label>Label</label>
@@ -161,6 +164,7 @@ export default {
       label: undefined,
       value: undefined,
       categorySelected: undefined,
+      categoryCreate: "none",
       category: undefined,
       categoryDisplayList: [],
       URLDisplayList: [],
@@ -434,10 +438,7 @@ export default {
   position: absolute;
   right: 0%;
 }
-.tabulationGroupName {
-  padding-left: 20px;
-  border-top: 2px dotted;
-}
+
 .titleOfSharedLocal {
   margin-left: auto;
   margin-right: auto;

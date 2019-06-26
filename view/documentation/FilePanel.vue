@@ -11,20 +11,27 @@
       </div>
       <md-button class="md-icon-button addURLButtonPanel"
                  @click="activeAddDirectory= true"
-                 :disabled="!boolInDirectory">
+                 :disabled="!boolInShared">
         <md-icon>add_circle_outline</md-icon>
       </md-button>
     </div>
-    <md-subheader class="hr-sect ">Local Files</md-subheader>
+    <md-subheader v-if="boolInShared == true"
+                  class="hr-sect ">Local Files</md-subheader>
+    <md-subheader v-else
+                  class="hr-sect ">Shared Files</md-subheader>
+
     <md-table v-if="displayList.length != 0">
       <md-table-row v-for="(files, index) in displayList"
                     @dblclick.native="enterInDirectory(files)"
                     :key="index">
         <md-table-cell>
-          <md-icon>{{getIconFile(files)}}</md-icon>
+          <div class="filesPaddingIcon">
+            <md-icon>{{getIconFile(files)}}</md-icon>
+            <div class="sizeOfPathTab">{{files.name.get()}}</div>
+          </div>
         </md-table-cell>
-        <md-table-cell md-numeric>{{files.name.get()}}</md-table-cell>
-        <md-table-cell>
+        <!-- <md-table-cell md-numeric>{{files.name.get()}}</md-table-cell> -->
+        <md-table-cell v-if="boolInShared == true">
           <menuFile :file="files"
                     :index="index"
                     @downloadFile="downloadFile"
@@ -33,17 +40,20 @@
         </md-table-cell>
       </md-table-row>
     </md-table>
-    <div v-if="boolInDirectory == true && groupAttrDisplayList.length > 0">
+    <div v-if="boolInShared == true && !boolInDirectory && groupAttrDisplayList.length > 0">
       <md-subheader class="hr-sect ">Shared Files</md-subheader>
       <md-table>
         <!-- <span>{{group.nameGroup}}</span> -->
         <md-table-row v-for="(group, index) in groupAttrDisplayList"
-                      :key="index">
+                      :key="index"
+                      @dblclick.native="enterInDirectoryParent(group)">
           <md-table-cell>
-            <md-icon>folder</md-icon>
+            <div class="filesPaddingIcon">
+              <md-icon>folder</md-icon>
+              <div class="sizeOfPathTab">{{group.groupName}}</div>
+            </div>
           </md-table-cell>
-          <md-table-cell @dblclick.native="enterInDirectoryParent(group)"
-                         md-numeric>{{group.groupName}}</md-table-cell>
+          <!-- <md-table-cell md-numeric>{{group.groupName}}</md-table-cell> -->
           <md-table-cell>
             <!-- <menuFile :file="files"
                     :index="index"
@@ -101,6 +111,7 @@ export default {
       pathTab: [],
       parentListToBind: new Lst(),
       groupAttrDisplayList: [],
+      boolInShared: false,
       boolInDirectory: false
     };
   },
@@ -177,7 +188,8 @@ export default {
         this.pathTab.splice(index + 1, length - index);
         this.resetBind();
         if (this.pathTab.length == 1) {
-          this.boolInDirectory = true;
+          this.boolInShared = true;
+          this.boolInDirectory = false;
         }
       }
     },
@@ -195,7 +207,7 @@ export default {
 
           this.resetBind();
         });
-        this.boolInDirectory = false;
+        this.boolInDirectory = true;
       }
     },
     enterInDirectoryParent(group) {
@@ -205,7 +217,8 @@ export default {
       };
       this.pathTab.push(pathObj);
       this.selectedDirectory = group.groupAttr;
-      this.boolInDirectory = false;
+      this.boolInShared = false;
+      this.boolSharedDirectory = false;
       this.updateDisplayList();
       this.resetBind;
     },
@@ -346,7 +359,7 @@ export default {
       };
       this.pathTab = [];
       this.pathTab.push(pathObj);
-      this.boolInDirectory = true;
+      this.boolInShared = true;
       // console.log(this.parentGroup);
 
       this.resetBind();
@@ -372,7 +385,7 @@ export default {
           name: namePath,
           directory: this.selectedDirectory
         };
-        this.boolInDirectory = true;
+        this.boolInShared = true;
         this.pathTab.push(pathObj);
         this.resetBind();
         this.resetBindParent();

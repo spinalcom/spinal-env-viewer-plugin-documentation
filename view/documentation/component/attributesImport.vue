@@ -62,6 +62,8 @@ export default {
       this.exist = this.option.exist;
 
       this.propertiesTab = await this.promiseGetPorperties(this.dbid);
+      // console.log(propertiesTab);
+
       this.updateDisplayAttributesList();
     },
     updateDisplayAttributesList() {

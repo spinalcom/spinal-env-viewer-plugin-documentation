@@ -202,9 +202,14 @@ export default {
   padding-right: 17px;
   height: auto;
 }
+.filesPaddingIcon {
+  display: flex;
+  height: auto;
+}
 .sizeOfPathTab {
   flex-grow: 1;
   margin-top: auto;
+  margin-left: 15px;
   margin-bottom: auto;
 }
 .filesBox {
@@ -248,9 +253,11 @@ export default {
   max-width: 280px;
 }
 .myRowStyle {
-  padding-top: 5px;
   padding-right: 15px;
   padding-left: 20px;
+}
+.myRowStyleURLShared {
+  padding-top: 5px;
 }
 .back-line {
   width: calc(100% - 25px);
@@ -260,7 +267,9 @@ export default {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-
+.alignToIconFile {
+  background: #212121;
+}
 .span-opacity {
   color: white;
   width: 100%;
@@ -273,6 +282,7 @@ export default {
 }
 .attributesButtonPanel {
   width: calc(50% - 16px);
+  border: 1px solid #356bab;
   box-sizing: border-box;
 }
 .urlBox {
@@ -282,6 +292,9 @@ export default {
 .size-md-cell {
   padding-right: unset;
   padding-left: unset;
+}
+.heightTabsCreateAttr {
+  height: 30vh;
 }
 
 /* .commentcutPart {
@@ -335,6 +348,30 @@ export default {
   line-height: 0px;
   margin: 0px 16px;
 }
+/* .tabulationGroupName {
+  padding-left: 20px;
+  border-top: 2px dotted;
+} */
+.sharedCategoryCss {
+  overflow: hidden;
+  align-items: center;
+}
+
+.sharedCategoryCss:after {
+  content: "";
+  display: inline-block;
+  height: 2px;
+  vertical-align: center;
+  width: 100%;
+  margin-right: -100%;
+  margin-left: 11px;
+  border-top: 2px dotted;
+}
+
+.urlBox .md-subheader {
+  padding: unset;
+}
+
 .colorForCategory > .md-list-item-container > .md-list-item-content {
   background-color: rgba(204, 204, 204, 0.2);
 }
