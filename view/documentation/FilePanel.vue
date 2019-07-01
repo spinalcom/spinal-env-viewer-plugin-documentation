@@ -279,27 +279,41 @@ export default {
       // check if node has a directory
       // if node doesn't exist, i create it
       // if node haven't a directory, add it
+      let _this = this;
       if (this.selectedDirectory != undefined) {
         this.sendAddFile();
       } else {
         if (this.option.exist == false) {
           let option = this.option;
-          option.info = await bimObjectService.createBIMObject(
-            option.dbid,
-            "bimObject_" + option.dbid
+          window.spinal.ForgeViewer.viewer.model.getProperties(
+            this.option.dbid,
+            async function(res) {
+              option.info = await bimObjectService.createBIMObject(
+                option.dbid,
+                res.name
+              );
+              if (option.exist == false) {
+                option.exist = true;
+                _this.$emit("updateMyBIMObject", option);
+              }
+              _this.selectedDirectory = await FileExplorer.createDirectory(
+                option.info
+              );
+              _this.sendAddFile();
+              _this.resetBind();
+              _this.resetImportedFiles();
+            }
           );
-          if (option.exist == false) {
-            option.exist = true;
-            this.$emit("updateMyBIMObject", option);
-          }
+        } else {
+          this.selectedDirectory = await FileExplorer.createDirectory(
+            this.option.info
+          );
+          this.sendAddFile();
+          this.resetBind();
+          this.resetImportedFiles();
         }
-        this.selectedDirectory = await FileExplorer.createDirectory(
-          this.option.info
-        );
-        this.sendAddFile();
       }
-      this.resetBind();
-      this.resetImportedFiles();
+
       this.activeAddDirectory = false;
     },
     deleteBind() {
