@@ -131,9 +131,6 @@ export default {
         .getParentGroup(this.selectedNode)
         .then(allParentGroup => {
           _this.parentGroup = allParentGroup;
-          // console.log(_this.parentGroup);
-
-          // console.log(allParentGroup);
         });
     },
     removed(option, viewer) {

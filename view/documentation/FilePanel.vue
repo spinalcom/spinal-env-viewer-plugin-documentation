@@ -350,10 +350,15 @@ export default {
   },
   watch: {
     option: async function() {
+      let namePath = "";
       this.selectedDirectory = await FileExplorer.getDirectory(
         this.option.info
       );
-      let namePath = this.option.info.info.name.get() + " /";
+      if (this.option.info != undefined) {
+        namePath = this.option.info.info.name.get() + " /";
+      } else {
+        namePath = "Home /";
+      }
       let pathObj = {
         name: namePath,
         directory: this.selectedDirectory
