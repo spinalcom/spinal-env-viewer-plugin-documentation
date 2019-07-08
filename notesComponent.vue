@@ -42,7 +42,8 @@ with this file. If not, see
     <md-toolbar class="md-layout md-gutter headerCDE"
                 layout-align="center center">
       <div v-if="nodeInfo !== undefined && nodeInfo.selectedNode !== undefined"
-           class="centerSelectedNodeName">{{nodeInfo.selectedNode.info.name.get()}}</div>
+           class="centerSelectedNodeName">
+        {{nodeInfo.selectedNode.info.name.get()}}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
@@ -56,7 +57,8 @@ with this file. If not, see
           <md-card>
             <md-card-content>
               <div>
-                <span style="font-size: 15px; color: #819FF7">{{note.username}}</span>
+                <span
+                      style="font-size: 15px; color: #819FF7">{{note.username}}</span>
               </div>
               <div>
                 <pre class="preMessage">{{note.message}}</pre>
@@ -99,10 +101,10 @@ with this file. If not, see
 </template>
 
 <script>
-  import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-  import moment from "moment";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import moment from "moment";
 
-  export default {
+export default {
   name: "my_compo",
   data() {
     return {
@@ -123,11 +125,10 @@ with this file. If not, see
         this.nodeInfo.selectedNode
       );
 
-      let i =0;
-      for (let note of notes){
-
+      let i = 0;
+      for (let note of notes) {
         let obj = {
-          id: j,
+          id: i,
           username: note.element.username.get(),
           message: note.element.message.get(),
           date: this.toDate(note.element.date.get()),
@@ -137,13 +138,9 @@ with this file. If not, see
         this.notesDisplayList.push(obj);
         i++;
       }
-      for (let j = 0; j < j < notes.length; j++) {
-
-      }
-
     },
     toDate: function(date) {
-      return moment( date ).format( "MMMM Do YYYY, h:mm:ss a" );
+      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
       // convert date to 18min ago , 1h ago , ..., not necessery now we pref full date
 
       // let newDateFormat = moment(date);
@@ -163,7 +160,6 @@ with this file. If not, see
       //   this.messageUser
       // );
       if (this.nodeInfo.exist) {
-
         serviceDocumentation.addNote(
           this.nodeInfo.selectedNode,
           window.spinal.spinalSystem.getUser().username,
@@ -172,7 +168,6 @@ with this file. If not, see
       } else {
         // create bim object before add note
         if (this.nodeInfo.dbid !== undefined) {
-
           // window.spinal.ForgeViewer.viewer.model.getProperties(
           //   this.nodeInfo.dbid,
           //   async res => {
