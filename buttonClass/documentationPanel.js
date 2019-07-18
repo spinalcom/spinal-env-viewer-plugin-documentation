@@ -60,18 +60,20 @@ export class DocumentationButton extends SpinalContextApp {
 
   isShown(option) {
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
-    // console.log(option)
-    // console.log(typeLst);
-
-
+    if (option.selectedNode) {
+      const type = option.selectedNode.type.get();
+      if (type === "SpinalService" || type === "SpinalContext" || type ===
+        "dashboardContext" ||
+        type === "BimFile" ||
+        type === "scene")
+        return (Promise.resolve(-1))
+    }
     return Promise.resolve(true)
   }
 
   action(option) {
     // option.paramSent = "hello from DocumentationCircularMenuButton";
-    // console.log(option)
     spinalPanelManagerService.openPanel('panel-documentation', option);
-    // console.log("action clicked");
   }
 }
 
@@ -93,7 +95,11 @@ export class ExportToDriveButton extends SpinalContextApp {
 
   isShown(option) {
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
-    // console.log(option)
+    const type = option.selectedNode.type.get();
+    if (type === "SpinalService" || type === "SpinalContext" || type ===
+      "dashboardContext" ||
+      type === "BimFile")
+      return (Promise.resolve(-1))
     let selectedNode = option.info;
     // let dbid = option.dbid
     // let boolBIMObject = option.exist
@@ -198,13 +204,11 @@ export const deleteAutoUrlRightClick = SpinalForgeExtention
 
 export function registerRightClickButton() {
   var checkExist = setInterval(function() {
-    // console.log(viewer);
     const viewer = window.spinal.ForgeViewer.viewer;
     if (viewer !== undefined) {
       viewer.registerContextMenuCallback(
         'MyChangingColorMenuItems',
         (menu, status) => {
-          // console.log(menu.hasSelected);
           if (status.hasSelected) {
             menu.push({
               title: 'Add Spinal Attributes',
@@ -219,7 +223,6 @@ export function registerRightClickButton() {
                       dbid: allChildDbid,
                       category: mycat,
                     };
-                    console.log('open panel add attributes mult');
                     spinalPanelManagerService.openPanel(
                       'attributes-right-click',
                       propsData
@@ -237,8 +240,6 @@ export function registerRightClickButton() {
                 const propsData = {
                   dbid: allChildDbid,
                 };
-                console.log(
-                  'open panel add attributes mult');
                 spinalPanelManagerService.openPanel(
                   'url-right-click',
                   propsData
@@ -255,8 +256,6 @@ export function registerRightClickButton() {
                 const propsData = {
                   dbid: allChildDbid,
                 };
-                console.log(
-                  'open panel add attributes mult');
                 spinalPanelManagerService.openPanel(
                   'delete-right-click',
                   propsData
@@ -266,7 +265,6 @@ export function registerRightClickButton() {
           }
         }
       );
-      // console.log("HELLO MENU REGISTERED");
       clearInterval(checkExist);
     }
   }, 100);
@@ -280,13 +278,11 @@ export function registerRightClickButton() {
 
 export function registerRightClickurl() {
   var checkExist = setInterval(function() {
-    // console.log(viewer);
     const viewer = window.spinal.ForgeViewer.viewer;
     if (viewer !== undefined) {
       viewer.registerContextMenuCallback(
         'MyChangingColorMenuItems',
         (menu, status) => {
-          // console.log(menu.hasSelected);
           if (status.hasSelected) {
             menu.push({
               title: 'Add Spinal url',
@@ -298,8 +294,6 @@ export function registerRightClickurl() {
                 const propsData = {
                   dbid: allChildDbid,
                 };
-                console.log(
-                  'open panel add attributes mult');
                 spinalPanelManagerService.openPanel(
                   'url-right-click',
                   propsData
@@ -309,7 +303,6 @@ export function registerRightClickurl() {
           }
         }
       );
-      // console.log("HELLO MENU REGISTERED");
       clearInterval(checkExist);
     }
   }, 100);

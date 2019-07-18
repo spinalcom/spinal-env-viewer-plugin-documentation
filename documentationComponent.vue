@@ -99,6 +99,7 @@ export default {
     },
     updateSelectedBIMObject(option) {
       this.option = {};
+
       Object.assign(this.option, option);
       this.selectedNode = this.option.info;
     },
@@ -124,8 +125,6 @@ export default {
           this.dbid = option.dbid;
         }
       }
-      // console.log("test of group parent");
-      // console.log(serviceDocumentation);
 
       serviceDocumentation
         .getParentGroup(this.selectedNode)
@@ -133,15 +132,8 @@ export default {
           _this.parentGroup = allParentGroup;
         });
     },
-    removed(option, viewer) {
-      // console.log("removed option", option);
-      // console.log("removed viewer", viewer);
-    },
-    closed(option, viewer) {
-      // console.log("closed option", option);
-      // console.log("closed");
-      // console.log("closed viewer", viewer);
-    }
+    removed(option, viewer) {},
+    closed(option, viewer) {}
   }
 };
 </script>

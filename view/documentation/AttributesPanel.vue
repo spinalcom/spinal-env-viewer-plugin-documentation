@@ -47,14 +47,16 @@
         <md-list class="widthOfList"
                  v-for="(group) in groupAttrDisplayList"
                  :key="group.groupName">
-          <md-subheader class="sharedCategoryCss">{{group.groupName}}</md-subheader>
+          <md-subheader class="sharedCategoryCss">{{group.groupName}}
+          </md-subheader>
 
           <md-list-item class="colorForCategory"
                         v-for="(cat) in group.groupAttr"
                         :key="cat.nameCat"
                         md-expand>
             <!-- <md-icon>whatshot</md-icon> -->
-            <span class="nameOfCategory md-list-item-text">{{cat.nameCat}}</span>
+            <span
+                  class="nameOfCategory md-list-item-text">{{cat.nameCat}}</span>
 
             <md-list class="unsetPadding"
                      slot="md-expand">
@@ -82,7 +84,8 @@
         <md-tab class="heightTabsCreateAttr"
                 md-label="Create">
           <div class="md-layout-item">
-            <md-field style="width: 80%; margin-left: auto; margin-right: auto;">
+            <md-field
+                      style="width: 80%; margin-left: auto; margin-right: auto;">
               <md-select v-model="categorySelected"
                          name="category"
                          id="category"
@@ -90,7 +93,8 @@
                 <!-- <md-option value="none">Create Category</md-option> -->
                 <md-option v-for="(category, index) in categoryDisplayList"
                            :key="index"
-                           :value="category.node.info.name.get()">{{category.node.info.name.get()}}</md-option>
+                           :value="category.node.info.name.get()">
+                  {{category.node.info.name.get()}}</md-option>
               </md-select>
             </md-field>
           </div>
@@ -111,7 +115,8 @@
           <attributesImport :option="option"
                             :categoryDisplayList="categoryDisplayList"
                             @getAttributesFromForge="getAttributesFromForge"
-                            @updatecategorySelected="updatecategorySelected"></attributesImport>
+                            @updatecategorySelected="updatecategorySelected">
+          </attributesImport>
         </md-tab>
       </md-tabs>
       <md-dialog-actions>
@@ -151,7 +156,7 @@ import menuAttributes from "./component/menuAttributes.vue";
 import menuCategoryAttributes from "./component/menuCategoryAttributes.vue";
 import attributesImport from "./component/attributesImport.vue";
 import { utilities } from "../../service/utilities.js";
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 //Vue.use(Toasted);
 let viewer;
 
@@ -178,8 +183,6 @@ export default {
   props: ["option", "parentGroup"],
   methods: {
     editURLNode(attributes, urlChange) {
-      // console.log(attributes);
-      // console.log(urlChange);
       attributes.label.set(urlChange.label);
       attributes.value.set(urlChange.value);
       this.resetBind();
@@ -199,7 +202,6 @@ export default {
       serviceDocumentation.removeNode(category.node);
     },
     getAttributesFromForge(attributes) {
-      // console.log(attributes);
       this.selectedAttributesForge = attributes;
       // get la list d'attributs depuis les attributes de forge
     },
@@ -224,11 +226,8 @@ export default {
         };
         this.groupAttrDisplayList.push(json);
       }
-      // console.log(this.groupAttrDisplayList);
     },
     getLstOfAttributes(cat) {
-      // console.log(cat);
-
       let tab = [];
       if (cat.element != undefined) {
         for (let i = 0; i < cat.element.length; i++) {
@@ -239,11 +238,8 @@ export default {
       return tab;
     },
     async testAttributes() {
-      // console.log(this.categorySelected);
-
       if (this.categorySelected != undefined || this.categorySelected != "") {
         if (this.label == undefined || this.value == undefined) {
-          // console.log(this.selectedAttributesForge);
           let cat = await serviceDocumentation.getCategoryByName(
             this.option.info,
             this.categorySelected
@@ -264,7 +260,6 @@ export default {
             this.option.info,
             this.categorySelected
           );
-          // console.log(cat);
           serviceDocumentation.addAttributeByCategory(
             this.option.info,
             cat,
@@ -281,10 +276,19 @@ export default {
         window.spinal.ForgeViewer.viewer.model.getProperties(
           this.option.dbid,
           async res => {
-            this.option.info = await bimObjectService.createBIMObject(
+            let boolIsCreated = await window.spinal.BimObjectService.createBIMObject(
               this.option.dbid,
-              res.name
+              res.name,
+              this.option.model3d
             );
+            if (boolIsCreated) {
+              let bimObject = await window.spinal.BimObjectService.getBIMObject(
+                this.option.dbid,
+                this.option.model3d
+              );
+              this.option.info = SpinalGraphService.getRealNode(bimObject.id);
+            }
+
             await this.testAttributes();
             this.resetAttributes();
             this.resetBind();
@@ -316,8 +320,6 @@ export default {
       this.activeDialogStatus = false;
     },
     checkCategory() {
-      // console.log(this.category);
-
       if (this.category != undefined && this.category != "") {
         serviceDocumentation.addCategoryAttribute(
           this.option.info,
@@ -327,8 +329,7 @@ export default {
       }
     },
     addCategory() {
-      // console.log(this.category);
-      // console.log(this.option);
+      let _this = this;
       if (this.option.exist) {
         this.checkCategory();
       } else {
@@ -337,16 +338,25 @@ export default {
           window.spinal.ForgeViewer.viewer.model.getProperties(
             this.option.dbid,
             async res => {
-              this.option.info = await bimObjectService.createBIMObject(
-                this.option.dbid,
-                res.name
+              let boolIsCreated = await window.spinal.BimObjectService.createBIMObject(
+                _this.option.dbid,
+                res.name,
+                _this.option.model3d
               );
-              this.option.exist = true;
-              this.$emit("updateMyBIMObject", this.option);
+              if (boolIsCreated) {
+                let bimObject = await window.spinal.BimObjectService.getBIMObject(
+                  _this.option.dbid,
+                  _this.option.model3d
+                );
+                _this.option.info = SpinalGraphService.getRealNode(
+                  bimObject.id
+                );
+              }
+              _this.option.exist = true;
+              _this.$emit("updateMyBIMObject", this.option);
 
-              // console.log(this.option.info);
-              this.checkCategory();
-              this.resetBind();
+              _this.checkCategory();
+              _this.resetBind();
             }
           );
         }
@@ -355,8 +365,6 @@ export default {
       this.activeDialogCategory = false;
     },
     resetAttributes() {
-      // console.log("reset attributs");
-
       this.label = undefined;
       this.value = undefined;
       this.categorySelected = undefined;
@@ -377,9 +385,6 @@ export default {
     },
     resetBindParent() {
       // j'ai la liste de tous les node parent
-      // console.log("reserbindparent");
-      // console.log(this.parentGroup);
-
       if (this.parentListToBind == undefined) {
         this.parentListToBind = new Lst();
       }

@@ -43,7 +43,8 @@
                v-for="(cat) in groupURLDisplayList"
                :key="cat.groupName">
             <!-- <md-icon>whatshot</md-icon> -->
-            <md-subheader class="sharedCategoryCss">{{cat.groupName}}</md-subheader>
+            <md-subheader class="sharedCategoryCss">{{cat.groupName}}
+            </md-subheader>
 
             <md-list class="unsetPadding">
               <md-list-item class=" colorForCategory"
@@ -129,8 +130,6 @@ export default {
       } else this.URLDisplayList = [];
     },
     async updateURLParent() {
-      // console.log("updateURLParent");
-
       this.groupURLDisplayList = [];
       let json = {};
       for (let i = 0; i < this.parentGroup.length; i++) {
@@ -141,7 +140,6 @@ export default {
         };
         this.groupURLDisplayList.push(json);
       }
-      // console.log(this.groupURLDisplayList);
     },
     addLink() {
       let _this = this;
@@ -150,7 +148,6 @@ export default {
       viewer.model.getProperties(this.option.dbid, function(res) {
         let option = utilities.addLink(_this.option, res.name, label, URL);
         option.then(option => {
-          // console.log(_this.option);
           if (_this.option.exist == false) {
             _this.option.exist = true;
             _this.$emit("updateMyBIMObject", option);
@@ -176,8 +173,6 @@ export default {
     },
     resetBindParent() {
       // j'ai la liste de tous les node parent
-      // console.log("reserbindparent");
-      // console.log(this.parentGroup);
 
       if (this.parentListToBind == undefined) {
         this.parentListToBind = new Lst();

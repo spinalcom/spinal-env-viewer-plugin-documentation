@@ -47,7 +47,8 @@ export class NotesButton extends SpinalContextApp {
   }
 
   isShown(option) {
-    if ((option.selectedNode && option.selectedNode.type === 'BIMObject') || option.dbid)
+    if ((option.selectedNode && option.selectedNode.type === 'BIMObject') ||
+      option.dbid)
       return Promise.resolve(true);
     // to do : put some restriction to see if the selectedNode is a BIMObject or an element of geographiqueContext
     // console.log(option)
@@ -79,10 +80,12 @@ export class NotesButton extends SpinalContextApp {
       window.spinal.ForgeViewer.viewer.model.getProperties(
         option.dbid,
         async res => {
-          selectedNode = await bimObjectService.createBIMObject(
-            option.dbid,
-            res.name
-          );
+          selectedNode = await window.spinal.BimObjectService
+            .createBIMObject(
+              option.dbid,
+              res.name,
+              option.model3d
+            );
           let obj = {
             selectedNode,
             dbid,

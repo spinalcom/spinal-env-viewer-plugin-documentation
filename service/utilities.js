@@ -1,22 +1,32 @@
 import {
   serviceDocumentation
 } from "spinal-env-viewer-plugin-documentation-service";
-import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
-
+import {
+  SpinalGraphService
+} from 'spinal-env-viewer-graph-service';
 class DocumentationUtilities {
   constructor() {}
 
   async addLink(option, BIMObjectName, label = undefined, URL = undefined) {
-    // console.log("add LINK")
     if (label != undefined && URL != undefined && URL != "" && label != "") {
       if (option.info != undefined) {
         serviceDocumentation.addURL(option.info, label, URL);
         return option
       } else if (option.dbid != undefined) {
-        option.info = await bimObjectService.createBIMObject(
-          option.dbid,
-          BIMObjectName
-        );
+        let boolIsCreated = await window.spinal.BimObjectService
+          .createBIMObject(
+            option.dbid,
+            BIMObjectName,
+            option.model3d
+          );
+        if (boolIsCreated) {
+          let bimObject = await window.spinal.BimObjectService.getBIMObject(
+            option.dbid,
+            option.model3d
+          );
+          option.info = SpinalGraphService.getRealNode(bimObject.id);
+        }
+
         serviceDocumentation.addURL(
           option.info,
           label,
@@ -37,10 +47,20 @@ class DocumentationUtilities {
         serviceDocumentation.addAttribute(option.info, label, value);
         return option
       } else if (option.dbid != undefined) {
-        option.info = await bimObjectService.createBIMObject(
-          option.dbid,
-          BIMObjectName
-        );
+        let boolIsCreated = await window.spinal.BimObjectService
+          .createBIMObject(
+            option.dbid,
+            BIMObjectName,
+            option.model3d
+          );
+        if (boolIsCreated) {
+          let bimObject = await window.spinal.BimObjectService.getBIMObject(
+            option.dbid,
+            option.model3d
+          );
+          option.info = SpinalGraphService.getRealNode(bimObject.id);
+        }
+
         serviceDocumentation.addAttribute(
           option.info,
           label,

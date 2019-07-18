@@ -41,7 +41,8 @@
         </md-table-cell>
       </md-table-row>
     </md-table>
-    <div v-if="boolInShared == true && !boolInDirectory && groupAttrDisplayList.length > 0">
+    <div
+         v-if="boolInShared == true && !boolInDirectory && groupAttrDisplayList.length > 0">
       <md-subheader class="hr-sect ">Shared Files</md-subheader>
       <md-table>
         <!-- <span>{{group.nameGroup}}</span> -->
@@ -94,9 +95,9 @@
 
 <script>
 import { FileExplorer } from "../../service/fileSystemExplorer.js";
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import drive from "./component/drive.vue";
 import menuFile from "./component/menuFile.vue";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 export default {
   name: "linkPanel",
   data() {
@@ -120,8 +121,6 @@ export default {
   props: ["option", "parentGroup"],
   methods: {
     downloadFile(file, index) {
-      // console.log(file, index);
-
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
           if (file._info.model_type.get() == "HttpPath") {
@@ -150,7 +149,6 @@ export default {
       }
     },
     removeFile(file, index) {
-      // console.log(file, index);
       this.selectedDirectory.splice(index, 1);
     },
     getFileImported(files) {
@@ -170,22 +168,11 @@ export default {
       return FileExplorer.getIconFile(file);
     },
     loadRoute(index) {
-      // console.log(this.selectedDirectory);
       if (index == this.pathTab.length - 1) {
-        // console.log("current directory");
-        // console.log("home");
       } else {
         this.selectedDirectory = this.pathTab[index].directory;
-        // console.log("//////////////////////////////////////////////");
-
-        // console.log(index);
-        // console.log(this.pathTab);
-        // console.log(this.pathTab[index]);
-        // console.log(this.selectedDirectory);
-        // console.log("//////////////////////////////////////////////");
 
         let length = this.pathTab.length - 1;
-        // console.log(index, length - index);
         this.pathTab.splice(index + 1, length - index);
         this.resetBind();
         if (this.pathTab.length == 1) {
@@ -204,7 +191,6 @@ export default {
           };
           this.pathTab.push(pathObj);
           this.selectedDirectory = directory;
-          // console.log(this.pathTab);
 
           this.resetBind();
         });
@@ -224,8 +210,6 @@ export default {
       this.resetBind;
     },
     updateDisplayList() {
-      // console.log("updateDisplayList");
-
       this.displayList = [];
       if (this.selectedDirectory != undefined) {
         for (let i = 0; i < this.selectedDirectory.length; i++) {
@@ -242,11 +226,9 @@ export default {
           displayList.push(file);
         }
       }
-      // console.log(displayList);
       return displayList;
     },
     async updateDisplayListParent() {
-      // console.log(this.parentListToBind);
       this.groupAttrDisplayList = [];
       let json = {};
       for (let i = 0; i < this.parentGroup.length; i++) {
@@ -257,7 +239,6 @@ export default {
           groupAttr: dir,
           files: this.getFileInDir(dir)
         };
-        // console.log(this.groupAttrDisplayList);
 
         this.groupAttrDisplayList.push(json);
       }
@@ -288,10 +269,18 @@ export default {
           window.spinal.ForgeViewer.viewer.model.getProperties(
             this.option.dbid,
             async function(res) {
-              option.info = await bimObjectService.createBIMObject(
+              let boolIsCreated = await window.spinal.BimObjectService.createBIMObject(
                 option.dbid,
-                res.name
+                res.name,
+                option.model3d
               );
+              if (boolIsCreated) {
+                let bimObject = await window.spinal.BimObjectService.getBIMObject(
+                  option.dbid,
+                  option.model3d
+                );
+                option.info = SpinalGraphService.getRealNode(bimObject.id);
+              }
               if (option.exist == false) {
                 option.exist = true;
                 _this.$emit("updateMyBIMObject", option);
@@ -329,9 +318,6 @@ export default {
         if (this.option != undefined) {
           this.deleteBind();
           if (this.myBind == undefined) {
-            // console.log("updateList");
-            // console.log(this.selectedDirectory);
-
             if (this.selectedDirectory != undefined) {
               this.myBind = this.selectedDirectory.bind(
                 this.updateDisplayList.bind(this)
@@ -346,16 +332,12 @@ export default {
     },
     resetBindParent() {
       // j'ai la liste de tous les node parent
-      // console.log("reserbindparent");
-      // console.log(this.parentGroup);
       this.parentListToBind.splice(0, this.parentListToBind.length);
       for (let i = 0; i < this.parentGroup.length; i++) {
         const element = this.parentGroup[i];
         this.parentListToBind.push(element);
       }
       if (this.myBindParent == undefined) {
-        // console.log(this.parentListToBind);
-
         this.myBindParent = this.parentListToBind.bind(
           this.updateDisplayListParent.bind(this)
         );
@@ -380,15 +362,10 @@ export default {
       this.pathTab = [];
       this.pathTab.push(pathObj);
       this.boolInShared = true;
-      // console.log(this.parentGroup);
 
       this.resetBind();
     },
     parentGroup: function() {
-      // console.log("update of parents group list");
-      // console.log(this.parentGroup);
-      // console.log("update of parents group list");
-
       this.resetBindParent();
     }
   },
@@ -398,7 +375,6 @@ export default {
         this.selectedDirectory = await FileExplorer.getDirectory(
           this.option.info
         );
-        // console.log(this.option.info.info.name.get());
 
         let namePath = this.option.info.info.name.get() + " /";
         let pathObj = {
