@@ -27,7 +27,6 @@
           <md-list class="unsetPadding"
                    slot="md-expand">
             <md-list-item v-for="(attributess, index) in getLstOfAttributes(cat)"
-                          @click="selectAttributes(attributes)"
                           :key="index"
                           class="md-inset">
               <span style="width: 40%">{{attributess.label.get()}}</span>
@@ -61,7 +60,6 @@
             <md-list class="unsetPadding"
                      slot="md-expand">
               <md-list-item v-for="(attributess, index) in getLstOfAttributes(cat)"
-                            @click="selectAttributes(attributes)"
                             :key="index"
                             class="md-inset">
                 <span style="width: 40%">{{attributess.label.get()}}</span>
@@ -182,6 +180,21 @@ export default {
   components: { menuAttributes, menuCategoryAttributes, attributesImport },
   props: ["option", "parentGroup"],
   methods: {
+    // async selectAttributes(attr) {
+    //   console.log("___________________________");
+    //   serviceDocumentation
+    //     .getCategoryByName(this.option.info, attr.nameCat)
+    //     .then(async category => {
+    //       console.log(category);
+    //     });
+
+    //   let category = await serviceDocumentation.addCategoryAttribute(
+    //     this.option.info,
+    //     "categoryName"
+    //   );
+    //   console.log(category);
+    //   console.log("___________________________");
+    // },
     editURLNode(attributes, urlChange) {
       attributes.label.set(urlChange.label);
       attributes.value.set(urlChange.value);
