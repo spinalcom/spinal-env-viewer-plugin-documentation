@@ -125,7 +125,11 @@ export default {
           this.dbid = option.dbid;
         }
       }
-
+      // set attributes for building
+      serviceDocumentation
+        .setBuildingInformationAttributes(this.selectedNode)
+        .then(info => {});
+      // get shared attributes
       serviceDocumentation
         .getParentGroup(this.selectedNode)
         .then(allParentGroup => {

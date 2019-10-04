@@ -24,6 +24,7 @@ import {
   typeLst
 } from "spinal-env-viewer-room-manager/js/service";
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                Documentation Panel                                             //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +45,8 @@ export const DocumentationExtension = SpinalForgeExtention.createExtention({
     width: '30vh',
     height: '40vh'
   },
-  onload: () => {},
-  onUnLoad: () => {},
+  onload: () => { },
+  onUnLoad: () => { },
 });
 
 export class DocumentationButton extends SpinalContextApp {
@@ -157,8 +158,8 @@ export const addAutoUrlRightClick = SpinalForgeExtention
       left: '405px',
       height: '50vh',
     },
-    onload: () => {},
-    onUnLoad: () => {},
+    onload: () => { },
+    onUnLoad: () => { },
   });
 
 
@@ -178,8 +179,8 @@ export const addAutoAttributesRightClick = SpinalForgeExtention
       left: '405px',
       height: '50vh',
     },
-    onload: () => {},
-    onUnLoad: () => {},
+    onload: () => { },
+    onUnLoad: () => { },
   });
 
 export const deleteAutoUrlRightClick = SpinalForgeExtention
@@ -197,13 +198,13 @@ export const deleteAutoUrlRightClick = SpinalForgeExtention
       left: '405px',
       height: '50vh',
     },
-    onload: () => {},
-    onUnLoad: () => {},
+    onload: () => { },
+    onUnLoad: () => { },
   });
 
 
 export function registerRightClickButton() {
-  var checkExist = setInterval(function() {
+  var checkExist = setInterval(function () {
     const viewer = window.spinal.ForgeViewer.viewer;
     if (viewer !== undefined) {
       viewer.registerContextMenuCallback(
@@ -277,7 +278,7 @@ export function registerRightClickButton() {
 
 
 export function registerRightClickurl() {
-  var checkExist = setInterval(function() {
+  var checkExist = setInterval(function () {
     const viewer = window.spinal.ForgeViewer.viewer;
     if (viewer !== undefined) {
       viewer.registerContextMenuCallback(
