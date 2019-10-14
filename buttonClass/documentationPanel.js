@@ -18,7 +18,7 @@ import documentationComponent from '../documentationComponent.vue';
 import attributesRightClick from '../view/rightClick/attributesRightClick.vue';
 import deleteUrlRightClick from '../view/rightClick/deleteUrlRightClick.vue';
 import urlRightClick from '../view/rightClick/urlRightClick.vue';
-import SpinalContext from 'spinal-model-graph';
+import { SpinalContext } from 'spinal-model-graph';
 import forgeTree from '../service/forgeTree.js';
 import {
   typeLst
