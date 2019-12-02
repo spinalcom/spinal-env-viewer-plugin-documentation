@@ -20,9 +20,9 @@ import deleteUrlRightClick from '../view/rightClick/deleteUrlRightClick.vue';
 import urlRightClick from '../view/rightClick/urlRightClick.vue';
 import { SpinalContext } from 'spinal-model-graph';
 import forgeTree from '../service/forgeTree.js';
-import {
-  typeLst
-} from "spinal-env-viewer-room-manager/js/service";
+//import {
+//  typeLst
+//} from "spinal-env-viewer-room-manager/js/service";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
