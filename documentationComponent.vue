@@ -126,10 +126,10 @@ export default {
         }
       }
       // set attributes for building
-      serviceDocumentation
-        .setBuildingInformationAttributes(this.selectedNode)
-        .then(info => {});
-      // get shared attributes
+      serviceDocumentation.setBuildingInformationAttributes(this.selectedNode);
+      // .then(info => {});
+
+      // // get shared attributes
       serviceDocumentation
         .getParentGroup(this.selectedNode)
         .then(allParentGroup => {
