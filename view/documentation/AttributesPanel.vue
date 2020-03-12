@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <md-content class="container-link urlBox">
     <div>
@@ -74,7 +98,8 @@
       </div>
 
     </div>
-    <md-dialog :md-active.sync="activeDialogStatus">
+    <md-dialog class="spinal-dialog-add-attr"
+               :md-active.sync="activeDialogStatus">
       <md-dialog-title>Add Attributes</md-dialog-title>
       <md-tabs md-dynamic-height
                @md-changed="resetAttributes"
@@ -409,7 +434,7 @@ export default {
         }
       }
       if (this.myBindParent == undefined)
-        this.parentListToBind.bind(this.updateAttrParent.bind(this));
+      {this.parentListToBind.bind(this.updateAttrParent.bind(this));}
     }
   },
   mounted() {
@@ -427,7 +452,7 @@ export default {
   },
   beforeDestroy() {
     if (this.option.info != undefined && this.myBind != undefined)
-      this.option.info.unbind(this.myBind);
+    {this.option.info.unbind(this.myBind);}
   }
 };
 </script>
@@ -461,5 +486,11 @@ export default {
   margin-left: auto;
   margin-right: auto;
   width: fit-content;
+}
+.spinal-dialog-add-attr {
+  max-width: 80vw;
+}
+.spinal-dialog-add-attr > .md-dialog-container {
+  max-width: 100%;
 }
 </style>
