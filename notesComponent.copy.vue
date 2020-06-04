@@ -1,5 +1,5 @@
 <!--
-Copyright 2020 SpinalCom - www.spinalcom.com
+Copyright 2018 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
 
@@ -22,59 +22,85 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-
 <template>
-  <div class="notesBox">
-    <md-toolbar class="md-dense"
-                md-elevation="0">
-      <div v-if="nodeInfo && nodeInfo.selectedNode"
-           class="centerSelectedNodeName">
-        {{nodeInfo.selectedNode.info.name.get()}}
+  <md-content class="md-scrollbar notesBox">
+    <md-dialog :md-active.sync="editNodePopup">
+      <div class="boxTextarea">
+        <md-field class="textareaSize">
+          <md-textarea v-model="messageUserEdit"></md-textarea>
+          <md-button class="md-icon-button sendButtonInTextarea"
+                     @click="editNote()">
+            <md-icon style="color: white">send</md-icon>
+          </md-button>
+        </md-field>
       </div>
+      <md-dialog-actions>
+        <md-button class="md-primary"
+                   @click="editNodePopup = false">Close</md-button>
+      </md-dialog-actions>
+    </md-dialog>
 
+    <md-toolbar class="md-layout md-gutter headerCDE"
+                layout-align="center center">
+      <div v-if="nodeInfo !== undefined && nodeInfo.selectedNode !== undefined"
+           class="centerSelectedNodeName">
+        {{nodeInfo.selectedNode.info.name.get()}}</div>
       <div class="centerSelectedNodeName"
            v-else>BIM Object not created</div>
     </md-toolbar>
 
-    <div class="notesContainer">
-      <md-content id="myList"
-                  class="messages md-scrollbar">
-        <ul>
-          <message-component v-for="(note,index) in notesDisplayList"
-                             :key="index"
-                             :date="note.date"
-                             :username="note.username"
-                             :message="note.message"></message-component>
-        </ul>
+    <md-content id="myList"
+                class="chat md-scrollbar">
+      <div v-for="(note, index) in notesDisplayList"
+           :key="index"
+           class="myMessage">
+        <div>
+          <div class="testLine"><span>{{note.date}}</span></div>
+          <md-card>
+            <md-card-content>
+              <div>
+                <span
+                      style="font-size: 15px; color: #819FF7">{{note.username}}</span>
+              </div>
+              <div>
+                <pre class="preMessage">{{note.message}}</pre>
+              </div>
+            </md-card-content>
+            <md-card-actions v-if="note.username === getUsername()">
+              <md-button @click="editNodePopup = true ; selectedNote = note; messageUserEdit = note.message"
+                         class="md-icon-button">
+                <md-icon>edit</md-icon>
+              </md-button>
+              <md-button @click="deleteNote(note.selectedNode)"
+                         class="md-icon-button">
+                <md-icon>delete_forever</md-icon>
+              </md-button>
+            </md-card-actions>
+          </md-card>
+        </div>
+      </div>
 
-      </md-content>
+    </md-content>
 
-      <div class="form">
-        <form @submit.prevent="addNote"
-              class="noteForm">
-          <md-field class="myField">
-            <label>Message</label>
-            <md-input v-model="messageUser"></md-input>
-          </md-field>
+    <div class="boxTextarea">
+      <div class="textareaSizeLikeBehind">
+        <textarea v-model="messageUser"
+                  placeholder="ajoutez plusieurs lignes"
+                  class="textareaNote"></textarea>
 
-          <div class="sendBtn">
-            <md-button type="submit"
-                       class="md-dense md-raised md-primary">
-              Send
-              <md-icon>send</md-icon>
-            </md-button>
-          </div>
-
-        </form>
+        <md-button class="md-icon-button sendButtonInTextarea"
+                   @click="addNote">
+          <md-icon>send</md-icon>
+        </md-button>
       </div>
     </div>
-  </div>
+
+  </md-content>
 </template>
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import moment from "moment";
-import messageVue from "./message.vue";
 
 export default {
   name: "my_compo",
@@ -89,9 +115,7 @@ export default {
       scrollToEnd: false
     };
   },
-  components: {
-    "message-component": messageVue
-  },
+  components: {},
   methods: {
     async updateNotesList() {
       this.notesDisplayList = [];
@@ -133,9 +157,6 @@ export default {
       //   window.spinal.spinalSystem.getUser().username,
       //   this.messageUser
       // );
-
-      if (this.messageUser.trim().length === 0) return;
-
       if (this.nodeInfo.exist) {
         serviceDocumentation.addNote(
           this.nodeInfo.selectedNode,
@@ -191,11 +212,18 @@ export default {
       this.updatedd();
       // console.log(this.nodeInfo);
     },
-    removed(option, viewer) {},
-    closed(option, viewer) {},
+    removed(option, viewer) {
+      console.log("removed option", option);
+      console.log("removed viewer", viewer);
+    },
+    closed(option, viewer) {
+      console.log("closed option", option);
+      console.log("closed viewer", viewer);
+    },
     updatedd() {
       var container = this.$el.querySelector("#myList");
-      container.scrollTo(0, container.scrollHeight);
+      container.scrollTop = container.scrollHeight;
+      // this.onModelChange();
     },
     resetBind() {
       if (this.nodeInfo !== undefined) {
@@ -216,52 +244,111 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .notesBox {
   width: 100%;
-  height: calc(100% - 15px);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
+  height: 100%;
 }
 
-.notesBox .notesContainer {
-  width: 90%;
-  height: calc(100% - 50px);
+.my-test-panel-container * {
+  box-sizing: border-box;
+}
+.my-test-panel-container-nbr-output {
+  text-align: center;
+}
+
+.boxTextarea {
+  width: 95%;
+  margin: auto;
+  margin-top: 7px;
+  margin-left: 3%;
+  border-radius: 10px;
+  height: 19%;
+  /* background-color: white; */
+  resize: unset;
+  padding-top: unset;
+}
+.textareaSize {
+  width: 100%;
+}
+.sendButtonInTextarea {
+  position: absolute;
+  bottom: 3%;
+  right: 7%;
+}
+.testLine {
+  margin-right: 16px;
+  margin-left: 16px;
+  margin-top: 2px;
+  text-align: center;
+  border-bottom: 1px solid orange;
+}
+.preMessage {
+  margin: unset;
+  overflow-wrap: break-word;
+  overflow: "hidden";
+  white-space: pre-line;
+}
+
+.chat {
+  width: 95%;
+  height: 70%;
+  /* border: solid 1px #eee; */
   display: flex;
+  overflow-y: auto;
   flex-direction: column;
   margin: auto;
+  margin-top: 9px;
 }
 
-.notesBox .notesContainer .messages {
-  width: 100%;
-  height: 85%;
-  background: transparent;
-  overflow: hidden;
-  overflow-y: auto;
-  padding-right: 16px;
+.myMessage {
+  margin-top: 5px;
 }
-
-.notesBox .notesContainer .form {
-  width: 100%;
-  height: 15%;
+.textareaNote {
+  width: calc(100% - 16px);
+  resize: none;
+  margin: auto;
+  height: 95%;
 }
-
-.notesBox .notesContainer .form .noteForm {
-  width: 100%;
+.textareaSizeLikeBehind {
   height: 100%;
+}
+/* .messages {
+  margin-top: 30px;
   display: flex;
+  flex-direction: column;
 }
 
-.notesBox .notesContainer .form .noteForm .myField {
-  flex: 1 1 85%;
-  margin: 0px !important;
-  min-height: unset !important;
+.message {
+  border-radius: 20px;
+  padding: 8px 15px;
+  max-width: 90%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
 }
 
-.notesBox .notesContainer .form .noteForm .sendBtn {
-  display: flex;
+.yours {
+  margin-left: 5px;
+  align-items: flex-start;
+}
+
+.yours .message {
+  background-color: #eee;
+  position: relative;
+}
+
+.mine {
+  margin-right: 5px;
   align-items: flex-end;
 }
+
+.mine .message {
+  color: white;
+  margin-left: 25%;
+  background: linear-gradient(to bottom, #00d0ea 0%, #0085d1 100%);
+  background-attachment: fixed;
+  position: relative;
+}
+*/
 </style>
