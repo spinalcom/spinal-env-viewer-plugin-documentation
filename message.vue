@@ -51,7 +51,7 @@ export default {
 
 <style lang="scss" scoped>
 $green: #86bb71;
-$blue: #448aff;
+$blue: #ffffff;
 $orange: #e38968;
 $gray: #92959e;
 
@@ -81,7 +81,7 @@ li {
 }
 
 .message {
-  color: white;
+  color: #000000;
   padding: 18px 20px;
   line-height: 26px;
   font-size: 16px;
