@@ -433,8 +433,9 @@ export default {
           this.parentListToBind.push(element);
         }
       }
-      if (this.myBindParent == undefined)
-      {this.parentListToBind.bind(this.updateAttrParent.bind(this));}
+      if (this.myBindParent == undefined) {
+        this.parentListToBind.bind(this.updateAttrParent.bind(this));
+      }
     }
   },
   mounted() {
@@ -451,8 +452,9 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.option.info != undefined && this.myBind != undefined)
-    {this.option.info.unbind(this.myBind);}
+    if (this.option.info != undefined && this.myBind != undefined) {
+      this.option.info.unbind(this.myBind);
+    }
   }
 };
 </script>

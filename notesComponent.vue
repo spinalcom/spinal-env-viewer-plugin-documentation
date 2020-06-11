@@ -25,15 +25,40 @@ with this file. If not, see
 
 <template>
   <div class="notesBox">
-    <md-toolbar class="md-dense"
+    <md-toolbar class="mdToolbar md-dense"
                 md-elevation="0">
-      <div v-if="nodeInfo && nodeInfo.selectedNode"
-           class="centerSelectedNodeName">
-        {{nodeInfo.selectedNode.info.name.get()}}
+
+      <!-- <div class="md-toolbar-section-start titleDiv">
+        <div v-if="nodeInfo && nodeInfo.selectedNode">
+          {{nodeInfo.selectedNode.info.name.get()}}
+        </div>
+
+        <div v-else>BIM Object not created</div>
+      </div> -->
+
+      <div class="md-toolbar-section-start breadCrumb">
+        <div
+             v-if="noteContextSelected && noteCategorySelected && noteGroupSelected">
+          <div>
+            <span
+                  class="md-primary md-caption">{{noteContextSelected.name}}</span>
+            <span class="md-primary md-caption">/</span>
+            <span
+                  class="md-primary md-caption">{{noteCategorySelected.name}}</span>
+            <span class="md-primary md-caption">/</span>
+            <span
+                  class="md-primary md-caption">{{noteGroupSelected.name}}</span>
+          </div>
+        </div>
       </div>
 
-      <div class="centerSelectedNodeName"
-           v-else>BIM Object not created</div>
+      <div class="md-toolbar-section-end">
+        <md-button class="md-icon-button md-primary"
+                   @click="OpenLinkDialog">
+          <md-icon>settings_applications</md-icon>
+        </md-button>
+      </div>
+
     </md-toolbar>
 
     <div class="notesContainer">
@@ -73,8 +98,14 @@ with this file. If not, see
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
+
 import moment from "moment";
 import messageVue from "./message.vue";
+
+const {
+  spinalPanelManagerService
+} = require("spinal-env-viewer-panel-manager-service");
 
 export default {
   name: "my_compo",
@@ -86,7 +117,11 @@ export default {
       notesDisplayList: [],
       editNodePopup: false,
       selectedNote: undefined,
-      scrollToEnd: false
+      scrollToEnd: false,
+
+      noteContextSelected: undefined,
+      noteCategorySelected: undefined,
+      noteGroupSelected: undefined
     };
   },
   components: {
@@ -115,48 +150,48 @@ export default {
     },
     toDate: function(date) {
       return moment(date).format("MMMM Do YYYY, h:mm:ss a");
-      // convert date to 18min ago , 1h ago , ..., not necessery now we pref full date
-
-      // let newDateFormat = moment(date);
-      // let newDateFormat2 = moment();
-      // newDateFormat2.subtract(1, "days");
-      // if (newDateFormat.isBefore(newDateFormat2)) {
-      //   return newDateFormat.format("L , LT");
-      // } else return newDateFormat.fromNow();
-      // "DD MM YY, HH:mm:ss a"
-      // return convert.toLocaleDateString("fr-fr", { timeZone: "UTC" });
     },
-    addNote() {
-      // check if node exist, if node doesn't exist it create it
-      // console.log(
-      //   this.nodeInfo.selectedNode,
-      //   window.spinal.spinalSystem.getUser().username,
-      //   this.messageUser
-      // );
 
+    addNote() {
       if (this.messageUser.trim().length === 0) return;
 
       if (this.nodeInfo.exist) {
-        serviceDocumentation.addNote(
-          this.nodeInfo.selectedNode,
-          window.spinal.spinalSystem.getUser().username,
-          this.messageUser
-        );
+        serviceDocumentation
+          .addNote(
+            this.nodeInfo.selectedNode,
+            {
+              username: window.spinal.spinalSystem.getUser().username,
+              userId: FileSystem._user_id
+            },
+            this.messageUser
+          )
+          .then(result => {
+            serviceDocumentation.linkNoteToGroup(
+              this.noteContextSelected.id,
+              this.noteGroupSelected.id,
+              result.getId().get()
+            );
+          });
       } else {
         // create bim object before add note
         if (this.nodeInfo.dbid !== undefined) {
-          // window.spinal.ForgeViewer.viewer.model.getProperties(
-          //   this.nodeInfo.dbid,
-          //   async res => {
-          //     this.nodeInfo.selectedNode = await bimObjectService.createBIMObject(
-          //       this.nodeInfo.dbid,
-          //       res.name
-          //     );
-          serviceDocumentation.addNote(
-            this.nodeInfo.selectedNode,
-            window.spinal.spinalSystem.getUser().username,
-            this.messageUser
-          );
+          serviceDocumentation
+            .addNote(
+              this.nodeInfo.selectedNode,
+              {
+                username: window.spinal.spinalSystem.getUser().username,
+                userId: FileSystem._user_id
+              },
+              this.messageUser
+            )
+            .then(result => {
+              serviceDocumentation.linkNoteToGroup(
+                this.noteContextSelected.id,
+                this.noteGroupSelected.id,
+                result.getId().get()
+              );
+            });
+
           this.resetBind();
           // }
           // );
@@ -166,6 +201,7 @@ export default {
       this.resetBind();
       this.updatedd();
     },
+
     editNote() {
       // let notes = serviceDocumentation.editNote(selectedNode);
       // console.log(this.selectedNote);
@@ -178,25 +214,32 @@ export default {
       this.editNodePopup = false;
       this.resetBind();
     },
+
     deleteNote(noteNode) {
       // console.log(notes);
       serviceDocumentation.removeNode(noteNode);
     },
+
     getUsername() {
       return window.spinal.spinalSystem.getUser().username;
     },
+
     opened(option) {
       this.nodeInfo = option;
       this.resetBind();
       this.updatedd();
       // console.log(this.nodeInfo);
     },
+
     removed(option, viewer) {},
+
     closed(option, viewer) {},
+
     updatedd() {
       var container = this.$el.querySelector("#myList");
       container.scrollTo(0, container.scrollHeight);
     },
+
     resetBind() {
       if (this.nodeInfo !== undefined) {
         if (this.nodeInfo.selectedNode !== undefined) {
@@ -211,7 +254,35 @@ export default {
           }
         }
       }
+    },
+
+    OpenLinkDialog() {
+      spinalPanelManagerService.openPanel("linkToGroupDialog", {
+        type: NOTE_TYPE,
+        itemSelected: [],
+        callback: (context, category, group) => {
+          this.noteContextSelected = context;
+          this.noteCategorySelected = category;
+          this.noteGroupSelected = group;
+        }
+      });
     }
+  },
+
+  async mounted() {
+    const contextPromise = serviceDocumentation.createDefaultContext();
+    const categoryPromise = serviceDocumentation.createDefaultCategory();
+    const groupPromise = serviceDocumentation.createDefaultGroup();
+
+    const data = await Promise.all([
+      contextPromise,
+      categoryPromise,
+      groupPromise
+    ]);
+
+    this.noteContextSelected = data[0].info.get();
+    this.noteCategorySelected = data[1].info.get();
+    this.noteGroupSelected = data[2].info.get();
   }
 };
 </script>
@@ -224,6 +295,14 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+}
+
+.notesBox .mdToolbar {
+  padding: 0px !important;
+}
+
+.notesBox .mdToolbar .breadCrumb {
+  display: flex;
 }
 
 .notesBox .notesContainer {
