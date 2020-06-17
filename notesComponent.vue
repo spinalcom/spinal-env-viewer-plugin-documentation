@@ -148,6 +148,7 @@ export default {
         i++;
       }
     },
+
     toDate: function(date) {
       return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
@@ -155,24 +156,26 @@ export default {
     addNote() {
       if (this.messageUser.trim().length === 0) return;
 
-      if (this.nodeInfo.exist) {
-        serviceDocumentation
-          .addNote(
-            this.nodeInfo.selectedNode,
-            {
-              username: window.spinal.spinalSystem.getUser().username,
-              userId: FileSystem._user_id
-            },
-            this.messageUser
-          )
-          .then(result => {
-            serviceDocumentation.linkNoteToGroup(
-              this.noteContextSelected.id,
-              this.noteGroupSelected.id,
-              result.getId().get()
-            );
-          });
-      } else {
+      // if (this.nodeInfo.exist) {
+      serviceDocumentation
+        .addNote(
+          this.nodeInfo.selectedNode,
+          {
+            username: window.spinal.spinalSystem.getUser().username,
+            userId: FileSystem._user_id
+          },
+          this.messageUser
+        )
+        .then(result => {
+          serviceDocumentation.linkNoteToGroup(
+            this.noteContextSelected.id,
+            this.noteGroupSelected.id,
+            result.getId().get()
+          );
+        });
+      // }
+      /*
+      else {
         // create bim object before add note
         if (this.nodeInfo.dbid !== undefined) {
           serviceDocumentation
@@ -196,7 +199,7 @@ export default {
           // }
           // );
         }
-      }
+      }*/
       this.messageUser = "";
       this.resetBind();
       this.updatedd();
@@ -228,7 +231,6 @@ export default {
       this.nodeInfo = option;
       this.resetBind();
       this.updatedd();
-      // console.log(this.nodeInfo);
     },
 
     removed(option, viewer) {},

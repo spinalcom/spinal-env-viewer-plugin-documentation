@@ -10,9 +10,15 @@ const {
   SpinalForgeExtention,
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 
+
+import FindMessageParentBtn from "./buttonClass/findMessageParent.js"
+
 import {
   NotesButton
 } from './buttonClass/notesPanel.js'
+
+
+
 import {
   DocumentationButton,
   DocumentationExtension,
@@ -43,6 +49,12 @@ spinalContextMenuService.registerApp(
   SideBarHookName,
   new DocumentationButton(), [7]
 );
+
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new FindMessageParentBtn(), [7]
+);
+
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Documentation group
 //////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +73,7 @@ spinalContextMenuService.registerApp(
   circularMenuHookName,
   new NotesButton(), [7]
 );
+
 spinalContextMenuService.registerApp(
   SideBarHookName,
   new NotesButton(), [7]
