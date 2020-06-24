@@ -69,7 +69,9 @@ with this file. If not, see
                              :key="index"
                              :date="note.date"
                              :username="note.username"
-                             :message="note.message"></message-component>
+                             :message="note.message"
+                             :type="note.type"
+                             :file="note.file"></message-component>
         </ul>
 
       </md-content>
@@ -77,10 +79,35 @@ with this file. If not, see
       <div class="form">
         <form @submit.prevent="addNote"
               class="noteForm">
-          <md-field class="myField">
-            <label>Message</label>
-            <md-input v-model="messageUser"></md-input>
-          </md-field>
+
+          <!-- <md-button class="md-icon-button md-raised md-primary">
+            <md-icon>menu</md-icon>
+          </md-button> -->
+
+          <!-- <div class="icons">
+            <md-icon @click="addPJ">description</md-icon>
+          </div> -->
+
+          <md-button class="icons md-icon-button md-raised md-primary"
+                     @click="addPJ">
+            <md-icon>attach_file</md-icon>
+          </md-button>
+
+          <div class="messageForm">
+            <md-content class="pjDiv md-scrollbar"
+                        v-if="messages.pj.length > 0">
+
+              <attachment-component v-for="(file,index) in messages.pj"
+                                    :key="index"
+                                    :file="file"
+                                    @remove="removePJ">{{file.name}}
+              </attachment-component>
+            </md-content>
+            <md-field class="myField">
+              <label>Message</label>
+              <md-input v-model="messages.messageUser"></md-input>
+            </md-field>
+          </div>
 
           <div class="sendBtn">
             <md-button type="submit"
@@ -102,17 +129,25 @@ import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/M
 
 import moment from "moment";
 import messageVue from "./message.vue";
+import attachmentVue from "./attachment.vue";
 
 const {
   spinalPanelManagerService
 } = require("spinal-env-viewer-panel-manager-service");
+
+import { FileExplorer } from "./service/fileSystemExplorer.js";
+import { MESSAGE_TYPES } from "spinal-models-documentation";
 
 export default {
   name: "my_compo",
   data() {
     return {
       nodeInfo: undefined,
-      messageUser: "",
+      messages: {
+        messageUser: "",
+        pj: []
+      },
+      // messageUser: "",
       messageUserEdit: "",
       notesDisplayList: [],
       editNodePopup: false,
@@ -125,7 +160,8 @@ export default {
     };
   },
   components: {
-    "message-component": messageVue
+    "message-component": messageVue,
+    "attachment-component": attachmentVue
   },
   methods: {
     async updateNotesList() {
@@ -141,6 +177,8 @@ export default {
           username: note.element.username.get(),
           message: note.element.message.get(),
           date: this.toDate(note.element.date.get()),
+          type: note.element.type ? note.element.type.get() : undefined,
+          file: note.element.file,
           selectedNode: note.selectedNode,
           element: note.element
         };
@@ -153,18 +191,84 @@ export default {
       return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
 
-    addNote() {
-      if (this.messageUser.trim().length === 0) return;
+    async addFilesNote() {
+      if (this.messages.pj.length === 0) return;
 
-      // if (this.nodeInfo.exist) {
+      // const option = {
+      //   info: this.nodeInfo.selectedNode,
+      //   selectedNode: this.nodeInfo.selectedNode.info,
+      //   exist: this.nodeInfo.exist
+      // };
+
+      const promises = this.messages.pj.map(async file => {
+        return {
+          file: file,
+          directory: await this._getOrCreateFileDirectory(
+            this.nodeInfo.selectedNode
+          )
+        };
+      });
+
+      return Promise.all(promises).then(res => {
+        return res.map(data => {
+          const type = this._getFileType(data.file);
+
+          let files = FileExplorer.addFileUpload(data.directory, [data.file]);
+          let file = files.length > 0 ? files[0] : undefined;
+
+          this._sendNote(
+            this.nodeInfo.selectedNode,
+            data.file.name,
+            type,
+            file
+          );
+        });
+      });
+    },
+
+    async _getOrCreateFileDirectory(node) {
+      let directory = await FileExplorer.getDirectory(node);
+
+      if (!directory) {
+        directory = await FileExplorer.createDirectory(node);
+      }
+
+      return directory;
+    },
+
+    _getFileType(file) {
+      const imagesExtension = [
+        "JPG",
+        "PNG",
+        "GIF",
+        "WEBP",
+        "TIFF",
+        "PSD",
+        "RAW",
+        "BMP",
+        "HEIF",
+        "INDD",
+        "JPEG 2000",
+        "SVG"
+      ];
+      const extension = /[^.]+$/.exec(file.name)[0];
+
+      return imagesExtension.indexOf(extension.toUpperCase()) !== -1
+        ? MESSAGE_TYPES.image
+        : MESSAGE_TYPES.file;
+    },
+
+    _sendNote(node, message, type, path) {
       serviceDocumentation
         .addNote(
-          this.nodeInfo.selectedNode,
+          node,
           {
             username: window.spinal.spinalSystem.getUser().username,
             userId: FileSystem._user_id
           },
-          this.messageUser
+          message,
+          type,
+          path
         )
         .then(result => {
           serviceDocumentation.linkNoteToGroup(
@@ -173,6 +277,38 @@ export default {
             result.getId().get()
           );
         });
+    },
+
+    async addNote() {
+      await this.addFilesNote();
+      this.messages.pj = [];
+
+      if (this.messages.messageUser.trim().length === 0) return;
+
+      await this._sendNote(
+        this.nodeInfo.selectedNode,
+        this.messages.messageUser
+      );
+
+      // if (this.nodeInfo.exist) {
+      /*
+      serviceDocumentation
+        .addNote(
+          this.nodeInfo.selectedNode,
+          {
+            username: window.spinal.spinalSystem.getUser().username,
+            userId: FileSystem._user_id
+          },
+          this.messages.messageUser
+        )
+        .then(result => {
+          serviceDocumentation.linkNoteToGroup(
+            this.noteContextSelected.id,
+            this.noteGroupSelected.id,
+            result.getId().get()
+          );
+        });
+        */
       // }
       /*
       else {
@@ -200,7 +336,7 @@ export default {
           // );
         }
       }*/
-      this.messageUser = "";
+      this.messages.messageUser = "";
       this.resetBind();
       this.updatedd();
     },
@@ -238,8 +374,11 @@ export default {
     closed(option, viewer) {},
 
     updatedd() {
-      var container = this.$el.querySelector("#myList");
-      container.scrollTo(0, container.scrollHeight);
+      var container = document.querySelector("#myList");
+      // console.log("container", container);
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 300);
     },
 
     resetBind() {
@@ -268,6 +407,46 @@ export default {
           this.noteGroupSelected = group;
         }
       });
+    },
+
+    addPJ() {
+      const maxSize = 25000000;
+      const input = document.createElement("input");
+      input.type = "file";
+      input.multiple = true;
+
+      input.click();
+
+      input.addEventListener(
+        "change",
+        event => {
+          const files = event.target.files;
+
+          let filelist = [];
+          for (const file of files) {
+            filelist.push(file);
+          }
+
+          filelist.push(...this.messages.pj);
+
+          const sizes = filelist.map(el => el.size);
+
+          const filesSize = sizes.reduce((a, b) => a + b);
+
+          if (filesSize > maxSize) {
+            alert(
+              "The selected file(s) is too large. The maximum size must not exceed 25 MB"
+            );
+            return;
+          }
+
+          this.messages.pj = filelist;
+        },
+        false
+      );
+    },
+    removePJ(file) {
+      this.messages.pj = this.messages.pj.filter(el => el.name !== file.name);
     }
   },
 
@@ -335,13 +514,39 @@ export default {
   display: flex;
 }
 
-.notesBox .notesContainer .form .noteForm .myField {
-  flex: 1 1 85%;
+.notesBox .notesContainer .form .noteForm .icons {
+  flex: 0 0 25px;
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-end;
+  border-radius: 20%;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm {
+  flex: 1 1 calc(85% - 25px);
+  display: flex;
+  flex-direction: column;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .pjDiv {
+  height: 40px;
+  background: transparent;
+  overflow: auto;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .pjDiv p {
+  margin: 0px;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .myField {
+  flex: 1 1 auto;
   margin: 0px !important;
   min-height: unset !important;
+  height: calc(100% - 40px);
 }
 
 .notesBox .notesContainer .form .noteForm .sendBtn {
+  flex: 1 1 15%;
   display: flex;
   align-items: flex-end;
 }

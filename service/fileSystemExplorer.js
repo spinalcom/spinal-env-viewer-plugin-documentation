@@ -1,6 +1,8 @@
 // import ServiceCDE from "spinal-env-viewer-plugin-documentation-service";
 // import bimObjectService from 'spinal-env-viewer-plugin-bimobjectservice';
-import {SPINAL_RELATION_PTR_LST_TYPE} from "spinal-env-viewer-graph-service";
+import {
+  SPINAL_RELATION_PTR_LST_TYPE
+} from "spinal-env-viewer-graph-service";
 class FileSystemExplorer {
   constructor() {
     this.spinalSystem = window.spinal.spinalSystem;
@@ -72,19 +74,24 @@ class FileSystemExplorer {
     }
   }
   addFileUpload(directory, uploadFileList) {
+    const files = [];
+
     for (let i = 0; i < uploadFileList.length; i++) {
       const element = uploadFileList[i];
       let filePath = new Path(element);
       let myFile = new File(element.name, filePath);
       directory.push(myFile);
+      files.push(myFile);
     }
+
+    return files
   }
   addFileDrive(directory, driveFileList, pathTab) {
     for (let i = 0; i < driveFileList.length; i++) {
       const driveFile = driveFileList[i];
       let test = this.checkInfinitInclusion(FileSystem._objects[driveFile
-        .serverid],
-      pathTab);
+          .serverid],
+        pathTab);
       test.then((res) => {
         if (res == false) {
           // return false

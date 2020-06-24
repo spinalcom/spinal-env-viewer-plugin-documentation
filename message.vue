@@ -23,7 +23,36 @@ with this file. If not, see
 -->
 
 <template>
-  <li class="clearfix">
+
+  <li class="clearfix"
+      v-if="type === MESSAGE_TYPES.file">
+    <div class="message-data align-right">
+      <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
+      <span class="message-data-name">{{username}}</span>
+    </div>
+    <div class="message other-message float-right">
+      <md-icon>description</md-icon>
+      {{message}}
+    </div>
+  </li>
+
+  <li class="clearfix"
+      v-else-if="type === MESSAGE_TYPES.image">
+    <div class="message-data align-right">
+      <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
+      <span class="message-data-name">{{username}}</span>
+    </div>
+    <div class="message other-message float-right">
+      {{message}}
+      <div class="images">
+        <img :src="`/sceen/_?u=${image}`"
+             alt="image">
+      </div>
+    </div>
+  </li>
+
+  <li class="clearfix"
+      v-else>
     <div class="message-data align-right">
       <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
       <span class="message-data-name">{{username}}</span>
@@ -35,17 +64,39 @@ with this file. If not, see
 </template>
 
 <script>
+import { MESSAGE_TYPES } from "spinal-models-documentation";
+
 export default {
   name: "message",
   props: {
     date: {},
     username: {},
-    message: {}
+    message: {},
+    type: {},
+    file: {}
   },
   data() {
-    return {};
+    this.MESSAGE_TYPES = MESSAGE_TYPES;
+    return {
+      image: undefined
+    };
   },
-  methods: {}
+  mounted() {
+    setTimeout(() => {
+      this.chargeImg();
+    }, 500);
+  },
+  methods: {
+    chargeImg() {
+      if (this.file) {
+        this.file.load(f => {
+          f._ptr.load(path => {
+            this.image = path._server_id;
+          });
+        });
+      }
+    }
+  }
 };
 </script>
 

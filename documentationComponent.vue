@@ -99,12 +99,12 @@ export default {
     },
     updateSelectedBIMObject(option) {
       this.option = {};
-
       Object.assign(this.option, option);
       this.selectedNode = this.option.info;
     },
     opened(option) {
       this.option = option;
+
       let _this = this;
       if (option.selectedNode !== undefined) {
         if (option.selectedNode instanceof SpinalNode) {
