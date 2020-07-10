@@ -30,7 +30,7 @@ with this file. If not, see
       <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
       <span class="message-data-name">{{username}}</span>
     </div>
-    <div class="message other-message float-right">
+    <div class="message messageIcon other-message float-right">
       <md-icon>description</md-icon>
       {{message}}
     </div>
@@ -105,6 +105,7 @@ $green: #86bb71;
 $blue: #ffffff;
 $orange: #e38968;
 $gray: #92959e;
+$black: #000000;
 
 li {
   padding-bottom: 20px;
@@ -194,5 +195,13 @@ li {
   content: " ";
   clear: both;
   height: 0;
+}
+</style>
+
+<style lang="scss">
+$black: #000000;
+
+li.clearfix .md-icon.md-theme-default.md-icon-font {
+  color: $black !important;
 }
 </style>
