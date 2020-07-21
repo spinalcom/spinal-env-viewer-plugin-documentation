@@ -135,7 +135,7 @@ const {
   spinalPanelManagerService
 } = require("spinal-env-viewer-panel-manager-service");
 
-import { FileExplorer } from "./service/fileSystemExplorer.js";
+import { FileExplorer } from "../../../service/fileSystemExplorer.js";
 import { MESSAGE_TYPES } from "spinal-models-documentation";
 
 export default {

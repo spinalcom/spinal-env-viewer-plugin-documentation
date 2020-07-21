@@ -14,7 +14,7 @@ const {
   SpinalForgeExtention,
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 
-import notesComponent from '../notesComponent.vue';
+import notesComponent from '../view/notes/components/notesComponent.vue';
 import Vue from 'vue';
 
 const noteExtension = SpinalForgeExtention.createExtention({

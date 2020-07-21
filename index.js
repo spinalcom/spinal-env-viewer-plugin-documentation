@@ -3,9 +3,12 @@ const SideBarHookName = 'GraphManagerSideBar';
 const namePanel = 'panel-documentation'
 const documentationGroupPanel = 'panel-documentationgroup'
 const nameAttributesRightClickPanel = 'attributes-right-click'
+
+
 const {
   spinalContextMenuService,
 } = require('spinal-env-viewer-context-menu-service');
+
 const {
   SpinalForgeExtention,
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
@@ -13,10 +16,13 @@ const {
 
 import FindMessageParentBtn from "./buttonClass/findMessageParent.js"
 
+import MessageDetail from "./buttonClass/messageDetail.js";
+
 import {
   NotesButton
 } from './buttonClass/notesPanel.js'
 
+import messageDialog from "./view/notes/dialogs/registerDialogs.js";
 
 
 import {
@@ -32,6 +38,9 @@ import {
 //   DocumentationGroupButton
 // } from "./buttonClass/documentationGroup";
 import attributesRightClick from './view/rightClick/attributesRightClick.vue'
+import {
+  SpinalMountExtention
+} from "spinal-env-viewer-panel-manager-service";
 
 
 // deleteAutoUrlRightClick
@@ -67,7 +76,7 @@ spinalContextMenuService.registerApp(
 // );
 
 //////////////////////////////////////////////////////////////////////////////////////
-//                                Notes Button
+//                                Notes
 //////////////////////////////////////////////////////////////////////////////////////
 spinalContextMenuService.registerApp(
   circularMenuHookName,
@@ -78,6 +87,13 @@ spinalContextMenuService.registerApp(
   SideBarHookName,
   new NotesButton(), [7]
 );
+
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new MessageDetail(), [7]
+)
+
+SpinalMountExtention.mount(messageDialog);
 
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Export to drive button
