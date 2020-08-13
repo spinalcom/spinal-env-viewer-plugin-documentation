@@ -15,6 +15,11 @@ import {
   SpinalContextSelectBIMObject
 } from 'spinal-env-viewer-plugin-standard_button/js/selectBIMObjectButton';
 
+
+import {
+  isShownParam
+} from 'spinal-env-viewer-plugin-standard_button/js/utilities';
+
 import {
   SpinalGraphService
 } from "spinal-env-viewer-graph-service";
@@ -41,10 +46,16 @@ class FindMessageParent extends SpinalContextApp {
     const nodeId = option.selectedNode.id.get();
     const realNode = SpinalGraphService.getRealNode(nodeId);
 
-    const parents = await realNode.getParents(NOTE_RELATION);
+    let parents = await realNode.getParents(NOTE_RELATION);
 
+    parents = parents.filter(el => {
+      return isShownParam.indexOf(el.getType().get()) !== -1;
+    })
 
-    if (!(parents) || (parents && parents.length === 0)) return;
+    if (!(parents) || (parents && parents.length === 0)) {
+      window.alert("No parent on bimMaquette");
+      return;
+    };
 
     const parent = parents[0];
 

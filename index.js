@@ -18,6 +18,8 @@ import FindMessageParentBtn from "./buttonClass/findMessageParent.js"
 
 import MessageDetail from "./buttonClass/messageDetail.js";
 
+import ColorMessageParent from "./buttonClass/seeMessage.js";
+
 import {
   NotesButton
 } from './buttonClass/notesPanel.js'
@@ -91,7 +93,10 @@ spinalContextMenuService.registerApp(
 spinalContextMenuService.registerApp(
   SideBarHookName,
   new MessageDetail(), [7]
-)
+);
+
+spinalContextMenuService.registerApp(SideBarHookName, new ColorMessageParent(),
+  [7]);
 
 SpinalMountExtention.mount(messageDialog);
 
