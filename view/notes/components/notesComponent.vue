@@ -132,7 +132,7 @@ import messageVue from "./message.vue";
 import attachmentVue from "./attachment.vue";
 
 const {
-  spinalPanelManagerService
+  spinalPanelManagerService,
 } = require("spinal-env-viewer-panel-manager-service");
 
 import { FileExplorer } from "../../../service/fileSystemExplorer.js";
@@ -145,7 +145,7 @@ export default {
       nodeInfo: undefined,
       messages: {
         messageUser: "",
-        pj: []
+        pj: [],
       },
       // messageUser: "",
       messageUserEdit: "",
@@ -156,12 +156,12 @@ export default {
 
       noteContextSelected: undefined,
       noteCategorySelected: undefined,
-      noteGroupSelected: undefined
+      noteGroupSelected: undefined,
     };
   },
   components: {
     "message-component": messageVue,
-    "attachment-component": attachmentVue
+    "attachment-component": attachmentVue,
   },
   methods: {
     async updateNotesList() {
@@ -180,14 +180,14 @@ export default {
           type: note.element.type ? note.element.type.get() : undefined,
           file: note.element.file,
           selectedNode: note.selectedNode,
-          element: note.element
+          element: note.element,
         };
         this.notesDisplayList.push(obj);
         i++;
       }
     },
 
-    toDate: function(date) {
+    toDate: function (date) {
       return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
 
@@ -200,17 +200,17 @@ export default {
       //   exist: this.nodeInfo.exist
       // };
 
-      const promises = this.messages.pj.map(async file => {
+      const promises = this.messages.pj.map(async (file) => {
         return {
           file: file,
           directory: await this._getOrCreateFileDirectory(
             this.nodeInfo.selectedNode
-          )
+          ),
         };
       });
 
-      return Promise.all(promises).then(res => {
-        return res.map(data => {
+      return Promise.all(promises).then((res) => {
+        return res.map((data) => {
           const type = this._getFileType(data.file);
 
           let files = FileExplorer.addFileUpload(data.directory, [data.file]);
@@ -249,7 +249,7 @@ export default {
         "HEIF",
         "INDD",
         "JPEG 2000",
-        "SVG"
+        "SVG",
       ];
       const extension = /[^.]+$/.exec(file.name)[0];
 
@@ -259,24 +259,25 @@ export default {
     },
 
     _sendNote(node, message, type, path) {
-      serviceDocumentation
-        .addNote(
-          node,
-          {
-            username: window.spinal.spinalSystem.getUser().username,
-            userId: FileSystem._user_id
-          },
-          message,
-          type,
-          path
-        )
-        .then(result => {
-          serviceDocumentation.linkNoteToGroup(
-            this.noteContextSelected.id,
-            this.noteGroupSelected.id,
-            result.getId().get()
-          );
-        });
+      return serviceDocumentation.addNote(
+        node,
+        {
+          username: window.spinal.spinalSystem.getUser().username,
+          userId: FileSystem._user_id,
+        },
+        message,
+        type,
+        path,
+        this.noteContextSelected.id,
+        this.noteGroupSelected.id
+      );
+      // .then((result) => {
+      //   serviceDocumentation.linkNoteToGroup(
+      //     this.noteContextSelected.id,
+      //     this.noteGroupSelected.id,
+      //     result.getId().get()
+      //   );
+      // });
     },
 
     async addNote() {
@@ -405,7 +406,7 @@ export default {
           this.noteContextSelected = context;
           this.noteCategorySelected = category;
           this.noteGroupSelected = group;
-        }
+        },
       });
     },
 
@@ -419,7 +420,7 @@ export default {
 
       input.addEventListener(
         "change",
-        event => {
+        (event) => {
           const files = event.target.files;
 
           let filelist = [];
@@ -429,7 +430,7 @@ export default {
 
           filelist.push(...this.messages.pj);
 
-          const sizes = filelist.map(el => el.size);
+          const sizes = filelist.map((el) => el.size);
 
           const filesSize = sizes.reduce((a, b) => a + b);
 
@@ -446,25 +447,25 @@ export default {
       );
     },
     removePJ(file) {
-      this.messages.pj = this.messages.pj.filter(el => el.name !== file.name);
-    }
+      this.messages.pj = this.messages.pj.filter((el) => el.name !== file.name);
+    },
   },
 
   async mounted() {
-    const contextPromise = serviceDocumentation.createDefaultContext();
-    const categoryPromise = serviceDocumentation.createDefaultCategory();
-    const groupPromise = serviceDocumentation.createDefaultGroup();
+    const context = await serviceDocumentation.createDefaultContext();
+    const category = await serviceDocumentation.createDefaultCategory();
+    const group = await serviceDocumentation.createDefaultGroup();
 
-    const data = await Promise.all([
-      contextPromise,
-      categoryPromise,
-      groupPromise
-    ]);
+    // const data = await Promise.all([
+    //   context,
+    //   category,
+    //   group,
+    // ]);
 
-    this.noteContextSelected = data[0].info.get();
-    this.noteCategorySelected = data[1].info.get();
-    this.noteGroupSelected = data[2].info.get();
-  }
+    this.noteContextSelected = context.info.get();
+    this.noteCategorySelected = category.info.get();
+    this.noteGroupSelected = group.info.get();
+  },
 };
 </script>
 
