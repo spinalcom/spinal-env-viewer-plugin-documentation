@@ -15,6 +15,10 @@ import {
   SpinalContextSelectBIMObject
 } from 'spinal-env-viewer-plugin-standard_button/js/selectBIMObjectButton';
 
+import {
+  SpinalContextFitToViewer
+} from 'spinal-env-viewer-plugin-standard_button/js/fitToViewerButton';
+
 
 import {
   isShownParam
@@ -67,7 +71,10 @@ class FindMessageParent extends SpinalContextApp {
       }
 
       const selectBtn = new SpinalContextSelectBIMObject();
+      const zoomBtn = new SpinalContextFitToViewer();
+
       selectBtn.action(params);
+      zoomBtn.action(params);
 
     } else {
       alert("this message is not linked to geographic element");
