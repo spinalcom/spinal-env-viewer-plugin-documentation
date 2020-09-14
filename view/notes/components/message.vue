@@ -34,6 +34,7 @@ with this file. If not, see
       <md-icon>description</md-icon>
       {{message}}
     </div>
+
   </li>
 
   <li class="clearfix"
@@ -60,6 +61,7 @@ with this file. If not, see
     <div class="message other-message float-right">
       {{message}}
     </div>
+
   </li>
 </template>
 
@@ -73,12 +75,13 @@ export default {
     username: {},
     message: {},
     type: {},
-    file: {}
+    file: {},
   },
   data() {
     this.MESSAGE_TYPES = MESSAGE_TYPES;
     return {
-      image: undefined
+      hover: false,
+      image: undefined,
     };
   },
   mounted() {
@@ -89,14 +92,14 @@ export default {
   methods: {
     chargeImg() {
       if (this.file) {
-        this.file.load(f => {
-          f._ptr.load(path => {
+        this.file.load((f) => {
+          f._ptr.load((path) => {
             this.image = path._server_id;
           });
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -107,9 +110,13 @@ $orange: #e38968;
 $gray: #92959e;
 $black: #000000;
 
-li {
+li.clearfix {
   padding-bottom: 20px;
   list-style: none;
+}
+
+.hovered {
+  background-color: red;
 }
 
 *,

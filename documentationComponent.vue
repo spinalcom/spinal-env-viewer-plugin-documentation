@@ -75,7 +75,7 @@ import filepanel from "./view/documentation/FilePanel.vue";
 import attributespanel from "./view/documentation/AttributesPanel.vue";
 import {
   SpinalGraphService,
-  SpinalNode
+  SpinalNode,
 } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 export default {
@@ -87,12 +87,12 @@ export default {
       dbid: undefined,
       option: undefined,
       buttonList: [],
-      parentGroup: undefined
+      parentGroup: undefined,
     };
   },
   components: { urlpanel, filepanel, attributespanel },
   methods: {
-    activeTabColor: function(value) {
+    activeTabColor: function (value) {
       if (this.activeTab == value)
         return { background: "#356BaB", border: "1px solid white" };
       else return { background: "unset", border: "1px solid white" };
@@ -125,6 +125,7 @@ export default {
           this.dbid = option.dbid;
         }
       }
+
       // set attributes for building
       serviceDocumentation.setBuildingInformationAttributes(this.selectedNode);
       // .then(info => {});
@@ -132,13 +133,14 @@ export default {
       // // get shared attributes
       serviceDocumentation
         .getParentGroup(this.selectedNode)
-        .then(allParentGroup => {
-          _this.parentGroup = allParentGroup;
+        .then((allParentGroup) => {
+          _this.parentGroup =
+            typeof allParentGroup !== "undefined" ? allParentGroup : [];
         });
     },
     removed(option, viewer) {},
-    closed(option, viewer) {}
-  }
+    closed(option, viewer) {},
+  },
 };
 </script>
 

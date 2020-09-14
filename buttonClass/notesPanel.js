@@ -30,7 +30,8 @@ const noteExtension = SpinalForgeExtention.createExtention({
   style: {
     left: '405px',
     width: '400px',
-    height: "475px"
+    height: "475px",
+    minWidth: '510px'
   },
   onload: () => {},
   onUnLoad: () => {},
@@ -68,67 +69,14 @@ export class NotesButton extends SpinalContextApp {
     let obj = {
       selectedNode: getSelectedNode(option.selectedNode),
       dbid: option.dbid ? option.dbid : getDbId(option.selectedNode),
-      exist: option.exist
+      exist: option.exist,
+      model: option.model3d
     }
-
-    if (typeof obj.selectedNode === "undefined") {
-      obj.selectedNode = await createBimObjectNode();
-    }
-
 
     spinalPanelManagerService.openPanel('panel-notes', obj);
 
   }
 
-  /*
-    action(option) {
-      let selectedNode = option.selectedNode;
-      let dbid = option.dbid;
-      let boolBIMObject = option.exist;
-
-      if (option.exist) {
-        selectedNode = option.selectedNode instanceof SpinalNode ? option
-          .selectedNode : SpinalGraphService.getRealNode(option.selectedNode.id
-            .get());
-
-        let obj = {
-          selectedNode,
-          dbid,
-          exist: boolBIMObject,
-        };
-
-        spinalPanelManagerService.openPanel('panel-notes', obj);
-      } else {
-        window.spinal.ForgeViewer.viewer.model.getProperties(
-          option.dbid,
-          async res => {
-            selectedNode = await window.spinal.BimObjectService
-              .createBIMObject(
-                option.dbid,
-                res.name,
-                option.model3d
-              );
-            let obj = {
-              selectedNode,
-              dbid,
-              exist: true,
-            };
-
-            spinalPanelManagerService.openPanel('panel-notes', obj);
-          }
-        );
-      }
-
-      // let obj = {
-      //   selectedNode,
-      //   dbid,
-      //   boolBIMObject,
-      // };
-
-      // spinalPanelManagerService.openPanel ('panel-notes', obj);
-      // console.log("action clicked");
-    }
-  */
 }
 
 const getSelectedNode = (selectedNode) => {
@@ -163,9 +111,12 @@ const createBimObjectNode = () => {
 
     return new Promise((resolve) => {
       viewer.model.getProperties(dbid, async res => {
-        const node = await window.spinal.BimObjectService
+        const info = await window.spinal.BimObjectService
           .createBIMObject(dbid, res.name, model)
-        resolve(node);
+
+        if (info instanceof SpinalNode) return resolve(info);
+
+        resolve(SpinalGraphService.getRealNode(info.id.get()));
       })
 
     });

@@ -133,7 +133,7 @@ export default {
       myBind: undefined,
       groupURLDisplayList: [],
       myBindParent: undefined,
-      parentListToBind: undefined
+      parentListToBind: undefined,
     };
   },
   components: { menuURL },
@@ -160,7 +160,7 @@ export default {
         const node = this.parentGroup[i];
         json = {
           groupName: node.info.name.get(),
-          url: await serviceDocumentation.getURL(node)
+          url: await serviceDocumentation.getURL(node),
         };
         this.groupURLDisplayList.push(json);
       }
@@ -169,9 +169,9 @@ export default {
       let _this = this;
       let label = this.label;
       let URL = this.URL;
-      viewer.model.getProperties(this.option.dbid, function(res) {
+      viewer.model.getProperties(this.option.dbid, function (res) {
         let option = utilities.addLink(_this.option, res.name, label, URL);
-        option.then(option => {
+        option.then((option) => {
           if (_this.option.exist == false) {
             _this.option.exist = true;
             _this.$emit("updateMyBIMObject", option);
@@ -198,10 +198,11 @@ export default {
     resetBindParent() {
       // j'ai la liste de tous les node parent
 
-      if (this.parentListToBind == undefined) {
+      if (!this.parentListToBind) {
         this.parentListToBind = new Lst();
       }
-      if (!this.parentListToBind.length == this.parentGroup.length) {
+
+      if (this.parentListToBind.length !== this.parentGroup.length) {
         this.parentListToBind.splice(0, this.parentListToBind.length);
         for (let i = 0; i < this.parentGroup.length; i++) {
           const element = this.parentGroup[i];
@@ -210,7 +211,7 @@ export default {
       }
       if (this.myBindParent == undefined)
         this.parentListToBind.bind(this.updateURLParent.bind(this));
-    }
+    },
   },
   mounted() {
     viewer = window.spinal.ForgeViewer.viewer;
@@ -218,17 +219,17 @@ export default {
     this.resetBindParent();
   },
   watch: {
-    option: function() {
+    option: function () {
       this.resetBind();
     },
-    parentGroup: function() {
+    parentGroup: function () {
       this.resetBindParent();
-    }
+    },
   },
   beforeDestroy() {
     if (this.option.info != undefined && this.myBind != undefined)
       this.option.info.unbind(this.myBind);
-  }
+  },
 };
 </script>
 

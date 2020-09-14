@@ -3,6 +3,7 @@
 import {
   SPINAL_RELATION_PTR_LST_TYPE
 } from "spinal-env-viewer-graph-service";
+
 class FileSystemExplorer {
   constructor() {
     this.spinalSystem = window.spinal.spinalSystem;

@@ -64,7 +64,7 @@ with this file. If not, see
     <div class="notesContainer">
       <md-content id="myList"
                   class="messages md-scrollbar">
-        <ul>
+        <ul class="div_messages">
           <message-component v-for="(note,index) in notesDisplayList"
                              :key="index"
                              :date="note.date"
@@ -88,10 +88,25 @@ with this file. If not, see
             <md-icon @click="addPJ">description</md-icon>
           </div> -->
 
-          <md-button class="icons md-icon-button md-raised md-primary"
-                     @click="addPJ">
-            <md-icon>attach_file</md-icon>
-          </md-button>
+          <div class="icons">
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="addPJ"
+                       :title="'Add Attachment'">
+              <md-icon>attach_file</md-icon>
+            </md-button>
+
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="TakeScreenShot"
+                       :title="'Take a screenshot'">
+              <md-icon>add_a_photo</md-icon>
+            </md-button>
+
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="addPJ"
+                       :title="'save point of view'">
+              <md-icon>near_me</md-icon>
+            </md-button>
+          </div>
 
           <div class="messageForm">
             <md-content class="pjDiv md-scrollbar"
@@ -137,11 +152,19 @@ const {
 
 import { FileExplorer } from "../../../service/fileSystemExplorer.js";
 import { MESSAGE_TYPES } from "spinal-models-documentation";
+import {
+  SpinalNode,
+  SpinalGraphService,
+} from "spinal-env-viewer-graph-service";
 
 export default {
   name: "my_compo",
   data() {
     return {
+      userConnected: {
+        username: window.spinal.spinalSystem.getUser().username,
+        userId: FileSystem._user_id,
+      },
       nodeInfo: undefined,
       messages: {
         messageUser: "",
@@ -166,24 +189,27 @@ export default {
   methods: {
     async updateNotesList() {
       this.notesDisplayList = [];
-      let notes = await serviceDocumentation.getNotes(
-        this.nodeInfo.selectedNode
-      );
 
-      let i = 0;
-      for (let note of notes) {
-        let obj = {
-          id: i,
-          username: note.element.username.get(),
-          message: note.element.message.get(),
-          date: this.toDate(note.element.date.get()),
-          type: note.element.type ? note.element.type.get() : undefined,
-          file: note.element.file,
-          selectedNode: note.selectedNode,
-          element: note.element,
-        };
-        this.notesDisplayList.push(obj);
-        i++;
+      if (this.nodeInfo.selectedNode) {
+        let notes = await serviceDocumentation.getNotes(
+          this.nodeInfo.selectedNode
+        );
+
+        let i = 0;
+        for (let note of notes) {
+          let obj = {
+            id: i,
+            username: note.element.username.get(),
+            message: note.element.message.get(),
+            date: this.toDate(note.element.date.get()),
+            type: note.element.type ? note.element.type.get() : undefined,
+            file: note.element.file,
+            selectedNode: note.selectedNode,
+            element: note.element,
+          };
+          this.notesDisplayList.push(obj);
+          i++;
+        }
       }
     },
 
@@ -194,93 +220,62 @@ export default {
     async addFilesNote() {
       if (this.messages.pj.length === 0) return;
 
-      // const option = {
-      //   info: this.nodeInfo.selectedNode,
-      //   selectedNode: this.nodeInfo.selectedNode.info,
-      //   exist: this.nodeInfo.exist
-      // };
+      await serviceDocumentation.addFileAsNote(
+        this.nodeInfo.selectedNode,
+        this.messages.pj,
+        this.userConnected,
+        this.noteContextSelected.id,
+        this.noteGroupSelected.id
+      );
 
-      const promises = this.messages.pj.map(async (file) => {
-        return {
-          file: file,
-          directory: await this._getOrCreateFileDirectory(
-            this.nodeInfo.selectedNode
-          ),
-        };
-      });
+      // const promises = this.messages.pj.map(async (file) => {
+      //   return {
+      //     file: file,
+      //     directory: await this._getOrCreateFileDirectory(
+      //       this.nodeInfo.selectedNode
+      //     ),
+      //   };
+      // });
 
-      return Promise.all(promises).then((res) => {
-        return res.map((data) => {
-          const type = this._getFileType(data.file);
+      // return Promise.all(promises).then((res) => {
+      //   return res.map((data) => {
+      //     const type = this._getFileType(data.file);
 
-          let files = FileExplorer.addFileUpload(data.directory, [data.file]);
-          let file = files.length > 0 ? files[0] : undefined;
+      //     let files = FileExplorer.addFileUpload(data.directory, [data.file]);
+      //     let file = files.length > 0 ? files[0] : undefined;
 
-          this._sendNote(
-            this.nodeInfo.selectedNode,
-            data.file.name,
-            type,
-            file
-          );
-        });
-      });
-    },
-
-    async _getOrCreateFileDirectory(node) {
-      let directory = await FileExplorer.getDirectory(node);
-
-      if (!directory) {
-        directory = await FileExplorer.createDirectory(node);
-      }
-
-      return directory;
-    },
-
-    _getFileType(file) {
-      const imagesExtension = [
-        "JPG",
-        "PNG",
-        "GIF",
-        "WEBP",
-        "TIFF",
-        "PSD",
-        "RAW",
-        "BMP",
-        "HEIF",
-        "INDD",
-        "JPEG 2000",
-        "SVG",
-      ];
-      const extension = /[^.]+$/.exec(file.name)[0];
-
-      return imagesExtension.indexOf(extension.toUpperCase()) !== -1
-        ? MESSAGE_TYPES.image
-        : MESSAGE_TYPES.file;
+      //     this._sendNote(
+      //       this.nodeInfo.selectedNode,
+      //       data.file.name,
+      //       type,
+      //       file
+      //     );
+      //   });
+      // });
     },
 
     _sendNote(node, message, type, path) {
       return serviceDocumentation.addNote(
         node,
-        {
-          username: window.spinal.spinalSystem.getUser().username,
-          userId: FileSystem._user_id,
-        },
+        this.userConnected,
         message,
         type,
         path,
         this.noteContextSelected.id,
         this.noteGroupSelected.id
       );
-      // .then((result) => {
-      //   serviceDocumentation.linkNoteToGroup(
-      //     this.noteContextSelected.id,
-      //     this.noteGroupSelected.id,
-      //     result.getId().get()
-      //   );
-      // });
     },
 
     async addNote() {
+      if (typeof this.nodeInfo.selectedNode === "undefined") {
+        this.nodeInfo.selectedNode = await this._createBimObjectNode(
+          this.nodeInfo.model,
+          this.nodeInfo.dbid
+        );
+
+        this.updatedd();
+      }
+
       await this.addFilesNote();
       this.messages.pj = [];
 
@@ -290,62 +285,12 @@ export default {
         this.nodeInfo.selectedNode,
         this.messages.messageUser
       );
-
-      // if (this.nodeInfo.exist) {
-      /*
-      serviceDocumentation
-        .addNote(
-          this.nodeInfo.selectedNode,
-          {
-            username: window.spinal.spinalSystem.getUser().username,
-            userId: FileSystem._user_id
-          },
-          this.messages.messageUser
-        )
-        .then(result => {
-          serviceDocumentation.linkNoteToGroup(
-            this.noteContextSelected.id,
-            this.noteGroupSelected.id,
-            result.getId().get()
-          );
-        });
-        */
-      // }
-      /*
-      else {
-        // create bim object before add note
-        if (this.nodeInfo.dbid !== undefined) {
-          serviceDocumentation
-            .addNote(
-              this.nodeInfo.selectedNode,
-              {
-                username: window.spinal.spinalSystem.getUser().username,
-                userId: FileSystem._user_id
-              },
-              this.messageUser
-            )
-            .then(result => {
-              serviceDocumentation.linkNoteToGroup(
-                this.noteContextSelected.id,
-                this.noteGroupSelected.id,
-                result.getId().get()
-              );
-            });
-
-          this.resetBind();
-          // }
-          // );
-        }
-      }*/
       this.messages.messageUser = "";
       this.resetBind();
       this.updatedd();
     },
 
     editNote() {
-      // let notes = serviceDocumentation.editNote(selectedNode);
-      // console.log(this.selectedNote);
-      // console.log(this.messageUserEdit);
       serviceDocumentation.editNote(
         this.selectedNote.element,
         this.messageUserEdit
@@ -356,7 +301,6 @@ export default {
     },
 
     deleteNote(noteNode) {
-      // console.log(notes);
       serviceDocumentation.removeNode(noteNode);
     },
 
@@ -376,7 +320,6 @@ export default {
 
     updatedd() {
       var container = document.querySelector("#myList");
-      // console.log("container", container);
       setTimeout(() => {
         container.scrollTop = container.scrollHeight;
       }, 300);
@@ -446,8 +389,63 @@ export default {
         false
       );
     },
+
     removePJ(file) {
       this.messages.pj = this.messages.pj.filter((el) => el.name !== file.name);
+    },
+
+    TakeScreenShot() {
+      const image = window.spinal.ForgeViewer.viewer.getScreenShot(
+        0,
+        0,
+        async (url) => {
+          let blob = await fetch(url).then((r) => r.blob());
+          const name = this.nodeInfo.selectedNote
+            ? this.nodeInfo.selectedNote.getName().get()
+            : await this.getObjectName(this.nodeInfo.model, this.nodeInfo.dbid);
+
+          let file = this.blobToFile(
+            blob,
+            `screenshot of ${name} from ${moment().format("L")}.jpg`
+          );
+          this.messages.pj.push(file);
+        }
+      );
+    },
+
+    getObjectName(model, dbid) {
+      if (model && dbid) {
+        return new Promise((resolve) => {
+          model.getProperties(dbid, async (res) => {
+            console.log(res.name);
+            resolve(res.name);
+          });
+        });
+      }
+      return "";
+    },
+
+    blobToFile(theBlob, fileName) {
+      theBlob.lastModifiedDate = new Date();
+      theBlob.name = fileName;
+      return theBlob;
+    },
+
+    _createBimObjectNode(model, dbid) {
+      if (model && dbid) {
+        return new Promise((resolve) => {
+          model.getProperties(dbid, async (res) => {
+            const info = await window.spinal.BimObjectService.createBIMObject(
+              dbid,
+              res.name,
+              model
+            );
+            if (info instanceof SpinalNode) return resolve(info);
+
+            resolve(SpinalGraphService.getRealNode(info.id.get()));
+          });
+        });
+      }
     },
   },
 
@@ -455,12 +453,6 @@ export default {
     const context = await serviceDocumentation.createDefaultContext();
     const category = await serviceDocumentation.createDefaultCategory();
     const group = await serviceDocumentation.createDefaultGroup();
-
-    // const data = await Promise.all([
-    //   context,
-    //   category,
-    //   group,
-    // ]);
 
     this.noteContextSelected = context.info.get();
     this.noteCategorySelected = category.info.get();
@@ -488,7 +480,7 @@ export default {
 }
 
 .notesBox .notesContainer {
-  width: 90%;
+  width: 100%;
   height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
@@ -497,16 +489,22 @@ export default {
 
 .notesBox .notesContainer .messages {
   width: 100%;
-  height: 85%;
+  height: 80%;
   background: transparent;
   overflow: hidden;
   overflow-y: auto;
-  padding-right: 16px;
+  padding: 0;
+}
+
+.div_messages {
+  width: 90%;
+  height: 100%;
+  margin: auto;
 }
 
 .notesBox .notesContainer .form {
   width: 100%;
-  height: 15%;
+  height: 20%;
 }
 
 .notesBox .notesContainer .form .noteForm {
@@ -530,7 +528,7 @@ export default {
 }
 
 .notesBox .notesContainer .form .noteForm .messageForm .pjDiv {
-  height: 40px;
+  height: 50px;
   background: transparent;
   overflow: auto;
 }
@@ -543,7 +541,7 @@ export default {
   flex: 1 1 auto;
   margin: 0px !important;
   min-height: unset !important;
-  height: calc(100% - 40px);
+  height: calc(100% - 50px);
 }
 
 .notesBox .notesContainer .form .noteForm .sendBtn {
