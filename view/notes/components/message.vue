@@ -30,25 +30,58 @@ with this file. If not, see
       <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
       <span class="message-data-name">{{username}}</span>
     </div>
-    <div class="message messageIcon other-message float-right">
-      <md-icon>description</md-icon>
-      {{message}}
+    <div class="message messageIcon other-message float-right"
+         @mouseover="hover = true"
+         @mouseleave="hover = false">
+      <div class="texte">
+        <md-icon class="description">description</md-icon>
+        {{message}}
+      </div>
+
+      <actions-btn class="message_actions"
+                   :hover="hover"
+                   @download="download"
+                   @restoreState="restoreState"
+                   :viewPoint="viewPoint"></actions-btn>
+
+      <!-- <div class="message_actions"
+           v-if="hover">
+        <md-button class="md-dense md-primary"
+                   @click="download">
+          <md-icon>get_app</md-icon>
+          Download
+        </md-button>
+      </div> -->
+
     </div>
 
   </li>
 
   <li class="clearfix"
-      v-else-if="type === MESSAGE_TYPES.image">
+      v-else-if="type === MESSAGE_TYPES.image"
+      @mouseover="hover = true"
+      @mouseleave="hover = false">
     <div class="message-data align-right">
       <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
       <span class="message-data-name">{{username}}</span>
     </div>
-    <div class="message other-message float-right">
-      {{message}}
+    <div class="message other-message float-right"
+         @mouseover="hover = true"
+         @mouseleave="hover = false">
       <div class="images">
-        <img :src="`/sceen/_?u=${image}`"
-             alt="image">
+        <div class="img_texte">{{message}}</div>
+        <div class="image">
+          <img :src="`/sceen/_?u=${image}`"
+               alt="image" />
+        </div>
       </div>
+
+      <actions-btn class="message_actions"
+                   :hover="hover"
+                   @download="download"
+                   @restoreState="restoreState"
+                   :viewPoint="viewPoint"></actions-btn>
+
     </div>
   </li>
 
@@ -59,7 +92,9 @@ with this file. If not, see
       <span class="message-data-name">{{username}}</span>
     </div>
     <div class="message other-message float-right">
-      {{message}}
+      <div class="texte">
+        {{message}}
+      </div>
     </div>
 
   </li>
@@ -67,6 +102,7 @@ with this file. If not, see
 
 <script>
 import { MESSAGE_TYPES } from "spinal-models-documentation";
+import actionBtnVue from "./actionsBtn.vue";
 
 export default {
   name: "message",
@@ -76,16 +112,22 @@ export default {
     message: {},
     type: {},
     file: {},
+    viewPoint: {},
+  },
+  components: {
+    "actions-btn": actionBtnVue,
   },
   data() {
     this.MESSAGE_TYPES = MESSAGE_TYPES;
     return {
       hover: false,
       image: undefined,
+      info: undefined,
     };
   },
   mounted() {
     setTimeout(() => {
+      console.log("this.file", this.viewPoint);
       this.chargeImg();
     }, 500);
   },
@@ -93,11 +135,56 @@ export default {
     chargeImg() {
       if (this.file) {
         this.file.load((f) => {
+          this.info = f;
           f._ptr.load((path) => {
             this.image = path._server_id;
           });
         });
       }
+    },
+
+    download() {
+      var element = document.createElement("a");
+      element.setAttribute("href", "/sceen/_?u=" + this.image);
+      element.setAttribute("download", this.info.name.get());
+      element.click();
+    },
+
+    restoreState() {
+      const viewer = window.spinal.ForgeViewer.viewer;
+
+      const viewStateString = this.viewPoint.viewState.get();
+      const objectStateString = this.viewPoint.objectState.get();
+
+      const viewState = JSON.parse(viewStateString);
+      const objectState = JSON.parse(objectStateString);
+
+      viewer.restoreState(viewState);
+
+      this.selection(viewer, objectState.selected);
+      this.isolate(viewer, objectState.isolated);
+    },
+
+    isolate(viewer, items) {
+      const bimObjectService = window.spinal.BimObjectService;
+      items.map((el) => {
+        const bimFileId =
+          bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
+        const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+
+        viewer.impl.visibilityManager.isolate(el.ids, model);
+      });
+    },
+
+    selection(viewer, items) {
+      const bimObjectService = window.spinal.BimObjectService;
+      items.map((el) => {
+        const bimFileId =
+          bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
+        const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+
+        model.selector.setSelection(el.selection, model, "selectOnly");
+      });
     },
   },
 };
@@ -113,10 +200,6 @@ $black: #000000;
 li.clearfix {
   padding-bottom: 20px;
   list-style: none;
-}
-
-.hovered {
-  background-color: red;
 }
 
 *,
@@ -139,15 +222,30 @@ li.clearfix {
   text-transform: capitalize;
 }
 
+.message_actions {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  border-radius: 7px 7px 0 0;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 10px;
+  background-color: #424242;
+}
+
 .message {
   color: #000000;
-  padding: 18px 20px;
+  padding: 10px 10px 5px 10px;
   line-height: 26px;
   font-size: 16px;
   border-radius: 7px;
-  margin-bottom: 30px;
-  width: 90%;
+  margin-bottom: 40px;
+  width: 100%;
   position: relative;
+  min-height: 30px;
 
   &:after {
     bottom: 100%;
@@ -162,6 +260,10 @@ li.clearfix {
     border-width: 10px;
     margin-left: -10px;
   }
+}
+
+.message:hover {
+  cursor: pointer;
 }
 
 .my-message {
@@ -208,7 +310,7 @@ li.clearfix {
 <style lang="scss">
 $black: #000000;
 
-li.clearfix .md-icon.md-theme-default.md-icon-font {
+li.clearfix .description.md-icon.md-theme-default.md-icon-font {
   color: $black !important;
 }
 </style>

@@ -71,7 +71,8 @@ with this file. If not, see
                              :username="note.username"
                              :message="note.message"
                              :type="note.type"
-                             :file="note.file"></message-component>
+                             :file="note.file"
+                             :viewPoint="note.viewPoint"></message-component>
         </ul>
 
       </md-content>
@@ -102,7 +103,7 @@ with this file. If not, see
             </md-button>
 
             <md-button class="icons md-icon-button md-raised md-primary"
-                       @click="addPJ"
+                       @click="saveViewPoint"
                        :title="'save point of view'">
               <md-icon>near_me</md-icon>
             </md-button>
@@ -160,6 +161,8 @@ import {
 export default {
   name: "my_compo",
   data() {
+    this.viewPoints = new Map();
+
     return {
       userConnected: {
         username: window.spinal.spinalSystem.getUser().username,
@@ -206,6 +209,7 @@ export default {
             file: note.element.file,
             selectedNode: note.selectedNode,
             element: note.element,
+            viewPoint: note.element.viewPoint,
           };
           this.notesDisplayList.push(obj);
           i++;
@@ -394,11 +398,14 @@ export default {
       this.messages.pj = this.messages.pj.filter((el) => el.name !== file.name);
     },
 
-    TakeScreenShot() {
-      const image = window.spinal.ForgeViewer.viewer.getScreenShot(
-        0,
-        0,
-        async (url) => {
+    async TakeScreenShot() {
+      const file = await this.getScreenShotFile();
+      this.messages.pj.push(file);
+    },
+
+    getScreenShotFile() {
+      return new Promise(async (resolve, reject) => {
+        window.spinal.ForgeViewer.viewer.getScreenShot(0, 0, async (url) => {
           let blob = await fetch(url).then((r) => r.blob());
           const name = this.nodeInfo.selectedNote
             ? this.nodeInfo.selectedNote.getName().get()
@@ -406,11 +413,12 @@ export default {
 
           let file = this.blobToFile(
             blob,
-            `screenshot of ${name} from ${moment().format("L")}.jpg`
+            `screenshot of ${name} from ${moment().format("L")}.png`
           );
-          this.messages.pj.push(file);
-        }
-      );
+
+          resolve(file);
+        });
+      });
     },
 
     getObjectName(model, dbid) {
@@ -446,6 +454,48 @@ export default {
           });
         });
       }
+    },
+
+    async saveViewPoint() {
+      const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+              return;
+            }
+            seen.add(value);
+          }
+          return value;
+        };
+      };
+
+      const viewer = window.spinal.ForgeViewer.viewer;
+
+      const filter = {
+        guid: true,
+        seedURN: true,
+        overrides: true,
+        objectSet: false,
+        viewport: true,
+        renderOptions: true,
+      };
+      const file = await this.getScreenShotFile();
+      const viewerState = viewer.getState(filter);
+      const objectState = {
+        isolated: viewer
+          .getAggregateIsolation()
+          .map((el) => ({ modelId: el.model.id, ids: el.ids })),
+
+        selected: viewer
+          .getAggregateSelection()
+          .map((el) => ({ modelId: el.model.id, selection: el.selection })),
+      };
+
+      file.viewState = JSON.stringify(viewerState, getCircularReplacer());
+      file.objectState = JSON.stringify(objectState, getCircularReplacer());
+
+      this.messages.pj.push(file);
     },
   },
 
