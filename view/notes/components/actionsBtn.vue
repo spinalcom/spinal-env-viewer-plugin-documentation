@@ -31,7 +31,7 @@ with this file. If not, see
     </md-button>
 
     <md-button class="md-dense md-primary"
-               v-if="viewPoint"
+               v-if="displayBtn()"
                @click="restoreState">
       <md-icon class="md-primary">near_me</md-icon>
       Restore viewpoint
@@ -44,6 +44,16 @@ export default {
   name: "actionsBtn",
   props: ["hover", "viewPoint"],
   methods: {
+    displayBtn() {
+      console.log(this.viewPoint);
+      if (
+        this.viewPoint &&
+        this.viewPoint.hasOwnProperty("viewState") &&
+        this.viewPoint.hasOwnProperty("objectState")
+      )
+        return true;
+      return false;
+    },
     download() {
       this.$emit("download");
     },

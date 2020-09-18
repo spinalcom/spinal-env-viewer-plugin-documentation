@@ -61,90 +61,135 @@ with this file. If not, see
 
     </md-toolbar>
 
-    <div class="notes_div">
-      <message-component :nodeInfo="nodeInfo"
-                         :noteContextSelected="noteContextSelected"
-                         :noteCategorySelected="noteCategorySelected"
-                         :noteGroupSelected="noteGroupSelected">
-      </message-component>
-    </div>
+    <div class="notesContainer">
+      <md-content id="myList"
+                  class="messages md-scrollbar">
+        <ul class="div_messages">
+          <message-component v-for="(note,index) in notesDisplayList"
+                             :key="index"
+                             :date="note.date"
+                             :username="note.username"
+                             :message="note.message"
+                             :type="note.type"
+                             :file="note.file"
+                             :viewPoint="note.viewPoint"></message-component>
+        </ul>
 
+      </md-content>
+
+      <div class="form">
+        <form @submit.prevent="addNote"
+              class="noteForm">
+
+          <!-- <md-button class="md-icon-button md-raised md-primary">
+            <md-icon>menu</md-icon>
+          </md-button> -->
+
+          <!-- <div class="icons">
+            <md-icon @click="addPJ">description</md-icon>
+          </div> -->
+
+          <div class="icons">
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="addPJ"
+                       :title="'Add Attachment'">
+              <md-icon>attach_file</md-icon>
+            </md-button>
+
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="TakeScreenShot"
+                       :title="'Take a screenshot'">
+              <md-icon>add_a_photo</md-icon>
+            </md-button>
+
+            <md-button class="icons md-icon-button md-raised md-primary"
+                       @click="saveViewPoint"
+                       :title="'save point of view'">
+              <md-icon>near_me</md-icon>
+            </md-button>
+          </div>
+
+          <div class="messageForm">
+            <md-content class="pjDiv md-scrollbar"
+                        v-if="messages.pj.length > 0">
+
+              <attachment-component v-for="(file,index) in messages.pj"
+                                    :key="index"
+                                    :file="file"
+                                    @remove="removePJ">{{file.name}}
+              </attachment-component>
+            </md-content>
+            <md-field class="myField">
+              <label>Message</label>
+              <md-input v-model="messages.messageUser"></md-input>
+            </md-field>
+          </div>
+
+          <div class="sendBtn">
+            <md-button type="submit"
+                       class="md-dense md-raised md-primary">
+              Send
+              <md-icon>send</md-icon>
+            </md-button>
+          </div>
+
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-// import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
+import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
 
-// import moment from "moment";
-// import messageVue from "./message.vue";
-// import attachmentVue from "./attachment.vue";
+import moment from "moment";
+import messageVue from "./message.vue";
+import attachmentVue from "./attachment.vue";
 
-// const {
-//   spinalPanelManagerService,
-// } = require("spinal-env-viewer-panel-manager-service");
+const {
+  spinalPanelManagerService,
+} = require("spinal-env-viewer-panel-manager-service");
 
-// import { FileExplorer } from "../../../service/fileSystemExplorer.js";
-// import { MESSAGE_TYPES } from "spinal-models-documentation";
-// import {
-//   SpinalNode,
-//   SpinalGraphService,
-// } from "spinal-env-viewer-graph-service";
-
-import messageComponentVue from "./messageComponent.vue";
+import { FileExplorer } from "../../../service/fileSystemExplorer.js";
+import { MESSAGE_TYPES } from "spinal-models-documentation";
+import {
+  SpinalNode,
+  SpinalGraphService,
+} from "spinal-env-viewer-graph-service";
 
 export default {
-  name: "noteComponent",
+  name: "my_compo",
   data() {
-    return {
-      // userConnected: {
-      //   username: window.spinal.spinalSystem.getUser().username,
-      //   userId: FileSystem._user_id,
-      // },
-      // messages: {
-      //   messageUser: "",
-      //   pj: [],
-      // },
-      // // messageUser: "",
-      // messageUserEdit: "",
-      // notesDisplayList: [],
-      // editNodePopup: false,
-      // selectedNote: undefined,
-      // scrollToEnd: false,
+    this.viewPoints = new Map();
 
+    return {
+      userConnected: {
+        username: window.spinal.spinalSystem.getUser().username,
+        userId: FileSystem._user_id,
+      },
       nodeInfo: undefined,
+      messages: {
+        messageUser: "",
+        pj: [],
+      },
+      // messageUser: "",
+      messageUserEdit: "",
+      notesDisplayList: [],
+      editNodePopup: false,
+      selectedNote: undefined,
+      scrollToEnd: false,
+
       noteContextSelected: undefined,
       noteCategorySelected: undefined,
       noteGroupSelected: undefined,
     };
   },
   components: {
-    "message-component": messageComponentVue,
-    // "attachment-component": attachmentVue,
+    "message-component": messageVue,
+    "attachment-component": attachmentVue,
   },
   methods: {
-    opened(option) {
-      this.nodeInfo = option;
-      // this.resetBind();
-      // this.updatedd();
-    },
-
-    removed(option, viewer) {},
-
-    closed(option, viewer) {},
-
-    OpenLinkDialog() {
-      spinalPanelManagerService.openPanel("linkToGroupDialog", {
-        type: NOTE_TYPE,
-        itemSelected: [],
-        callback: (context, category, group) => {
-          this.noteContextSelected = context;
-          this.noteCategorySelected = category;
-          this.noteGroupSelected = group;
-        },
-      });
-    },
-    /*
     async updateNotesList() {
       this.notesDisplayList = [];
 
@@ -460,7 +505,6 @@ export default {
 
       this.messages.pj.push(file);
     },
-*/
   },
 
   async mounted() {
@@ -490,12 +534,77 @@ export default {
 }
 
 .notesBox .mdToolbar .breadCrumb {
-  height: 50px;
   display: flex;
 }
 
-.notesBox .notes_div {
+.notesBox .notesContainer {
   width: 100%;
   height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+.notesBox .notesContainer .messages {
+  width: 100%;
+  height: 80%;
+  background: transparent;
+  overflow: hidden;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.div_messages {
+  width: 90%;
+  height: 100%;
+  margin: auto;
+}
+
+.notesBox .notesContainer .form {
+  width: 100%;
+  height: 20%;
+}
+
+.notesBox .notesContainer .form .noteForm {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.notesBox .notesContainer .form .noteForm .icons {
+  flex: 0 0 25px;
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-end;
+  border-radius: 20%;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm {
+  flex: 1 1 calc(85% - 25px);
+  display: flex;
+  flex-direction: column;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .pjDiv {
+  height: 50px;
+  background: transparent;
+  overflow: auto;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .pjDiv p {
+  margin: 0px;
+}
+
+.notesBox .notesContainer .form .noteForm .messageForm .myField {
+  flex: 1 1 auto;
+  margin: 0px !important;
+  min-height: unset !important;
+  height: calc(100% - 50px);
+}
+
+.notesBox .notesContainer .form .noteForm .sendBtn {
+  flex: 1 1 15%;
+  display: flex;
+  align-items: flex-end;
 }
 </style>

@@ -153,6 +153,8 @@ export default {
     restoreState() {
       const viewer = window.spinal.ForgeViewer.viewer;
 
+      if (Object.keys(this.viewPoint).length === 0) return;
+
       const viewStateString = this.viewPoint.viewState.get();
       const objectStateString = this.viewPoint.objectState.get();
 
