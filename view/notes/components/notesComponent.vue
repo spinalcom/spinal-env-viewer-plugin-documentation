@@ -74,15 +74,15 @@ with this file. If not, see
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-// import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
+import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
 
 // import moment from "moment";
 // import messageVue from "./message.vue";
 // import attachmentVue from "./attachment.vue";
 
-// const {
-//   spinalPanelManagerService,
-// } = require("spinal-env-viewer-panel-manager-service");
+const {
+  spinalPanelManagerService,
+} = require("spinal-env-viewer-panel-manager-service");
 
 // import { FileExplorer } from "../../../service/fileSystemExplorer.js";
 // import { MESSAGE_TYPES } from "spinal-models-documentation";
