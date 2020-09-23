@@ -14,7 +14,9 @@ const {
 } = require('spinal-env-viewer-panel-manager-service_spinalforgeextention');
 
 
-import FindMessageParentBtn from "./buttonClass/findMessageParent.js"
+import FindMessageParentBtn from "./buttonClass/standard_buttons/findMessageParent.js"
+import IsolateMessageParentBtn from "./buttonClass/standard_buttons/isolateMessageParent.js"
+import ZoomMessageParentBtn from "./buttonClass/standard_buttons/zoomMessageParent.js"
 
 import MessageDetail from "./buttonClass/messageDetail.js";
 
@@ -64,6 +66,16 @@ spinalContextMenuService.registerApp(
 spinalContextMenuService.registerApp(
   SideBarHookName,
   new FindMessageParentBtn(), [7]
+);
+
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new IsolateMessageParentBtn(), [7]
+);
+
+spinalContextMenuService.registerApp(
+  SideBarHookName,
+  new ZoomMessageParentBtn(), [7]
 );
 
 //////////////////////////////////////////////////////////////////////////////////////

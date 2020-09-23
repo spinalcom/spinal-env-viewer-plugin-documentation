@@ -4,7 +4,7 @@ import {
 
 import {
   SpinalGraphService
-} from 'spinal-env-viewer-graph-service';
+} from "spinal-env-viewer-graph-service";
 
 import geographicService from "spinal-env-viewer-context-geographic-service";
 
@@ -17,8 +17,12 @@ import {
 } from "spinal-env-viewer-plugin-forge/dist/Constants";
 
 import {
+  isShownParam
+} from "spinal-env-viewer-plugin-standard_button/js/utilities";
+
+import {
   NOTE_TYPE,
-  NOTE_RELATION
+  NOTE_RELATION,
 } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
 
 import {
@@ -35,7 +39,7 @@ class DocumentationUtilities {
     if (label != undefined && URL != undefined && URL != "" && label != "") {
       if (option.info != undefined) {
         serviceDocumentation.addURL(option.info, label, URL);
-        return option
+        return option;
       } else if (option.dbid != undefined) {
         let boolIsCreated = await window.spinal.BimObjectService
           .createBIMObject(
@@ -51,25 +55,29 @@ class DocumentationUtilities {
           option.info = SpinalGraphService.getRealNode(bimObject.id);
         }
 
-        serviceDocumentation.addURL(
-          option.info,
-          label,
-          URL
-        );
+        serviceDocumentation.addURL(option.info, label, URL);
         return option;
       }
     } else {
-      return option
+      return option;
     }
   }
 
-  async addAttributes(option, BIMObjectName, label = undefined, value =
-    undefined) {
-    if (label != undefined && value != undefined && value != "" && label !=
-      "") {
+  async addAttributes(
+    option,
+    BIMObjectName,
+    label = undefined,
+    value = undefined
+  ) {
+    if (
+      label != undefined &&
+      value != undefined &&
+      value != "" &&
+      label != ""
+    ) {
       if (option.info != undefined) {
         serviceDocumentation.addAttribute(option.info, label, value);
-        return option
+        return option;
       } else if (option.dbid != undefined) {
         let boolIsCreated = await window.spinal.BimObjectService
           .createBIMObject(
@@ -85,48 +93,42 @@ class DocumentationUtilities {
           option.info = SpinalGraphService.getRealNode(bimObject.id);
         }
 
-        serviceDocumentation.addAttribute(
-          option.info,
-          label,
-          value
-        );
+        serviceDocumentation.addAttribute(option.info, label, value);
         return option;
       }
     } else {
-      return option
+      return option;
     }
   }
-
 
   ///////////////////////////////////////////////////////////
   //                      NOTES                            //
   ///////////////////////////////////////////////////////////
 
   getIcon(nodeInfo, contextInfo) {
-    return this._isColored(nodeInfo, contextInfo).then(isColored => {
+    return this._isColored(nodeInfo, contextInfo).then((isColored) => {
       return isColored;
-    })
+    });
   }
 
   restoreItem(nodeInfo, contextInfo) {
-    this.getGroups(nodeInfo, contextInfo).then(res => {
-      res.forEach(el => {
+    this.getGroups(nodeInfo, contextInfo).then((res) => {
+      res.forEach((el) => {
         let id = el.id;
         this._restoreGroup(contextInfo.id, id);
-      })
-    })
+      });
+    });
   }
 
   colorItem(nodeInfo, contextInfo) {
-    this.getGroups(nodeInfo, contextInfo).then(res => {
-      res.forEach(el => {
+    this.getGroups(nodeInfo, contextInfo).then((res) => {
+      res.forEach((el) => {
         let id = el.id;
         let color = el.color ? el.color : undefined;
         this._colorGroup(contextInfo.id, id, color);
-      })
-    })
+      });
+    });
   }
-
 
   getGroups(selectedNode, contextInfo) {
     const type = selectedNode.type;
@@ -141,36 +143,33 @@ class DocumentationUtilities {
       SpinalGraphService._addNode(node);
       let argType = node.getType().get();
 
-
       return groupManagerService.isGroup(argType);
-    }).then(res => {
-      return res.map(el => {
+    }).then((res) => {
+      return res.map((el) => {
         return el.get();
-      })
-    })
+      });
+    });
   }
 
   async getBimObjects(contextId, groupId) {
     const notes = await this._getNotes(groupId, contextId);
     const parents = await this._getParents(notes);
 
-    const promises = parents.map(el => this._getItemsBim(el));
+    const promises = parents.map((el) => this._getItemsBim(el));
 
     return Promise.all(promises).then((result) => {
       const res = [];
-      result.forEach(el => res.push(...el));
+      result.forEach((el) => res.push(...el));
       return res;
-    })
+    });
   }
 
   ////////////////////////////////////////////////////////////
   //                    PRIVATE                             //
   ////////////////////////////////////////////////////////////
 
-
   _isColored(selectedNode, contextInfo) {
-    return this.getGroups(selectedNode, contextInfo).then(res => {
-
+    return this.getGroups(selectedNode, contextInfo).then((res) => {
       if (res.length === 0) return false;
 
       for (let index = 0; index < res.length; index++) {
@@ -179,56 +178,58 @@ class DocumentationUtilities {
         if (typeof ItemColoredMap.get(id) === "undefined") {
           return false;
         }
-
       }
 
       return true;
-
-    })
-
+    });
   }
 
   _colorGroup(contextId, groupId, argColor) {
-
-    return this.getBimObjects(contextId, groupId).then(res => {
-
-      let color = typeof argColor !== "undefined" ? this
-        ._convertHexColorToRGB(argColor) : this._convertHexColorToRGB(
-          "#000000");
+    return this.getBimObjects(contextId, groupId).then((res) => {
+      let color =
+        typeof argColor !== "undefined" ?
+        this._convertHexColorToRGB(argColor) :
+        this._convertHexColorToRGB("#000000");
 
       ItemColoredMap.set(groupId, groupId);
 
-      res.forEach(child => {
+      res.forEach((child) => {
         let BimColors = BimElementsColor.get(child.dbid) ?
-          BimElementsColor.get(child.dbid) : [];
+          BimElementsColor.get(child.dbid) :
+          [];
 
         BimColors.push({
           id: groupId, //node.id,
-          color: color
+          color: color,
         });
 
         BimElementsColor.set(child.dbid, BimColors);
 
         let model = window.spinal.BimObjectService.getModelByBimfile(
-          child.bimFileId);
-
-        model.setThemingColor(child.dbid, new THREE.Vector4(
-            color.r / 255, color.g / 255, color.b / 255, 0.7, true)
-
+          child.bimFileId
         );
 
+        model.setThemingColor(
+          child.dbid,
+          new THREE.Vector4(
+            color.r / 255,
+            color.g / 255,
+            color.b / 255,
+            0.7,
+            true
+          )
+        );
       });
-
-    })
+    });
   }
 
   _restoreGroup(contextId, groupId) {
     ItemColoredMap.delete(groupId);
-    return this.getBimObjects(contextId, groupId).then(res => {
-      res.forEach(child => {
-
+    return this.getBimObjects(contextId, groupId).then((res) => {
+      res.forEach((child) => {
         let model = window.spinal.BimObjectService.getModelByBimfile(
-          child.bimFileId);
+          child.bimFileId
+        );
 
         model.setThemingColor(
           child.dbid,
@@ -241,7 +242,7 @@ class DocumentationUtilities {
 
         if (allColors) {
           //   allColors = allColors.filter(el => el.id !== node.id.get());
-          allColors = allColors.filter(el => el.id !== groupId);
+          allColors = allColors.filter((el) => el.id !== groupId);
           BimElementsColor.set(child.dbid, allColors);
 
           if (allColors.length > 0) {
@@ -259,8 +260,8 @@ class DocumentationUtilities {
             );
           }
         }
-      })
-    })
+      });
+    });
   }
 
   _getNotes(nodeId, contextId) {
@@ -268,60 +269,56 @@ class DocumentationUtilities {
       SpinalGraphService._addNode(node);
       let argType = node.getType().get();
       return argType === NOTE_TYPE;
-    }).then(res => {
-      return res.map(el => {
+    }).then((res) => {
+      return res.map((el) => {
         return el.get();
-      })
-    })
+      });
+    });
   }
 
   _convertHexColorToRGB(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
+    return result ?
+      {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
+        b: parseInt(result[3], 16),
       } :
       null;
   }
 
   _getParents(notes) {
-    const promises = notes.map(el => {
+    const promises = notes.map((el) => {
       const realNode = SpinalGraphService.getRealNode(el.id);
       return realNode.getParents(NOTE_RELATION);
     });
 
     return Promise.all(promises).then((result) => {
-
       const res = [];
 
-      result.forEach(element => {
-        const infos = element.map(el => {
+      result.forEach((element) => {
+        const infos = element.map((el) => {
           SpinalGraphService._addNode(el);
-          return el.info.get()
+          return el.info.get();
         });
 
         res.push(...infos);
       });
 
       return res;
-    })
-
+    });
   }
 
   _getItemsBim(nodeInfo) {
-
     const type = nodeInfo.type;
     const nodeId = nodeInfo.id;
 
     if (type === BIM_OBJECT_TYPE) {
       return Promise.resolve([nodeInfo]);
-    } else if (type === geographicService.constants
-      .ROOM_TYPE) {
-      return SpinalGraphService.getChildren(nodeId, [geographicService
-        .constants
-        .REFERENCE_RELATION, geographicService.constants
-        .EQUIPMENT_RELATION
+    } else if (type === geographicService.constants.ROOM_TYPE) {
+      return SpinalGraphService.getChildren(nodeId, [
+        geographicService.constants.REFERENCE_RELATION,
+        geographicService.constants.EQUIPMENT_RELATION,
       ]);
     } else {
       // let relations = [
@@ -329,19 +326,73 @@ class DocumentationUtilities {
       //   geographicService.constants.REFERENCE_RELATION
       // ];
 
-      return SpinalGraphService.findNodes(nodeId, SELECTrelationList, (
-        node) => {
-        return node.getType().get() === BIM_OBJECT_TYPE
-      }).then(res => {
-        return res.map(el => {
+      return SpinalGraphService.findNodes(
+        nodeId,
+        SELECTrelationList,
+        (node) => {
+          return node.getType().get() === BIM_OBJECT_TYPE;
+        }
+      ).then((res) => {
+        return res.map((el) => {
           SpinalGraphService._addNode(el);
           return el.info.get();
-        })
-      })
+        });
+      });
     }
   }
 
+  ////////////////////////////////////////////////////////////////////
+  //                    Standard Buttons functions                  //
+  ////////////////////////////////////////////////////////////////////
+
+  async getGeographicElement(noteId) {
+    const realNode = SpinalGraphService.getRealNode(noteId);
+    const parents = await realNode.getParents(NOTE_RELATION);
+
+    return parents
+      .filter((el) => {
+        SpinalGraphService._addNode(el);
+        return isShownParam.indexOf(el.getType().get()) !== -1;
+      })
+      .map((el) => el.info);
+  }
+
+  async getNoteParentsBim(nodeId, contextId) {
+    const notes = await this._getNotes(nodeId, contextId);
+
+    const promises = notes.map((el) => this.getGeographicElement(el.id));
+
+    return Promise.all(promises).then(async (noteParents) => {
+      const el = noteParents.flat();
+      const promises = el.map((v) => this._getItemsBim(v));
+      let bims = await Promise.all(promises);
+      bims = bims.flat();
+
+      const bimMap = new Map();
+
+      for (const bimObject of bims) {
+        const bimFileId = bimObject.bimFileId;
+        const dbid = bimObject.dbid;
+
+        if (typeof bimMap.get(bimFileId) === "undefined") {
+          bimMap.set(bimFileId, new Set());
+        }
+
+        bimMap.get(bimFileId).add(dbid);
+      }
+      const res = [];
+
+      for (const [key, value] of bimMap.entries()) {
+        res.push({
+          model: window.spinal.BimObjectService.getModelByBimfile(
+            key),
+          ids: Array.from(value),
+        });
+      }
+
+      return res;
+    });
+  }
 }
 
-
-export const utilities = new DocumentationUtilities()
+export const utilities = new DocumentationUtilities();
