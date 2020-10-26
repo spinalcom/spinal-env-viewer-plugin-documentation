@@ -43,7 +43,7 @@ with this file. If not, see
       <form @submit.prevent="addNote"
             class="noteForm">
 
-        <div class="icons">
+        <!-- <div class="icons">
           <md-button class="icons md-icon-button md-raised md-primary"
                      @click="addPJ"
                      :title="'Add Attachment'">
@@ -61,7 +61,37 @@ with this file. If not, see
                      :title="'save point of view'">
             <md-icon>near_me</md-icon>
           </md-button>
-        </div>
+        </div> -->
+
+        <md-speed-dial class="icons"
+                       md-direction="top">
+          <md-speed-dial-target class="md-fab md-mini md-primary">
+            <md-icon class="md-morph-initial">menu</md-icon>
+            <md-icon class="md-morph-final">close</md-icon>
+          </md-speed-dial-target>
+
+          <md-speed-dial-content>
+
+            <md-button class="md-icon-button md-raised md-primary md-fab md-mini"
+                       @click="saveViewPoint"
+                       :title="'save point of view'">
+              <md-icon>near_me</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button md-raised md-primary md-fab md-mini"
+                       @click="TakeScreenShot"
+                       :title="'Take a screenshot'">
+              <md-icon>add_a_photo</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button md-raised md-primary md-fab md-mini"
+                       @click="addPJ"
+                       :title="'Add Attachment'">
+              <md-icon>attach_file</md-icon>
+            </md-button>
+
+          </md-speed-dial-content>
+        </md-speed-dial>
 
         <div class="messageForm">
           <md-content class="pjDiv md-scrollbar"
@@ -446,19 +476,22 @@ export default {
 .notesContainer .form .noteForm {
   width: 100%;
   height: 100%;
+  margin: auto;
   display: flex;
+  justify-content: space-between;
 }
 
 .notesContainer .form .noteForm .icons {
-  flex: 0 0 25px;
+  flex: 0 0 50px;
   display: flex;
-  align-items: flex-end;
+  /* align-items: flex-end; */
   align-self: flex-end;
   border-radius: 20%;
+  padding-left: 5px;
 }
 
 .notesContainer .form .noteForm .messageForm {
-  flex: 1 1 calc(85% - 25px);
+  flex: 1 1 calc(85% - 70px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
