@@ -123,7 +123,6 @@ with this file. If not, see
 </template>
 
 <script>
-import { FileExplorer } from "../../../service/fileSystemExplorer.js";
 import { MESSAGE_TYPES } from "spinal-models-documentation";
 
 import {
