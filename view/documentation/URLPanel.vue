@@ -51,7 +51,7 @@ with this file. If not, see
                   v-for="(url, index) in URLDisplayList"
                   :key="index"
                >
-                  <span class="span-opacity">{{url.element.label.get()}}</span>
+                  <span class="span-opacity">{{url.element.name.get()}}</span>
                   <a
                      class="back-line"
                      v-tooltip="url.element.URL.get()"
@@ -86,7 +86,7 @@ with this file. If not, see
                         v-for="(url, index) in cat.url"
                         :key="index"
                      >
-                        <span class="span-opacity">{{url.element.label.get()}}</span>
+                        <span class="span-opacity">{{url.element.name.get()}}</span>
                         <a
                            class="back-line"
                            v-tooltip="url.element.URL.get()"
@@ -159,7 +159,7 @@ export default {
    props: ["option", "parentGroup"],
    methods: {
       editURLNode(urlNode, urlChange) {
-         urlNode.element.label.set(urlChange.label);
+         urlNode.element.name.set(urlChange.label);
          urlNode.element.URL.set(urlChange.URL);
       },
       removeURLNode(urlNode) {
