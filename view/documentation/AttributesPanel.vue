@@ -301,13 +301,16 @@ export default {
          let json = {};
          for (let i = 0; i < this.parentGroup.length; i++) {
             const node = this.parentGroup[i];
-            json = {
-               groupName: node.info.name.get(),
-               groupAttr: await serviceDocumentation.getCategory(node),
-            };
-            this.groupAttrDisplayList.push(json);
+            if (node) {
+               json = {
+                  groupName: node.info.name.get(),
+                  groupAttr: await serviceDocumentation.getCategory(node),
+               };
+               this.groupAttrDisplayList.push(json);
+            }
          }
       },
+
       getLstOfAttributes(cat) {
          let tab = [];
          if (cat.element != undefined) {

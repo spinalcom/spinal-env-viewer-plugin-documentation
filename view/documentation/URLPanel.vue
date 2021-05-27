@@ -177,11 +177,13 @@ export default {
          let json = {};
          for (let i = 0; i < this.parentGroup.length; i++) {
             const node = this.parentGroup[i];
-            json = {
-               groupName: node.info.name.get(),
-               url: await serviceDocumentation.getURL(node),
-            };
-            this.groupURLDisplayList.push(json);
+            if (node) {
+               json = {
+                  groupName: node.info.name.get(),
+                  url: await serviceDocumentation.getURL(node),
+               };
+               this.groupURLDisplayList.push(json);
+            }
          }
       },
       addLink() {

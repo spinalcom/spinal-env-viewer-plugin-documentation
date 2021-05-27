@@ -261,14 +261,16 @@ export default {
          let json = {};
          for (let i = 0; i < this.parentGroup.length; i++) {
             const node = this.parentGroup[i];
-            const dir = await FileExplorer.getDirectory(node);
-            json = {
-               groupName: node.info.name.get(),
-               groupAttr: dir,
-               files: this.getFileInDir(dir),
-            };
+            if (node) {
+               const dir = await FileExplorer.getDirectory(node);
+               json = {
+                  groupName: node.info.name.get(),
+                  groupAttr: dir,
+                  files: this.getFileInDir(dir),
+               };
 
-            this.groupAttrDisplayList.push(json);
+               this.groupAttrDisplayList.push(json);
+            }
          }
       },
       sendAddFile() {
