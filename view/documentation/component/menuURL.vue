@@ -85,7 +85,7 @@ export default {
   },
   watch: {
     activeEditURLNode() {
-      if (activeEditURLNode) {
+      if (this.activeEditURLNode) {
         this.urlChange.label = this.url.element.name.get();
         this.urlChange.URL = this.url.element.URL.get();
       }
