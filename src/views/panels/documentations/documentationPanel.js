@@ -14,6 +14,7 @@ const params = {
   style: {
     left: "405px",
     minWidth: "600px",
+    width: "600px",
     height: "700px",
   },
 };
