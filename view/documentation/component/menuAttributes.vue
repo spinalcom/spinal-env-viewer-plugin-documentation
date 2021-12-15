@@ -33,12 +33,14 @@ with this file. If not, see
       </md-button>
 
       <md-menu-content>
-        <md-menu-item @click="activeEditAttributesNode  = true">Edit</md-menu-item>
+        <md-menu-item @click="activeEditAttributesNode  = true">Edit
+        </md-menu-item>
         <md-menu-item @click="remove()">Remove</md-menu-item>
       </md-menu-content>
     </md-menu>
+
     <md-dialog :md-active.sync="activeEditAttributesNode">
-      <md-dialog-title>Edit Link</md-dialog-title>
+      <md-dialog-title>Edit Attribute</md-dialog-title>
       <md-field md-inline
                 style="width: 80%; margin-left: auto; margin-right: auto;">
         <label>Label</label>
@@ -67,7 +69,7 @@ export default {
   data() {
     return {
       activeEditAttributesNode: false,
-      urlChange: { label: "", URL: "" }
+      urlChange: { label: "", URL: "" },
     };
   },
   methods: {
@@ -78,14 +80,24 @@ export default {
 
     remove() {
       this.$emit("removeURLNode", this.url, this.category);
-    }
+    },
   },
   mounted() {
     if (this.url !== undefined) {
       this.urlChange.label = this.url.label.get();
       this.urlChange.value = this.url.value.get();
     }
-  }
+  },
+  watch: {
+    activeEditAttributesNode() {
+      if (this.activeEditAttributesNode) {
+        if (this.url !== undefined) {
+          this.urlChange.label = this.url.label.get();
+          this.urlChange.value = this.url.value.get();
+        }
+      }
+    },
+  },
 };
 </script>
 
