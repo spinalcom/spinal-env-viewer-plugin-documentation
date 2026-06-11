@@ -23,18 +23,15 @@ with this file. If not, see
 -->
 
 <template>
-  <md-menu md-direction="top-end"
-           md-align-trigger>
-    <md-button class="md-icon-button"
-               md-menu-trigger>
+  <md-menu md-direction="top-end" md-align-trigger>
+    <md-button class="md-icon-button" md-menu-trigger>
       <md-icon>more_vert</md-icon>
     </md-button>
 
     <md-menu-content>
-      <md-menu-item v-if="file._info.model_type.get() != 'Directory'"
-                    @click="download">Download</md-menu-item>
-      <md-menu-item v-if="boolInShared == true"
-                    @click="remove">Remove</md-menu-item>
+      <!-- <md-menu-item v-if="file._info.model_type.get() != 'Directory'" @click="download">Download</md-menu-item> -->
+      <md-menu-item @click="download">Download</md-menu-item>
+      <md-menu-item v-if="boolInShared == true" @click="remove">Remove</md-menu-item>
     </md-menu-content>
   </md-menu>
 </template>
@@ -57,5 +54,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
