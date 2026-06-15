@@ -25,46 +25,25 @@ with this file. If not, see
 
 <template>
   <div class=" containerCDE">
-    <md-toolbar class="md-layout md-gutter headerCDE"
-                layout-align="center center">
-      <div class="centerSelectedNodeName"
-           v-if="selectedNode !== undefined">{{selectedNode.info.name.get()
-        }}</div>
-      <div class="centerSelectedNodeName"
-           v-else>BIM Object not created</div>
+    <md-toolbar class="md-layout md-gutter headerCDE" layout-align="center center">
+      <div class="centerSelectedNodeName" v-if="selectedNode !== undefined">{{ selectedNode.info.name.get()
+      }}</div>
+      <div class="centerSelectedNodeName" v-else>BIM Object not created</div>
     </md-toolbar>
-    <md-toolbar class="md-layout md-gutter headerCDE"
-                layout="row"
-                layout-align="center center">
-      <md-button @click="activeTab = 0"
-                 :style="activeTabColor(0)"
-                 class="md-layout-item toolbarButton">Files</md-button>
-      <md-button @click="activeTab = 1"
-                 :style="activeTabColor(1)"
-                 class="md-layout-item toolbarButton">URL</md-button>
-      <md-button @click="activeTab = 2"
-                 :style="activeTabColor(2)"
-                 class="md-layout-item toolbarButton">Attributes</md-button>
+    <md-toolbar class="md-layout md-gutter headerCDE" layout="row" layout-align="center center">
+      <md-button @click="activeTab = 0" :style="activeTabColor(0)"
+        class="md-layout-item toolbarButton">Files</md-button>
+      <md-button @click="activeTab = 1" :style="activeTabColor(1)" class="md-layout-item toolbarButton">URL</md-button>
+      <md-button @click="activeTab = 2" :style="activeTabColor(2)"
+        class="md-layout-item toolbarButton">Attributes</md-button>
     </md-toolbar>
     <transition name="changeTabDocumentation">
-      <filepanel v-if="activeTab == 0"
-                 :option="option"
-                 @updateMyBIMObject="updateSelectedBIMObject"
-                 :parentGroup="parentGroup"
-                 :selectedNode="selectedNode"
-                 :dbid="dbid"></filepanel>
-      <urlpanel v-else-if="activeTab == 1"
-                :option="option"
-                :parentGroup="parentGroup"
-                :selectedNode="selectedNode"
-                @updateMyBIMObject="updateSelectedBIMObject"
-                :dbid="dbid"></urlpanel>
-      <attributespanel v-else
-                       :selectedNode="selectedNode"
-                       :option="option"
-                       :parentGroup="parentGroup"
-                       @updateMyBIMObject="updateSelectedBIMObject"
-                       :dbid="dbid"></attributespanel>
+      <filepanel v-if="activeTab == 0" :option="option" @updateMyBIMObject="updateSelectedBIMObject"
+        :parentGroup="parentGroup" :selectedNode="selectedNode" :dbid="dbid"></filepanel>
+      <urlpanel v-else-if="activeTab == 1" :option="option" :parentGroup="parentGroup" :selectedNode="selectedNode"
+        @updateMyBIMObject="updateSelectedBIMObject" :dbid="dbid"></urlpanel>
+      <attributespanel v-else :selectedNode="selectedNode" :option="option" :parentGroup="parentGroup"
+        @updateMyBIMObject="updateSelectedBIMObject" :dbid="dbid"></attributespanel>
     </transition>
   </div>
 </template>
@@ -73,11 +52,9 @@ with this file. If not, see
 import urlpanel from "./view/documentation/URLPanel.vue";
 import filepanel from "./view/documentation/FilePanel.vue";
 import attributespanel from "./view/documentation/AttributesPanel.vue";
-import {
-  SpinalGraphService,
-  SpinalNode,
-} from "spinal-env-viewer-graph-service";
+import { SpinalGraphService, SpinalNode } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+
 export default {
   name: "my_compo",
   data() {
@@ -138,8 +115,8 @@ export default {
             typeof allParentGroup !== "undefined" ? allParentGroup : [];
         });
     },
-    removed(option, viewer) {},
-    closed(option, viewer) {},
+    removed(option, viewer) { },
+    closed(option, viewer) { },
   },
 };
 </script>
@@ -153,16 +130,19 @@ export default {
   border-top: 1px solid white;
   border-bottom: 1px solid white;
 }
+
 .toolbarButton {
   text-align: center;
   box-sizing: border-box;
   padding: unset;
   width: 30%;
 }
+
 .centerSelectedNodeName {
   text-align: center;
   margin-top: 8px;
 }
+
 .containerCDE {
   height: 100%;
 }
@@ -170,9 +150,11 @@ export default {
 .containerCDE .md-ripple {
   padding: unset;
 }
+
 .containerCDE .md-content.md-theme-default {
   background-color: unset;
 }
+
 .containerCDE ul.md-list.md-theme-default {
   background-color: unset;
 }
@@ -199,16 +181,19 @@ export default {
   padding-right: 17px;
   height: auto;
 }
+
 .filesPaddingIcon {
   display: flex;
   height: auto;
 }
+
 .sizeOfPathTab {
   flex-grow: 1;
   margin-top: auto;
   margin-left: 15px;
   margin-bottom: auto;
 }
+
 .filesBox {
   background: transparent !important;
   box-sizing: border-box;
@@ -220,6 +205,7 @@ export default {
   box-sizing: border-box;
   height: 100%;
 }
+
 /* .commentcutPart {
   margin: unset
 } */
@@ -233,6 +219,7 @@ export default {
   overflow: hidden;
   white-space: initial;
 }
+
 .container-link .md-ripple.md-list-item-content {
   box-sizing: border-box;
   min-height: 20px;
@@ -244,18 +231,22 @@ export default {
 .container-link td.md-table-cell {
   height: unset;
 }
+
 .size-md-cell {
   padding-right: unset;
   padding-left: unset;
   max-width: 280px;
 }
+
 .myRowStyle {
   padding-right: 15px;
   padding-left: 20px;
 }
+
 .myRowStyleURLShared {
   padding-top: 5px;
 }
+
 .back-line {
   width: calc(100% - 25px);
   overflow: hidden;
@@ -264,32 +255,39 @@ export default {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+
 .alignToIconFile {
   background: #212121;
 }
+
 .span-opacity {
   color: white;
   width: 100%;
 }
+
 .addURLButtonPanel {
   box-sizing: border-box;
   float: right;
   margin-top: auto;
   margin-bottom: auto;
 }
+
 .attributesButtonPanel {
   width: calc(50% - 16px);
   border: 1px solid #356bab;
   box-sizing: border-box;
 }
+
 .urlBox {
   height: calc(100% - 90px);
   box-sizing: border-box;
 }
+
 .size-md-cell {
   padding-right: unset;
   padding-left: unset;
 }
+
 .heightTabsCreateAttr {
   height: 30vh;
 }
@@ -301,6 +299,7 @@ export default {
 .my-test-panel-container * {
   box-sizing: border-box;
 }
+
 .my-test-panel-container-nbr-output {
   text-align: center;
 }
@@ -312,6 +311,7 @@ export default {
 .my-test-panel-container * {
   box-sizing: border-box;
 }
+
 .my-test-panel-container-nbr-output {
   text-align: center;
 }
@@ -323,6 +323,7 @@ export default {
 .my-test-panel-container * {
   box-sizing: border-box;
 }
+
 .my-test-panel-container-nbr-output {
   text-align: center;
 }
@@ -335,6 +336,7 @@ export default {
   font-size: 12px;
   margin: 8px 0px;
 }
+
 .hr-sect::before,
 .hr-sect::after {
   content: "";
@@ -345,6 +347,7 @@ export default {
   line-height: 0px;
   margin: 0px 16px;
 }
+
 /* .tabulationGroupName {
   padding-left: 20px;
   border-top: 2px dotted;
@@ -369,9 +372,10 @@ export default {
   padding: unset;
 }
 
-.colorForCategory > .md-list-item-container > .md-list-item-content {
+.colorForCategory>.md-list-item-container>.md-list-item-content {
   background-color: rgba(204, 204, 204, 0.2);
 }
+
 /* .commentcutPart {
   margin: unset
 } */
@@ -379,6 +383,7 @@ export default {
 .changeTabDocumentation-enter-active {
   transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 }
+
 .changeTabDocumentation-enter {
   opacity: 0;
   transform: translateX(-1em);

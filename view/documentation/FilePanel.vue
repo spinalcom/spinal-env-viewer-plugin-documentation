@@ -91,6 +91,7 @@
 import drive from "./component/drive.vue";
 import menuFile from "./component/menuFile.vue";
 import selectFromContext from "./selectFromContext.vue";
+import JSZip from "jszip";
 
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import serviceDocumentation, { FileExplorer } from "spinal-env-viewer-plugin-documentation-service";
